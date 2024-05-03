@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
             // Asignar el valor predeterminado de id_tip_usu a 1
-            $tipo_usuario = 1;
+            $tipo_usuario = 2;
 
             $query_insert_user = "INSERT INTO usuario (documento, nombre, correo, password, pin, telefono, direccion, nitc, id_tip_usu) 
                                   VALUES (:documento, :nombre, :correo, :password, :pin, :telefono, :direccion, :nitc, :id_tip_usu)";
@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ':id_tip_usu' => $tipo_usuario 
             ));
             // Mostrar alerta de registro exitoso
-            echo "<script>alert('Se ha registrado correctamente'); window.location='../crm/Views/index.php';</script>";
+            echo "<script>alert('Se ha registrado correctamente'); window.location='../proyecto_final/Views/index.php';</script>";
             exit(); 
         }
     }

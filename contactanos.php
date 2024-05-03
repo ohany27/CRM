@@ -3,13 +3,13 @@
 
 <head>
     <meta charset="utf-8">
-    <title>CRM - INICIO</title>
+    <title>CRM - CONTACTO</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta content="Free HTML Templates" name="keywords">
     <meta content="Free HTML Templates" name="description">
 
     <!-- Favicon -->
-    <link href="img/favicon.ico" rel="icon">
+    <link href="Assets/img/favicon.ico" rel="icon">
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -62,7 +62,7 @@
     <!-- Topbar End -->
 
 
-    <!-- Navbar & Carousel Start -->
+    <!-- Navbar Start -->
     <div class="container-fluid position-relative p-0">
         <nav class="navbar navbar-expand-lg navbar-dark px-5 py-3 py-lg-0">
             <a href="index.php" class="navbar-brand p-0">
@@ -72,53 +72,125 @@
                 <span class="fa fa-bars"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
-                <div class="navbar-nav ms-auto py-0">
-                    <a href="index.php" class="nav-item nav-link active">Inicio</a>
+            <div class="navbar-nav ms-auto py-0">
+                    <a href="index.php" class="nav-item nav-link ">Inicio</a>
                     <a href="nosotros.php" class="nav-item nav-link">Nosotros</a>
                     <a href="servicios.php" class="nav-item nav-link">Servicios</a>
-                    <a href="contactanos.php" class="nav-item nav-link">Contactanos</a>
+                    <a href="contactanos.php" class="nav-item nav-link active">Contactanos</a>
                 </div>
             </div>
         </nav>
 
-        <div id="header-carousel" class="carousel slide carousel-fade" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active">
-                    <img class="w-100" src="Assets/img/carousel-1.jpg" alt="Image">
-                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                        <div class="p-3" style="max-width: 900px;">
-                            <h5 class="text-white text-uppercase mb-3 animated slideInDown">Conecta & prospera</h5>
-                            <h1 class="display-1 text-white mb-md-4 animated zoomIn">Convierte datos en relaciones duraderas</h1>
-                            <a href="login.php?accion=registro" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Ingresa</a>
-                            <a href="login.php?accion=registro" class="btn btn-outline-light py-md-3 px-md-5 animated slideInRight">Registrate</a>
+        <div class="container-fluid bg-primary py-5 bg-header" style="margin-bottom: 90px;">
+            <div class="row py-5">
+                <div class="col-12 pt-lg-5 mt-lg-5 text-center">
+                    <h1 class="display-4 text-white animated zoomIn">contactanos </h1>
+                    <a href="index.php" class="h5 text-white">Index</a>
+                    <i class="far fa-circle text-white px-2"></i>
+                    <a href="contactanos.php" class="h5 text-white">Contactanos</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Navbar End -->
+
+
+    <!-- Full Screen Search Start -->
+    <div class="modal fade" id="searchModal" tabindex="-1">
+        <div class="modal-dialog modal-fullscreen">
+            <div class="modal-content" style="background: rgba(9, 30, 62, .7);">
+                <div class="modal-header border-0">
+                    <button type="button" class="btn bg-white btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex align-items-center justify-content-center">
+                    <div class="input-group" style="max-width: 600px;">
+                        <input type="text" class="form-control bg-transparent border-primary p-3" placeholder="Type search keyword">
+                        <button class="btn btn-primary px-4"><i class="bi bi-search"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Full Screen Search End -->
+
+
+    <!-- Contact Start -->
+    <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container py-5">
+            <div class="section-title text-center position-relative pb-3 mb-5 mx-auto" style="max-width: 600px;">
+                <h5 class="fw-bold text-primary text-uppercase">Contactenos</h5>
+                <h1 class="mb-0">Si tiene alguna consulta, no dude en contactarnos</h1>
+            </div>
+            <div class="row g-5 mb-5">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center wow fadeIn" data-wow-delay="0.1s">
+                        <div class="bg-primary d-flex align-items-center justify-content-center rounded" style="width: 60px; height: 60px;">
+                            <i class="fa fa-phone-alt text-white"></i>
+                        </div>
+                        <div class="ps-4">
+                            <h5 class="mb-2">Llama para hacer cualquier pregunta.</h5>
+                            <h4 class="text-primary mb-0">+57 310 2552 339</h4>
                         </div>
                     </div>
                 </div>
-                <div class="carousel-item">
-                    <img class="w-100" src="Assets/img/carousel-2.jpg" alt="Image">
-                    <div class="carousel-caption d-flex flex-column align-items-center justify-content-center">
-                        <div class="p-3" style="max-width: 900px;">
-                            <h5 class="text-white text-uppercase mb-3 animated slideInDown">Conecta & prospera</h5>
-                            <h1 class="display-1 text-white mb-md-4 animated zoomIn">Convierte datos en relaciones duraderas</h1>
-                            <a href="login.php?accion=registro" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Ingresa</a>
-                            <a href="login.php?accion=registro" class="btn btn-outline-light py-md-3 px-md-5 animated slideInRight">Registrate</a>
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center wow fadeIn" data-wow-delay="0.4s">
+                        <div class="bg-primary d-flex align-items-center justify-content-center rounded" style="width: 60px; height: 60px;">
+                            <i class="fa fa-envelope-open text-white"></i>
+                        </div>
+                        <div class="ps-4">
+                            <h5 class="mb-2">Envíe un correo electrónico para cotizar sofwares</h5>
+                            <h4 class="text-primary mb-0">tecnelectrics@gmail.com</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center wow fadeIn" data-wow-delay="0.8s">
+                        <div class="bg-primary d-flex align-items-center justify-content-center rounded" style="width: 60px; height: 60px;">
+                            <i class="fa fa-map-marker-alt text-white"></i>
+                        </div>
+                        <div class="ps-4">
+                            <h5 class="mb-2">Visita nuestra oficina</h5>
+                            <h4 class="text-primary mb-0">Colombia, Ibague, Tolima</h4>
                         </div>
                     </div>
                 </div>
             </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#header-carousel"
-                data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#header-carousel"
-                data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
+            <div class="row g-5">
+                <div class="col-lg-6 wow slideInUp" data-wow-delay="0.3s">
+                    <form>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" class="form-control border-0 bg-light px-4" placeholder="Nombre" style="height: 55px;">
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" class="form-control border-0 bg-light px-4" placeholder="Correo" style="height: 55px;">
+                            </div>
+                            <div class="col-12">
+                                <input type="text" class="form-control border-0 bg-light px-4" placeholder="Sujeto" style="height: 55px;">
+                            </div>
+                            <div class="col-12">
+                                <textarea class="form-control border-0 bg-light px-4 py-3" rows="4" placeholder="Mensaje"></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-primary w-100 py-3" type="submit">Enviar Mensaje</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="col-lg-6 wow slideInUp" data-wow-delay="0.6s">
+                <iframe src="https://www.google.com/maps/embed?pb=!4v1714765029210!6m8!1m7!1sj_jHZOh6pgvf1z4LmCk-Kw!2m2!1d4.402006760729066!2d-75.14967451070726!3f34.02593976875215!4f-7.054346149660589!5f0.7820865974627469"
+                        frameborder="0" style="min-height: 350px; border:0; width: 100%;" allowfullscreen="" aria-hidden="false"
+                        tabindex="0"></iframe>
+                </div>
+            </div>
         </div>
     </div>
-    <!-- Navbar & Carousel End -->
+    <!-- Contact End -->
+
+
+
+    
 
     <!-- Footer Start -->
     <div class="container-fluid bg-dark text-light mt-5 wow fadeInUp" data-wow-delay="0.1s">

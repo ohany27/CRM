@@ -17,7 +17,8 @@ if (isset($_GET['accion']) && $_GET['accion'] == 'registro') {
     // Si hay una o más licencias activas, realizar la acción de registro
     if ($total_licencias_activas < 1) {
         // Si no hay una licencia activa, redirigir al usuario al index.php
-        header("Location: index.php");
+        echo '<script>alert("No Hay licencia Activa.");</script>';
+        echo '<script>window.location = "index.php";</script>';
         exit(); // Detener la ejecución del script
     }
 }
@@ -45,10 +46,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['usuario'] = $user;
 
             if ($user['id_tip_usu'] == 1) {
-                header("Location: Views/index.php");
+                header("Location: Admin/index.php");
                 exit();
             } elseif ($user['id_tip_usu'] == 2) {
-                header("Location: Admin/index.php");
+                header("Location: Views/index.php");
                 exit();
             } else {
                 header("Location: index.php?accion=registro");
