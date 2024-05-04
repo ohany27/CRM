@@ -17,8 +17,9 @@ if (isset($_GET['accion']) && $_GET['accion'] == 'registro') {
     // Si hay una o más licencias activas, realizar la acción de registro
     if ($total_licencias_activas < 1) {
         // Si no hay una licencia activa, redirigir al usuario al index.php
-        header("Location: index.php");
-        exit(); // Detener la ejecución del script
+        echo '<script>alert("No Hay una licencia Activa Si desea utilizar nuestros servicios contactanos.");</script>';
+        echo '<script>window.location = "index.php";</script>';
+        exit(); // Detener la ejecución del script // Detener la ejecución del script
     }
   }
 
@@ -56,7 +57,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Encriptar la contraseña antes de insertarla en la base de datos
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-            // Asignar el valor predeterminado de id_tip_usu a 1
             $tipo_usuario = 2;
 
             $query_insert_user = "INSERT INTO usuario (documento, nombre, correo, password, pin, telefono, direccion, nitc, id_tip_usu) 
@@ -74,7 +74,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ':id_tip_usu' => $tipo_usuario 
             ));
             // Mostrar alerta de registro exitoso
-            echo "<script>alert('Se ha registrado correctamente'); window.location='../proyecto_final/Views/index.php';</script>";
+            echo "<script>alert('Se ha registrado correctamente'); window.location='../crm/Views/Cliente/index.php';</script>";
             exit(); 
         }
     }
