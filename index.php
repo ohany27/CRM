@@ -89,7 +89,7 @@
                         <div class="p-3" style="max-width: 900px;">
                             <h5 class="text-white text-uppercase mb-3 animated slideInDown">Conecta & prospera</h5>
                             <h1 class="display-1 text-white mb-md-4 animated zoomIn">Convierte datos en relaciones duraderas</h1>
-                            <a href="login.php?accion=registro" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Ingresa</a>
+                            <a href="login.php?accion=registro" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Vamos</a>
                             <a href="login.php?accion=registro" class="btn btn-outline-light py-md-3 px-md-5 animated slideInRight">Registrate</a>
                         </div>
                     </div>
@@ -100,7 +100,7 @@
                         <div class="p-3" style="max-width: 900px;">
                             <h5 class="text-white text-uppercase mb-3 animated slideInDown">Conecta & prospera</h5>
                             <h1 class="display-1 text-white mb-md-4 animated zoomIn">Convierte datos en relaciones duraderas</h1>
-                            <a href="login.php?accion=registro" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Ingresa</a>
+                            <a href="login.php?accion=registro" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Vamos</a>
                             <a href="login.php?accion=registro" class="btn btn-outline-light py-md-3 px-md-5 animated slideInRight">Registrate</a>
                         </div>
                     </div>

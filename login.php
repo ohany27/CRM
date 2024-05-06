@@ -2,7 +2,6 @@
 session_start();
 require_once("Config/conexion.php");
 
-// Crear una instancia de la clase Database para obtener la conexión PDO
 $database = new Database();
 $pdo = $database->conectar();
 
@@ -23,38 +22,32 @@ if (isset($_GET['accion']) && $_GET['accion'] == 'registro') {
     }
 }
 
-// Si llegamos aquí, significa que hay una licencia activa o no se ha intentado registrarse
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
+// Manejar el formulario de inicio de sesión
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login_form"])) {
     $correo = $_POST["correo"];
     $contraseña = $_POST["contraseña"];
 
-    if (empty($correo) || empty($contraseña)) {
-        $_SESSION['error'] = 'Correo y contraseña son obligatorios.';
-        echo "<script>alert('Correo y contraseña son obligatorios.'); window.location.href='login.php';</script>";
-        exit();
-    }
-
+    // Verificar si el correo y la contraseña son válidos
     $query = "SELECT * FROM usuario WHERE correo = :correo";
     $stmt = $pdo->prepare($query);
     $stmt->execute(array(':correo' => $correo));
 
     if ($stmt->rowCount() == 1) {
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (password_verify($contraseña, $user['password'])) {
-            $_SESSION['usuario'] = $user;
+        if (password_verify($contraseña, $usuario['password'])) {
+            $_SESSION['usuario'] = $usuario;
 
-            if ($user['id_tip_usu'] == 1) {
+            if ($usuario['id_tip_usu'] == 1) {
                 header("Location: Views/Admin/index.php");
                 exit();
-            } elseif ($user['id_tip_usu'] == 2) {
+            } elseif ($usuario['id_tip_usu'] == 2) {
                 header("Location: Views/Cliente/index.php");
                 exit();
-            } elseif ($user['id_tip_usu'] == 3) {
+            } elseif ($usuario['id_tip_usu'] == 3) {
                 header("Location: Views/Empleado/index.php");
                 exit();
-            } elseif ($user['id_tip_usu'] == 4) {
+            } elseif ($usuario['id_tip_usu'] == 4) {
                 header("Location: Views/Tecnico/index.php");
                 exit();
             } else {
@@ -72,133 +65,128 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit();
     }
 }
+
+// Manejar el formulario de registro
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["registro_form"])) {
+    // Obtener los datos del formulario
+    $documento = $_POST["documento"];
+    $nombre = $_POST["nombre"];
+    $correo = $_POST["correo"];
+    $password = $_POST["password"];
+    $pin = $_POST["pin"];
+    $telefono = $_POST["telefono"];
+    $direccion = $_POST["direccion"];
+
+    // Obtener automáticamente el nitc de la primera empresa de la tabla empresa
+    $query_empresa = "SELECT nitc FROM empresa LIMIT 1";
+    $stmt_empresa = $pdo->query($query_empresa);
+    $empresa_seleccionada = $stmt_empresa->fetch(PDO::FETCH_ASSOC);
+    $nitc = $empresa_seleccionada['nitc'];
+
+    // Validar campos obligatorios
+    if (empty($documento) || empty($nombre) || empty($correo) || empty($password) || empty($pin) || empty($telefono) || empty($direccion) || empty($nitc)) {
+        echo "<script>alert('Todos los campos son obligatorios.')</script>";
+    } else {
+        // Verificar si ya existe un usuario con el mismo correo, pin o documento
+        $query = "SELECT * FROM usuario WHERE correo = :correo OR pin = :pin OR documento = :documento";
+        $stmt = $pdo->prepare($query);
+        $stmt->execute(array(':correo' => $correo, ':pin' => $pin, ':documento' => $documento));
+
+        // Si se encuentra algún registro, mostrar un mensaje de error
+        if ($stmt->rowCount() > 0) {
+            echo "<script>alert('Correo existente o pin')</script>";
+        } else {
+            // Si no hay registros duplicados, insertar el nuevo usuario
+            // Encriptar la contraseña antes de insertarla en la base de datos
+            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+            $tipo_usuario = 2;
+
+            $query_insert_user = "INSERT INTO usuario (documento, nombre, correo, password, pin, telefono, direccion, nitc, id_tip_usu) 
+                                VALUES (:documento, :nombre, :correo, :password, :pin, :telefono, :direccion, :nitc, :id_tip_usu)";
+            $stmt_insert_user = $pdo->prepare($query_insert_user);
+            $stmt_insert_user->execute(array(
+                ':documento' => $documento,
+                ':nombre' => $nombre,
+                ':correo' => $correo,
+                ':password' => $hashed_password,
+                ':pin' => $pin,
+                ':telefono' => $telefono,
+                ':direccion' => $direccion,
+                ':nitc' => $nitc,
+                ':id_tip_usu' => $tipo_usuario 
+            ));
+            // Mostrar alerta de registro exitoso
+            echo "<script>alert('Se ha registrado correctamente'); window.location='../crm/Views/Cliente/index.php';</script>";
+            exit(); 
+        }
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-    <title>Pages / Login - NiceAdmin Bootstrap Template</title>
-    <meta content="" name="description">
-    <meta content="" name="keywords">
-
-    <!-- Favicons -->
-    <link href="Admin/assets/img/favicon.png" rel="icon">
-    <link href="Admin/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-    <!-- Google Fonts -->
-    <link href="https://fonts.gstatic.com" rel="preconnect">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-    <!-- Vendor CSS Files -->
-    <link href="Admin/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="Admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-    <link href="Admin/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-    <link href="Admin/assets/vendor/quill/quill.snow.css" rel="stylesheet">
-    <link href="Admin/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
-    <link href="Admin/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
-    <link href="Admin/assets/vendor/simple-datatables/style.css" rel="stylesheet">
-
-    <!-- Template Main CSS File -->
-    <link href="Admin/assets/css/style.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="Assets/css/ingreso.css">
+    <title>CRM - INICIAR SESION</title>
 </head>
 
 <body>
 
-    <main>
-        <div class="container">
-
-            <section class="section register min-vh-100 d-flex flex-column align-items-center justify-content-center py-4">
-                <div class="container">
-                    <div class="row justify-content-center">
-                        <div class="col-lg-4 col-md-6 d-flex flex-column align-items-center justify-content-center">
-
-                            <div class="d-flex justify-content-center py-4">
-                                <a href="index.php" class="logo d-flex align-items-center w-auto">
-                                    <img src="assets/img/logo.png" alt="">
-                                    <span class="d-none d-lg-block">CRM</span>
-                                </a>
-                            </div><!-- End Logo -->
-
-                            <div class="card mb-3">
-
-                                <div class="card-body">
-
-                                    <div class="pt-4 pb-2">
-                                        <h5 class="card-title text-center pb-0 fs-4">Inicia Session</h5>
-                                        <p class="text-center small">Ingrese los datos requeridos</p>
-                                    </div>
-
-                                    <form class="row g-3 needs-validation" action="login.php" method="post" novalidate>
-
-                                        <div class="col-12">
-                                            <label for="correo" class="form-label">Correo</label>
-                                            <div class="input-group has-validation">
-                                                <span class="input-group-text" id="inputGroupPrepend">@</span>
-
-                                                <input type="email" name="correo" class="form-control" id="correo" required>
-
-
-                                                <div class="invalid-feedback">Por Favor, ingrese su Correo-electronico!</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-12">
-                                            <label for="contraseña" class="form-label">Password</label>
-                                            <input type="password" name="contraseña" class="form-control" id="contraseña" required>
-                                            <div class="invalid-feedback">Por Favor, ingrese su Contraseña!</div>
-                                        </div>
-
-                                        <div class="col-12">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
-                                                <label class="form-check-label" for="rememberMe">Remember me</label>
-                                            </div>
-                                        </div>
-                                        <div class="col-12">
-                                            <button class="btn btn-primary w-100" type="submit">Login</button>
-                                        </div>
-                                        <div class="col-12">
-
-                                            <p class="small mb-0">No Tienes Una Cuenta? <a href="registro.php?accion=registro">registrate</a> O <a href="Email/recuperar.php?accion=registro">forget contraseña</a></p>
-
-
-                                        </div>
-                                    </form>
-
-                                </div>
-                            </div>
-
-                            <div class="credits">
-                                Terminos Y Condiciones</a>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-
-            </section>
-
+    <div class="container" id="container">
+        <div class="form-container sign-up">
+            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+                <h1>Registrate</h1>
+                <!-- Este input oculto se utiliza para distinguir entre los formularios -->
+                <input type="hidden" name="registro_form" value="1">
+                <!-- Campos del formulario de registro -->
+                <input type="number" id="documento" name="documento"  minlength="9" required placeholder="Documento">
+                <input type="text" id="nombre" name="nombre"  required placeholder="Nombre">
+                <input type="email" id="correo" name="correo"  required placeholder="Correo">
+                <input type="password" id="password" name="password"  pattern="^(?=.*\d)(?=.*[a-zA-Z]).{5,}$" required placeholder="Contraseña">
+                <input type="number" id="pin" name="pin"  pattern="\d{5,}" required placeholder="Pin">
+                <input type="number" id="telefono" name="telefono" minlength="9" required placeholder="Telefono">
+                <input type="text" id="direccion" name="direccion"  required placeholder="Direccion">
+                <button type="submit">Registrarse</button>
+            </form>
         </div>
-    </main><!-- End #main -->
 
-    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+        <div class="form-container sign-in">
+            <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+                <h1>Inicia Sesion</h1>
+                <br></br>
+                <!-- Este input oculto se utiliza para distinguir entre los formularios -->
+                <input type="hidden" name="login_form" value="1">
+                <!-- Campos del formulario de inicio de sesión -->
+                <input type="email" name="correo" id="correo" placeholder="Correo" required>
+                <input type="password" name="contraseña" id="contraseña" placeholder="Contraseña" required>
+                <a href="Email/recuperar.php?accion=registro">¿olvidaste tu contraseña?</a>
+                <button type="submit">Ingresa</button>
+                <br>
+                <a href="index.php" style=" color: rgba(0, 0, 0, 0.35);   transform: scale(2); "><i class="fas fa-reply-all"></i></a>
+            </form>
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>Ya Tienes Una Cuenta!</h1>
+                    <p>Inicia sesion y disfruta de todas nuestra funciones</p>
+                    <button class="hidden" id="login">Ingresa</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>Hola amig@!</h1>
+                    <p>Regístrese con tus datos personales para utilizar todas las funciones del sitio</p>
+                    <button class="hidden" id="register">Registrarse</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-    <!-- Vendor JS Files -->
-    <script src="Admin/assets/vendor/apexcharts/apexcharts.min.js"></script>
-    <script src="Admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="Admin/assets/vendor/chart.js/chart.umd.js"></script>
-    <script src="Admin/assets/vendor/echarts/echarts.min.js"></script>
-    <script src="Admin/assets/vendor/quill/quill.min.js"></script>
-    <script src="Admin/assets/vendor/simple-datatables/simple-datatables.js"></script>
-    <script src="Admin/assets/vendor/tinymce/tinymce.min.js"></script>
-    <script src="Admin/assets/vendor/php-email-form/validate.js"></script>
-
-    <!-- Template Main JS File -->
-    <script src="Admin/assets/js/main.js"></script>
-
+    <script src="Assets/js/script.js"></script>
 </body>
 
 </html>
