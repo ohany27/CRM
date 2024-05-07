@@ -72,7 +72,7 @@ include("../../../Config/validarSesion.php");
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <span class="dropdown-item dropdown-header">Opciones</span>
           <div class="dropdown-divider"></div>
-          <a href="Visualizar/perfil.php" class="dropdown-item">
+          <a href="../Visualizar/perfil.php" class="dropdown-item">
             <i class="fas fa-user mr-2"></i> Perfil
             <span class="float-right text-muted text-sm">visitar</span>
           </a>
