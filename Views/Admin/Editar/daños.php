@@ -11,9 +11,20 @@ if (isset($_POST["update"])) {
     $tipo = $_POST['tipo'];
     $precio = $_POST['precio'];
 
-    $updateSQL = $con->prepare("UPDATE tipo_daño SET nombre = ?, precio = ? WHERE id_daño = ?");
-    $updateSQL->execute([$tipo, $precio, $_GET['id_daño']]);
-    
+    // Comprobamos si se ha subido una nueva imagen
+    if($_FILES['foto']['tmp_name'] != '') {
+        // Guardamos la nueva imagen en una variable
+        $imagen = file_get_contents($_FILES['foto']['tmp_name']);
+
+        // Actualizamos la imagen junto con los otros campos
+        $updateSQL = $con->prepare("UPDATE tipo_daño SET nombre = ?, foto = ?, precio = ? WHERE id_daño = ?");
+        $updateSQL->execute([$tipo, $imagen, $precio, $_GET['id_daño']]);
+    } else {
+        // Si no se ha subido una nueva imagen, actualizamos solo los otros campos
+        $updateSQL = $con->prepare("UPDATE tipo_daño SET nombre = ?, precio = ? WHERE id_daño = ?");
+        $updateSQL->execute([$tipo, $precio, $_GET['id_daño']]);
+    }
+
     // Comprobar si se realizó la actualización correctamente
     if ($updateSQL) {
         echo '<script>alert("Actualización exitosa.");</script>';
@@ -48,7 +59,7 @@ $usua = $sql->fetch();
                 </div>
                 <!-- /.card-header -->
                 <!-- Formulario de edición -->
-                <form method="post" name="formreg">
+                <form method="post" name="formreg" enctype="multipart/form-data">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-6">
@@ -63,6 +74,19 @@ $usua = $sql->fetch();
                                     <input type="number" class="form-control" id="precio" name="precio" value="<?php echo htmlspecialchars($usua['precio']); ?>" placeholder="Precio" required>
                                 </div>
                             </div>
+                            <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="foto">Foto Actual</label>
+                            <br>
+                            <img src="data:image/jpeg;base64,<?php echo base64_encode($usua['foto']); ?>" alt="Foto actual" style="max-width: 300px;">
+                        </div>
+</div>
+                        <div class="col-sm-6">
+                        <div class="form-group">
+                            <label for="foto">Seleccionar Nueva Foto</label>
+                            <input type="file" class="form-control-file" id="foto" name="foto">
+                        </div>
+</div>
                         </div>
                     </div>
                     <!-- /.card-body -->

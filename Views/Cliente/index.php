@@ -54,7 +54,7 @@ include ("../../Config/validarSesion.php");
                                     <ul class="nav nav-tabs nav-tabs-custom border-bottom-0 mt-3 nav-justfied"
                                         role="tablist">
                                         <li class="nav-item" role="presentation">
-                                            <a class="nav-link px-4 active" data-bs-toggle="tab" href="#projects-tab"
+                                            <a class="nav-link px-4 active" data-bs-toggle="tab" href="index.php"
                                                 role="tab" aria-selected="false" tabindex="-1">
                                                 <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
                                                 <span class="d-none d-sm-block">Mis Tickets</span>
@@ -62,19 +62,16 @@ include ("../../Config/validarSesion.php");
                                         </li>
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link px-4"
-                                                href="https://bootdey.com/snippets/view/profile-task-with-team-cards"
-                                                target="__blank">
+                                                href="Visualizar/llamadas.php">
                                                 <span class="d-block d-sm-none"><i class="mdi mdi-menu-open"></i></span>
-                                                <span class="d-none d-sm-block">Empieza Un Ticket </span>
+                                                <span class="d-none d-sm-block">Mis Llamadas </span>
                                             </a>
                                         </li>
                                         <li class="nav-item" role="presentation">
-                                            <a class="nav-link px-4 "
-                                                href="https://bootdey.com/snippets/view/profile-with-team-section"
-                                                target="__blank">
-                                                <span class="d-block d-sm-none"><i
-                                                        class="mdi mdi-account-group-outline"></i></span>
-                                                <span class="d-none d-sm-block">Cerrar Sesion</span>
+                                            <a class="nav-link px-4"
+                                                href="Visualizar/nuevo_llamada.php">
+                                                <span class="d-block d-sm-none"><i class="mdi mdi-menu-open"></i></span>
+                                                <span class="d-none d-sm-block">Empieza Una Llamada </span>
                                             </a>
                                         </li>
                                     </ul>
@@ -88,7 +85,7 @@ include ("../../Config/validarSesion.php");
                         <div class="tab-pane active show" id="projects-tab" role="tabpanel">
                             <div class="d-flex align-items-center">
                                 <div class="flex-1">
-                                    <h4 class="card-title mb-4">Projects</h4>
+                                    <h4 class="card-title mb-4">Tickets</h4>
                                 </div>
                             </div>
                             <div class="row" id="all-projects">

@@ -77,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <div class="form-group">
                                     <label for="">Documento</label>
                                     <input type="number" class="form-control" id="documento" name="documento"
-                                        placeholder="Documento" minlength="9" value="<?php echo $usuario["documento"]; ?>" required>
+                                        placeholder="Documento" minlength="9" value="<?php echo $usuario["documento"]; ?>" readonly>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -105,7 +105,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <div class="form-group">
                                     <label for="">Pin</label>
                                     <input type="number" class="form-control" id="pin" name="pin" placeholder="Pin" value="<?php echo $usuario["pin"]; ?>"
-                                        pattern="\d{5,}" required>
+                                        pattern="\d{5,}" readonly>
                                 </div>
                             </div>
                             <div class="col-sm-6">

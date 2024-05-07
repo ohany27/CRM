@@ -27,6 +27,7 @@ $con = $DataBase->conectar();
                             <tr>
                                 <th>Id_Daños</th>
                                 <th>Tipos de Daños</th>
+                                <th>Foto</th>
                                 <th>Precio</th>
                                 <th></th>
                             </tr>
@@ -41,6 +42,7 @@ $con = $DataBase->conectar();
                                 <tr>
                                 <td>' . $fila["id_daño"] . '</td>
                                 <td>' . $fila["nombre"] . '</td>
+                                <td><img src="data:image/jpeg;base64,' . base64_encode($fila["foto"]) . '" width="200" height="100" alt="Foto de daño"></td>
                                 <td>' . $fila["precio"] . '</td>
                     <td class="project-actions text-center">
                             <a href="../Editar/daños.php?id_daño=' . $fila["id_daño"] . '" class="btn btn-info btn-sm" href="#">
