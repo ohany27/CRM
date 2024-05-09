@@ -1,6 +1,72 @@
 <?php
 include ("../../../Config/validarSesion.php");
 ?>
+<?php
+require_once ("../../../Config/conexion.php");
+$DataBase = new Database;
+$con = $DataBase->conectar();
+$id_tip_usu = $_SESSION['usuario']['id_tip_usu'];
+$nitc = $_SESSION['usuario']['nitc'];
+
+// Consulta SQL para obtener el nombre del tipo de usuario
+$sql_tipo_usuario = "SELECT tip_usu FROM roles WHERE id_tip_usu = :id_tip_usu";
+
+// Preparar la consulta para el tipo de usuario
+$stmt_tipo_usuario = $con->prepare($sql_tipo_usuario);
+$stmt_tipo_usuario->bindParam(':id_tip_usu', $id_tip_usu, PDO::PARAM_INT);
+$stmt_tipo_usuario->execute();
+$tipo_usuario_resultado = $stmt_tipo_usuario->fetch(PDO::FETCH_ASSOC);
+
+// Obtener el nombre del tipo de usuario
+if ($tipo_usuario_resultado) {
+    $nombre_tipo_usuario = $tipo_usuario_resultado['tip_usu'];
+} else {
+    $nombre_tipo_usuario = "Desconocido";
+}
+
+// Consulta SQL para obtener el nombre de la empresa
+$sql_empresa = "SELECT nombre FROM empresa WHERE nitc = :nitc";
+
+// Preparar la consulta para la empresa
+$stmt_empresa = $con->prepare($sql_empresa);
+$stmt_empresa->bindParam(':nitc', $nitc, PDO::PARAM_INT);
+$stmt_empresa->execute();
+$empresa_resultado = $stmt_empresa->fetch(PDO::FETCH_ASSOC);
+
+// Obtener el nombre de la empresa
+if ($empresa_resultado) {
+    $nombre_empresa = $empresa_resultado['nombre'];
+} else {
+    $nombre_empresa = "Desconocida";
+}
+
+// Consulta SQL para contar empleados
+$sql_empleados = "SELECT COUNT(*) AS total_empleados FROM usuario WHERE id_tip_usu = 3";
+
+// Preparar y ejecutar la consulta de empleados
+$stmt_empleados = $con->prepare($sql_empleados);
+$stmt_empleados->execute();
+$resultado_empleados = $stmt_empleados->fetch(PDO::FETCH_ASSOC);
+$total_empleados = $resultado_empleados['total_empleados'];
+
+// Determinar la clase del ícono de empleados
+$clase_icono_empleados = ($total_empleados <= 0) ? "mdi mdi-circle-medium text-danger fs-3 align-middle" : "mdi mdi-circle-medium text-success fs-3 align-middle";
+
+// Consulta SQL para contar técnicos
+$sql_tecnicos = "SELECT COUNT(*) AS total_tecnicos FROM usuario WHERE id_tip_usu = 4";
+
+// Preparar y ejecutar la consulta de técnicos
+$stmt_tecnicos = $con->prepare($sql_tecnicos);
+$stmt_tecnicos->execute();
+$resultado_tecnicos = $stmt_tecnicos->fetch(PDO::FETCH_ASSOC);
+$total_tecnicos = $resultado_tecnicos['total_tecnicos'];
+// Determinar la clase del ícono de técnicos
+$clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-danger fs-3 align-middle" : "mdi mdi-circle-medium text-success fs-3 align-middle";
+?>
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -30,7 +96,7 @@ include ("../../../Config/validarSesion.php");
                                     <img src="https://bootdey.com/img/Content/avatar/avatar1.png"
                                         class="img-fluid avatar-xxl rounded-circle" alt>
                                     <h4 class="text-primary font-size-20 mt-3 mb-2"><?php echo $_SESSION['usuario']['nombre']; ?></h4>
-                                    <h5 class="text-muted font-size-13 mb-0"><?php echo $_SESSION['usuario']['id_tip_usu']; ?></h5>
+                                    <h5 class="text-muted font-size-13 mb-0"><?php echo $nombre_tipo_usuario; ?></h5>
                                 </div>
                             </div>
                             <div class="col-md-9">

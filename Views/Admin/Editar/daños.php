@@ -1,4 +1,4 @@
-<?php 
+<?php
 include "../Template/header.php";
 require_once("../../../Config/conexion.php");
 $Conexion = new Database;
@@ -10,19 +10,20 @@ if (isset($_POST["update"])) {
     $id = $_POST['id'];
     $tipo = $_POST['tipo'];
     $precio = $_POST['precio'];
+    $categoria = $_POST['categoria']; // Agregado para obtener la nueva categoría seleccionada
 
     // Comprobamos si se ha subido una nueva imagen
-    if($_FILES['foto']['tmp_name'] != '') {
+    if ($_FILES['foto']['tmp_name'] != '') {
         // Guardamos la nueva imagen en una variable
         $imagen = file_get_contents($_FILES['foto']['tmp_name']);
 
         // Actualizamos la imagen junto con los otros campos
-        $updateSQL = $con->prepare("UPDATE tipo_daño SET nombre = ?, foto = ?, precio = ? WHERE id_daño = ?");
-        $updateSQL->execute([$tipo, $imagen, $precio, $_GET['id_daño']]);
+        $updateSQL = $con->prepare("UPDATE tipo_daño SET nombre = ?, foto = ?, precio = ?, id_categoria = ? WHERE id_daño = ?");
+        $updateSQL->execute([$tipo, $imagen, $precio, $categoria, $_GET['id_daño']]);
     } else {
         // Si no se ha subido una nueva imagen, actualizamos solo los otros campos
-        $updateSQL = $con->prepare("UPDATE tipo_daño SET nombre = ?, precio = ? WHERE id_daño = ?");
-        $updateSQL->execute([$tipo, $precio, $_GET['id_daño']]);
+        $updateSQL = $con->prepare("UPDATE tipo_daño SET nombre = ?, precio = ?, id_categoria = ? WHERE id_daño = ?");
+        $updateSQL->execute([$tipo, $precio, $categoria, $_GET['id_daño']]);
     }
 
     // Comprobar si se realizó la actualización correctamente
@@ -38,6 +39,10 @@ if (isset($_POST["update"])) {
 $sql = $con->prepare("SELECT * FROM tipo_daño WHERE id_daño = ?");
 $sql->execute([$_GET['id_daño']]);
 $usua = $sql->fetch();
+
+// Consulta para obtener los tipos de categoría
+$consulta_categorias = "SELECT id_cat, tip_cat FROM categoria";
+$resultado_categorias = $con->query($consulta_categorias);
 ?>
 
 <div class="content-wrapper">
@@ -75,18 +80,33 @@ $usua = $sql->fetch();
                                 </div>
                             </div>
                             <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="foto">Foto Actual</label>
-                            <br>
-                            <img src="data:image/jpeg;base64,<?php echo base64_encode($usua['foto']); ?>" alt="Foto actual" style="max-width: 300px;">
-                        </div>
-</div>
-                        <div class="col-sm-6">
-                        <div class="form-group">
-                            <label for="foto">Seleccionar Nueva Foto</label>
-                            <input type="file" class="form-control-file" id="foto" name="foto">
-                        </div>
-</div>
+                                <div class="form-group">
+                                    <label for="categoria_nueva">Seleccionar Nueva Categoría</label>
+                                    <select class="form-control" id="categoria_nueva" name="categoria" required>
+                                        <option value="">Selecciona una categoría</option>
+                                        <?php
+                                        // Iterar sobre los resultados de la consulta y mostrar las opciones
+                                        while ($fila_categoria = $resultado_categorias->fetch()) {
+                                            $selected = ($fila_categoria['id_cat'] == $usua['id_categoria']) ? 'selected' : '';
+                                            echo '<option value="' . $fila_categoria["id_cat"] . '" ' . $selected . '>' . $fila_categoria["tip_cat"] . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="foto">Foto Actual</label>
+                                    <br>
+                                    <img src="data:image/jpeg;base64,<?php echo base64_encode($usua['foto']); ?>" alt="Foto actual" style="max-width: 300px;">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="foto">Seleccionar Nueva Foto</label>
+                                    <input type="file" class="form-control-file" id="foto" name="foto">
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <!-- /.card-body -->

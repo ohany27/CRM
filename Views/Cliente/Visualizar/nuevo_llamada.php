@@ -1,6 +1,5 @@
 <?php include "../Template/header.php"; ?>
 <?php
-require_once("../../../Config/conexion.php");
 
 // Verificar si se ha enviado el formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -27,8 +26,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Obtener el documento del usuario desde la sesión
         $documento_usuario = $_SESSION['usuario']['documento'];
 
+        // Obtener un empleado aleatorio con id_tip_usu = 3
+        $stmt_empleado = $con->prepare("SELECT documento FROM usuario WHERE id_tip_usu = 3 ORDER BY RAND() LIMIT 1");
+        $stmt_empleado->execute();
+        $empleado = $stmt_empleado->fetch(PDO::FETCH_ASSOC);
+
+        // Verificar si se encontró un empleado
+        if (!$empleado) {
+            echo "<script>alert('No se encontró un empleado disponible'); window.location='../Visualizar/nuevo_llamada.php';</script>";
+            exit();
+        }
+
+        // Obtener el documento del empleado seleccionado
+        $documento_empleado = $empleado['documento'];
+
         // Preparar la consulta SQL
-        $sql = "INSERT INTO llamadas (id_daño, id_est, fecha, descripcion, documento) VALUES (?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO llamadas (id_daño, id_est, fecha, descripcion, documento, id_empleado) VALUES (?, ?, ?, ?, ?, ?)";
 
         // Preparar la declaración
         $stmt = $con->prepare($sql);
@@ -39,6 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->bindValue(3, $fecha);
         $stmt->bindValue(4, $descripcion);
         $stmt->bindValue(5, $documento_usuario);
+        $stmt->bindValue(6, $documento_empleado);
 
         // Ejecutar la consulta
         $stmt->execute();
@@ -58,6 +72,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         echo "Error al crear la llamada: " . $e->getMessage();
     }
 }
+
 try {
     $db = new Database();
     $conn = $db->conectar();
@@ -67,6 +82,7 @@ try {
     echo "Error: " . $e->getMessage();
 }
 ?>
+
 <ul class="nav nav-tabs nav-tabs-custom border-bottom-0 mt-3 nav-justfied" role="tablist">
     <li class="nav-item" role="presentation">
         <a class="nav-link px-4 " href="../index.php">
@@ -125,5 +141,6 @@ try {
                     <br>
                     <button type="submit" class="btn btn-primary">Enviar</button>
                 </form>
+                </div>
 
                 <?php include "../Template/footer.php"; ?>

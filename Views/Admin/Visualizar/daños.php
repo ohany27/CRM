@@ -27,6 +27,7 @@ $con = $DataBase->conectar();
                             <tr>
                                 <th>Id_Daños</th>
                                 <th>Tipos de Daños</th>
+                                <th>Categoria</th>
                                 <th>Foto</th>
                                 <th>Precio</th>
                                 <th></th>
@@ -34,7 +35,7 @@ $con = $DataBase->conectar();
                         </thead>
                         <tbody>
                             <?php
-                            $consulta = "SELECT * FROM tipo_daño";
+                            $consulta = "SELECT tipo_daño.*, categoria.tip_cat FROM tipo_daño INNER JOIN categoria ON tipo_daño.id_categoria = categoria.id_cat";
                             $resultado = $con->query($consulta);
 
                             while ($fila = $resultado->fetch()) {
@@ -42,21 +43,18 @@ $con = $DataBase->conectar();
                                 <tr>
                                 <td>' . $fila["id_daño"] . '</td>
                                 <td>' . $fila["nombre"] . '</td>
+                                <td>' . $fila["tip_cat"] . '</td>
                                 <td><img src="data:image/jpeg;base64,' . base64_encode($fila["foto"]) . '" width="200" height="100" alt="Foto de daño"></td>
                                 <td>' . $fila["precio"] . '</td>
-                    <td class="project-actions text-center">
-                            <a href="../Editar/daños.php?id_daño=' . $fila["id_daño"] . '" class="btn btn-info btn-sm" href="#">
-                                <i class="fas fa-pencil-alt">
-                                </i>
-                                Editar
-                            </a>
-                            <a href="../Eliminar/daños.php?id_daño=' . $fila["id_daño"] . '" class="btn btn-danger btn-sm" href="#">
-                                <i class="fas fa-trash">
-                                </i>
-                                Eliminar
-                            </a>
-                        </td>
-                </tr>';
+                                <td class="project-actions text-center">
+                                    <a href="../Editar/daños.php?id_daño=' . $fila["id_daño"] . '" class="btn btn-info btn-sm">
+                                        <i class="fas fa-pencil-alt"></i> Editar
+                                    </a>
+                                    <a href="../Eliminar/daños.php?id_daño=' . $fila["id_daño"] . '" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </a>
+                                </td>
+                                </tr>';
                             }
                             ?>
                         </tbody>

@@ -4,10 +4,15 @@ require_once("../../../Config/conexion.php");
 $Conexion = new Database;
 $con = $Conexion->conectar();
 
+// Consulta para obtener los tipos de categoría
+$consulta_categorias = "SELECT id_cat, tip_cat FROM categoria";
+$resultado_categorias = $con->query($consulta_categorias);
+
 if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
     $id = $_POST['id'];
     $tipo = $_POST['tipo'];
     $precio = $_POST['precio'];
+    $categoria = $_POST['categoria'];
 
     // Check if the photo file is uploaded
     if(isset($_FILES['foto'])) {
@@ -22,10 +27,10 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
     if ($tipo == "") {
         echo '<script>alert ("Hay campos vacios, llena los campos.");</script>';
     } else if ($fila) {
-        echo '<script>alert ("Ese tipo de daño ya esta registrado.");</script>';
+        echo '<script>alert ("Ese tipo de daño ya está registrado.");</script>';
     } else {
-        $insertSQL = $con->prepare("INSERT INTO tipo_daño (id_daño,nombre,precio,foto) VALUES 
-        ('$id','$tipo','$precio', ?)");
+        $insertSQL = $con->prepare("INSERT INTO tipo_daño (id_daño, nombre, precio, id_categoria, foto) VALUES 
+        ('$id', '$tipo', '$precio', '$categoria', ?)");
 
         // Bind photo content to the query
         $insertSQL->bindParam(1, $foto_content, PDO::PARAM_LOB);
@@ -33,7 +38,6 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
         echo '<script>alert ("Tipo de daño registrado exitosamente.");</script>';
         echo '<script>window.location = "../Visualizar/daños.php"</script>';
     }
-
 }
 ?>
 <div class="content-wrapper">
@@ -56,43 +60,55 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                 <!-- /.card-header -->
                 <!-- form start -->
                 <form method="post" name="formreg" enctype="multipart/form-data">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label for="">ID de Daño</label>
-                                    <input type="number" class="form-control" name="id" placeholder="Numero" readonly required>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="">ID de Daño</label>
+                                        <input type="number" class="form-control" name="id" placeholder="Numero" readonly required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="">Nombre</label>
+                                        <input type="text" class="form-control" id="tipo" name="tipo" placeholder="Nombre" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Precio</label>
+                                        <input type="number" class="form-control" id="precio" name="precio" placeholder="Precios" required>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label for="">Categoría</label>
+                                        <select class="form-control" id="categoria" name="categoria" required>
+                                            <option value="">Selecciona una categoría</option>
+                                            <?php
+                                            // Iterar sobre los resultados de la consulta y mostrar las opciones
+                                            while ($fila_categoria = $resultado_categorias->fetch()) {
+                                                echo '<option value="' . $fila_categoria["id_cat"] . '">' . $fila_categoria["tip_cat"] . '</option>';
+                                            }
+                                            ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- File upload field -->
+                                <div class="col-sm-12">
+                                    <div class="form-group">
+                                        <label for="foto">Foto:</label>
+                                        <input type="file" class="form-control-file" name="foto" accept="image/jpeg" required>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Nombre</label>
-                                    <input type="text" class="form-control" id="tipo" name="tipo"
-                                        placeholder="Nombre" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Precio</label>
-                                    <input type="number" class="form-control" id="precio" name="precio"
-                                        placeholder="Precios" required>
-                                </div>
-                            </div>
-                            <!-- File upload field -->
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label for="foto">Foto:</label>
-                                    <input type="file" class="form-control-file" name="foto" accept="image/jpeg" required>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /.card-body -->
+                            <!-- /.card-body -->
 
-                        <div class="card-footer">
-                            <button type="submit" name="inicio" class="btn btn-primary">Crear</button>
-                        </div>
-                        <input type="hidden" name="MM_insert" value="formreg">
-                </form>
+                            <div class="card-footer">
+                                <button type="submit" name="inicio" class="btn btn-primary">Crear</button>
+                            </div>
+                            <input type="hidden" name="MM_insert" value="formreg">
+                    </form>
 
             </div>
         </div>
