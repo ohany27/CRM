@@ -192,3 +192,19 @@ body {
     background-color: #fff;
     border: 2px solid #038edc
 }
+.custom-nav-link .mdi {
+    transition: color 0.3s; /* Transición suave */
+}
+
+.custom-nav-link:hover .mdi {
+    color: red; /* Color del icono al pasar el mouse */
+}
+.perfil {
+    text-decoration: none; /* Quita el subrayado */
+    color: inherit; /* Hereda el color del texto */
+    transition: color 0.3s; /* Transición suave para el cambio de color */
+  }
+  
+  .perfil:hover {
+    color: #038edc; /* Cambia el color a rojo cuando el mouse pasa sobre él */
+  }

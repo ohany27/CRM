@@ -24,7 +24,10 @@
     <div class="card">
         <div class="card-body">
             <div>
-                <h4 class="card-title mb-4">Datos Personales</h4>
+            <h4 class="card-title mb-4"><a class="perfil" href="../Visualizar/perfil.php"><i
+                                        class="mdi mdi-account-circle mdi-18px">
+                                        Datos Personales
+                                    </i></a></h4>
                 <div class="table-responsive">
                     <table class="table table-bordered mb-0">
                         <tbody>

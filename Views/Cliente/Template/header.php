@@ -97,6 +97,10 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                                         class="img-fluid avatar-xxl rounded-circle" alt>
                                     <h4 class="text-primary font-size-20 mt-3 mb-2"><?php echo $_SESSION['usuario']['nombre']; ?></h4>
                                     <h5 class="text-muted font-size-13 mb-0"><?php echo $nombre_tipo_usuario; ?></h5>
+                                    <br>
+                                    <a class="custom-nav-link px-4" href="../../../Config/validarSesion.php?logout=true">
+                                        <i class="mdi mdi-door-open mdi-24px"></i>
+                                    </a>
                                 </div>
                             </div>
                             <div class="col-md-9">
