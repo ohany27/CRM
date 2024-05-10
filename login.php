@@ -66,62 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login_form"])) {
     }
 }
 
-// Manejar el formulario de registro
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["registro_form"])) {
-    // Obtener los datos del formulario
-    $documento = $_POST["documento"];
-    $nombre = $_POST["nombre"];
-    $correo = $_POST["correo"];
-    $password = $_POST["password"];
-    $pin = $_POST["pin"];
-    $telefono = $_POST["telefono"];
-    $direccion = $_POST["direccion"];
 
-    // Obtener automáticamente el nitc de la primera empresa de la tabla empresa
-    $query_empresa = "SELECT nitc FROM empresa LIMIT 1";
-    $stmt_empresa = $pdo->query($query_empresa);
-    $empresa_seleccionada = $stmt_empresa->fetch(PDO::FETCH_ASSOC);
-    $nitc = $empresa_seleccionada['nitc'];
-
-    // Validar campos obligatorios
-    if (empty($documento) || empty($nombre) || empty($correo) || empty($password) || empty($pin) || empty($telefono) || empty($direccion) || empty($nitc)) {
-        echo "<script>alert('Todos los campos son obligatorios.')</script>";
-    } else {
-        // Verificar si ya existe un usuario con el mismo correo, pin o documento
-        $query = "SELECT * FROM usuario WHERE correo = :correo OR pin = :pin OR documento = :documento";
-        $stmt = $pdo->prepare($query);
-        $stmt->execute(array(':correo' => $correo, ':pin' => $pin, ':documento' => $documento));
-
-        // Si se encuentra algún registro, mostrar un mensaje de error
-        if ($stmt->rowCount() > 0) {
-            echo "<script>alert('Correo existente o pin')</script>";
-        } else {
-            // Si no hay registros duplicados, insertar el nuevo usuario
-            // Encriptar la contraseña antes de insertarla en la base de datos
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-            $tipo_usuario = 2;
-
-            $query_insert_user = "INSERT INTO usuario (documento, nombre, correo, password, pin, telefono, direccion, nitc, id_tip_usu) 
-                                VALUES (:documento, :nombre, :correo, :password, :pin, :telefono, :direccion, :nitc, :id_tip_usu)";
-            $stmt_insert_user = $pdo->prepare($query_insert_user);
-            $stmt_insert_user->execute(array(
-                ':documento' => $documento,
-                ':nombre' => $nombre,
-                ':correo' => $correo,
-                ':password' => $hashed_password,
-                ':pin' => $pin,
-                ':telefono' => $telefono,
-                ':direccion' => $direccion,
-                ':nitc' => $nitc,
-                ':id_tip_usu' => $tipo_usuario 
-            ));
-            // Mostrar alerta de registro exitoso
-            echo "<script>alert('Se ha registrado correctamente'); window.location='../crm/Views/Cliente/index.php';</script>";
-            exit(); 
-        }
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -140,18 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["registro_form"])) {
     <div class="container" id="container">
         <div class="form-container sign-up">
             <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
-                <h1>Registrate</h1>
-                <!-- Este input oculto se utiliza para distinguir entre los formularios -->
-                <input type="hidden" name="registro_form" value="1">
-                <!-- Campos del formulario de registro -->
-                <input type="number" id="documento" name="documento"  minlength="9" required placeholder="Documento">
-                <input type="text" id="nombre" name="nombre"  required placeholder="Nombre">
-                <input type="email" id="correo" name="correo"  required placeholder="Correo">
-                <input type="password" id="password" name="password"  pattern="^(?=.*\d)(?=.*[a-zA-Z]).{5,}$" required placeholder="Contraseña">
-                <input type="number" id="pin" name="pin"  pattern="\d{5,}" required placeholder="Pin">
-                <input type="number" id="telefono" name="telefono" minlength="9" required placeholder="Telefono">
-                <input type="text" id="direccion" name="direccion"  required placeholder="Direccion">
-                <button type="submit">Registrarse</button>
+            <img src="Assets/img/correo.jpg" alt="Correo" width="350" height="350">
             </form>
         </div>
 
@@ -173,14 +107,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["registro_form"])) {
         <div class="toggle-container">
             <div class="toggle">
                 <div class="toggle-panel toggle-left">
-                    <h1>Ya Tienes Una Cuenta!</h1>
-                    <p>Inicia sesion y disfruta de todas nuestra funciones</p>
-                    <button class="hidden" id="login">Ingresa</button>
+                    <h1></h1>
+                    <p>"Le recomendamos encarecidamente revisar su bandeja de entrada corporativa, donde encontrará detalles importantes sobre su cuenta temporal, así como las instrucciones precisas para iniciar sesión."</p>
+                    <button class="hidden" id="login">Iniciar Sesión</button>
                 </div>
                 <div class="toggle-panel toggle-right">
                     <h1>Hola amig@!</h1>
-                    <p>Regístrese con tus datos personales para utilizar todas las funciones del sitio</p>
-                    <button class="hidden" id="register">Registrarse</button>
+                    <p>Por favor, inicie sesión para acceder a todas nuestras funciones disponibles y disfrutar de una experiencia completa.</p>
+                    <button class="hidden" id="register">No tienes Cuenta</button>
                 </div>
             </div>
         </div>

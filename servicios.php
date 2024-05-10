@@ -52,19 +52,16 @@
             </div>
             <div class="col-lg-4 text-center text-lg-end">
                 <div class="d-inline-flex align-items-center" style="height: 45px;">
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2"
-                        href="https://twitter.com/?lang=es"><i class="fab fa-twitter fw-normal"></i></a>
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2"
-                        href="https://www.facebook.com/?locale=es_LA"><i class="fab fa-facebook-f fw-normal"></i></a>
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2"
-                        href="https://www.instagram.com/"><i class="fab fa-instagram fw-normal"></i></a>
-                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle"
-                        href="https://www.youtube.com/"><i class="fab fa-youtube fw-normal"></i></a>
+                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" href="https://twitter.com/?lang=es"><i class="fab fa-twitter fw-normal"></i></a>
+                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" href="https://www.facebook.com/?locale=es_LA"><i class="fab fa-facebook-f fw-normal"></i></a>
+                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle me-2" href="https://www.instagram.com/"><i class="fab fa-instagram fw-normal"></i></a>
+                    <a class="btn btn-sm btn-outline-light btn-sm-square rounded-circle" href="https://www.youtube.com/"><i class="fab fa-youtube fw-normal"></i></a>
                 </div>
             </div>
         </div>
     </div>
     <!-- Topbar End -->
+
 
 
     <!-- Navbar Start -->
@@ -79,8 +76,8 @@
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <div class="navbar-nav ms-auto py-0">
                     <a href="index.php" class="nav-item nav-link ">Inicio</a>
-                    <a href="nosotros.php" class="nav-item nav-link ">Nosotros</a>
-                    <a href="servicios.php" class="nav-item nav-link active">Servicios</a>
+                    <a href="nosotros.php" class="nav-item nav-link">Nosotros</a>
+                    <a href="servicios.php" class="nav-item nav-link  active">Servicios</a>
                     <a href="contactanos.php" class="nav-item nav-link ">Contactanos</a>
                 </div>
             </div>
@@ -105,13 +102,11 @@
         <div class="modal-dialog modal-fullscreen">
             <div class="modal-content" style="background: rgba(9, 30, 62, .7);">
                 <div class="modal-header border-0">
-                    <button type="button" class="btn bg-white btn-close" data-bs-dismiss="modal"
-                        aria-label="Close"></button>
+                    <button type="button" class="btn bg-white btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body d-flex align-items-center justify-content-center">
                     <div class="input-group" style="max-width: 600px;">
-                        <input type="text" class="form-control bg-transparent border-primary p-3"
-                            placeholder="Type search keyword">
+                        <input type="text" class="form-control bg-transparent border-primary p-3" placeholder="Type search keyword">
                         <button class="btn btn-primary px-4"><i class="bi bi-search"></i></button>
                     </div>
                 </div>
@@ -119,6 +114,7 @@
         </div>
     </div>
     <!-- Full Screen Search End -->
+
 
     <!-- Service Start -->
     <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
@@ -199,8 +195,7 @@
         <div class="container">
             <div class="row gx-5">
                 <div class="col-lg-4 col-md-6 footer-about">
-                    <div
-                        class="d-flex flex-column align-items-center justify-content-center text-center h-100 bg-primary p-4">
+                    <div class="d-flex flex-column align-items-center justify-content-center text-center h-100 bg-primary p-4">
                         <a href="index.html" class="navbar-brand">
                             <h1 class="m-0 text-white"><i class="fa fa-user-tie me-2"></i>CRM</h1>
                         </a>
@@ -208,8 +203,7 @@
                             noticias y actualizaciones directamente en tu bandeja de entrada!"</p>
                         <form action="">
                             <div class="input-group">
-                                <input type="text" class="form-control border-white p-3"
-                                    placeholder="Correo Electronico">
+                                <input type="text" class="form-control border-white p-3" placeholder="Correo Electronico">
                                 <button class="btn btn-dark">Inscribirse</button>
                             </div>
                         </form>
@@ -234,15 +228,10 @@
                                 <p class="mb-0">+57 310 2552 339</p>
                             </div>
                             <div class="d-flex mt-4">
-                                <a class="btn btn-primary btn-square me-2" href="https://twitter.com/?lang=es"><i
-                                        class="fab fa-twitter fw-normal"></i></a>
-                                <a class="btn btn-primary btn-square me-2"
-                                    href="https://www.facebook.com/?locale=es_LA"><i
-                                        class="fab fa-facebook-f fw-normal"></i></a>
-                                <a class="btn btn-primary btn-square me-2" href="https://co.linkedin.com/"><i
-                                        class="fab fa-linkedin-in fw-normal"></i></a>
-                                <a class="btn btn-primary btn-square" href="https://www.instagram.com/"><i
-                                        class="fab fa-instagram fw-normal"></i></a>
+                                <a class="btn btn-primary btn-square me-2" href="https://twitter.com/?lang=es"><i class="fab fa-twitter fw-normal"></i></a>
+                                <a class="btn btn-primary btn-square me-2" href="https://www.facebook.com/?locale=es_LA"><i class="fab fa-facebook-f fw-normal"></i></a>
+                                <a class="btn btn-primary btn-square me-2" href="https://co.linkedin.com/"><i class="fab fa-linkedin-in fw-normal"></i></a>
+                                <a class="btn btn-primary btn-square" href="https://www.instagram.com/"><i class="fab fa-instagram fw-normal"></i></a>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
@@ -250,14 +239,10 @@
                                 <h3 class="text-light mb-0">Enlaces rápidos</h3>
                             </div>
                             <div class="link-animated d-flex flex-column justify-content-start">
-                                <a class="text-light mb-2" href="index.php"><i
-                                        class="bi bi-arrow-right text-primary me-2"></i>Inicio</a>
-                                <a class="text-light mb-2" href="nosotros.php"><i
-                                        class="bi bi-arrow-right text-primary me-2"></i>Nosotros</a>
-                                <a class="text-light mb-2" href="servicios.php"><i
-                                        class="bi bi-arrow-right text-primary me-2"></i>Servicios</a>
-                                <a class="text-light" href="contactanos.php"><i
-                                        class="bi bi-arrow-right text-primary me-2"></i>Contactanos</a>
+                                <a class="text-light mb-2" href="index.php"><i class="bi bi-arrow-right text-primary me-2"></i>Inicio</a>
+                                <a class="text-light mb-2" href="nosotros.php"><i class="bi bi-arrow-right text-primary me-2"></i>Nosotros</a>
+                                <a class="text-light mb-2" href="servicios.php"><i class="bi bi-arrow-right text-primary me-2"></i>Servicios</a>
+                                <a class="text-light" href="contactanos.php"><i class="bi bi-arrow-right text-primary me-2"></i>Contactanos</a>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-12 pt-0 pt-lg-5 mb-5">
@@ -265,10 +250,8 @@
                                 <h3 class="text-light mb-0">Enlaces populares</h3>
                             </div>
                             <div class="link-animated d-flex flex-column justify-content-start">
-                                <a class="text-light mb-2" href="index.php"><i
-                                        class="bi bi-arrow-right text-primary me-2"></i>Inicio</a>
-                                <a class="text-light" href="contactanos.php"><i
-                                        class="bi bi-arrow-right text-primary me-2"></i>Contactanos</a>
+                                <a class="text-light mb-2" href="index.php"><i class="bi bi-arrow-right text-primary me-2"></i>Inicio</a>
+                                <a class="text-light" href="contactanos.php"><i class="bi bi-arrow-right text-primary me-2"></i>Contactanos</a>
                             </div>
                         </div>
                     </div>
@@ -298,7 +281,7 @@
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="lib/wow/wow.min.js"></script>
+    <script src="Assets/lib/wow/wow.min.js"></script>
     <script src="Assets/lib/easing/easing.min.js"></script>
     <script src="Assets/lib/waypoints/waypoints.min.js"></script>
     <script src="Assets/lib/counterup/counterup.min.js"></script>
