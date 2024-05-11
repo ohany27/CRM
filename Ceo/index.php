@@ -96,7 +96,7 @@
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-users"></i>
                 <p>
-                  Usuarios
+                Administradores
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
@@ -115,28 +115,6 @@
                 </li>
               </ul>
             </li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-user-tag"></i>
-                <p>
-                  Roles
-                  <i class="right fas fa-angle-left"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="Visualizar/roles.php" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Visualzar</p>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="Crear/roles.php" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Crear</p>
-                  </a>
-                </li>
-              </ul>
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-clipboard-check"></i>
@@ -231,9 +209,9 @@
                   <p>Empresas</p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-bag"></i>
+                  <i class="fab fa-wpforms"></i>
                 </div>
-                <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+                
               </div>
             </div>
             <!-- ./col -->
@@ -246,9 +224,9 @@
                   <p>Administradores activos </p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-stats-bars"></i>
+                  <i class="fas fa-user-lock"></i>
                 </div>
-                <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+                
               </div>
             </div>
             <!-- ./col -->
@@ -261,9 +239,9 @@
                   <p>Estados </p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-person-add"></i>
+                  <i class="	fas fa-calendar-check"></i>
                 </div>
-                <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+                
               </div>
             </div>
 
@@ -278,9 +256,9 @@
                   <p>Licencias</p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-pie-graph"></i>
+                  <i class="fab fa-soundcloud"></i>
                 </div>
-                <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+              
               </div>
             </div>
             <!-- ./col -->

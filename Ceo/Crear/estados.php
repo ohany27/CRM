@@ -1,6 +1,6 @@
 <?php include "../Template/header.php"; ?>
 <?php
-require_once("../../../Config/conexion.php");
+require_once("../../Config/conexion.php");
 $conexion = new Database();
 $con = $conexion->conectar();
 
@@ -71,4 +71,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     </section>
 </div>
+<script>
+    document.querySelector('input[name="nuevo_estado"]').addEventListener('input', function () {
+        var nombreValue = this.value;
+        
+        // Verificar si el nombre solo contiene letras y permite la letra "ñ"
+        if (/^[A-Za-zñÑ\s]{3,}$/.test(nombreValue) && !/[.]/.test(nombreValue)) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('El nombre debe contener minimo 3 letras, no se permite signos de puntuacion.');
+        }
+    });
+</script>
 <?php include "../Template/footer.php"; ?>

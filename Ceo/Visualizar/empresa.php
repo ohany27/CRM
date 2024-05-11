@@ -45,10 +45,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute([':nombre' => $nombre]);
         $existingNombre = $stmt->fetch();
 
+        // Verificar si ya existe un registro con el mismo teléfono
+        $stmt = $pdo->prepare("SELECT * FROM empresa WHERE telefono = :telefono");
+        $stmt->execute([':telefono' => $telefono]);
+        $existingTelefono = $stmt->fetch();
+
         if ($existingNitc) {
             echo "<script>alert('Ya existe una empresa con este NITC.')</script>";
         } elseif ($existingNombre) {
             echo "<script>alert('Ya existe una empresa con este nombre.')</script>";
+        } elseif ($existingTelefono) {
+            echo "<script>alert('Ya existe una empresa con este teléfono.')</script>";
         } else {
             // Insertar datos en la base de datos
             $sql = "INSERT INTO empresa (nitc, nombre, direccion, telefono) VALUES (:nitc, :nombre, :direccion, :telefono)";
@@ -97,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="nitc" class="form-label">NIT:</label>
-                                    <input type="number" class="form-control" id="nitc" name="nitc" pattern="[0-9]*"
+                                    <input type="number" class="form-control" id="nitc" name="nitc" 
                                         title="Ingrese solo números" required>
                                 </div>
                             </div>
@@ -122,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Generar Empresa</button>
+                        <button type="submit" class="btn btn-primary">Crear Empresa</button>
                     </form>
                     <br>
                     <table id="example1" class="table table-bordered table-striped">
@@ -143,7 +150,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <td><?php echo $empresa['direccion']; ?></td>
                                     <td><?php echo $empresa['telefono']; ?></td>
                                     <td class="project-actions text-center">
-                                        <a href="Acciones/actualizar.php?nitc=<?php echo $empresa['nitc']; ?>"
+                                        <a href="../Editar/empresa.php?nitc=<?php echo $empresa['nitc']; ?>"
                                             class="btn btn-info btn-sm" href="#">
                                             <i class="fas fa-pencil-alt">
                                             </i>
@@ -166,4 +173,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </section>
 </div>
+<script>
+    document.getElementById('nitc').addEventListener('input', function () {
+        var nitValue = this.value;
+        var nitLength = nitValue.length;
+        
+        // Verificar 
+        if (nitLength >= 7 && nitLength <= 10 && /^\d+$/.test(nitValue) && !/[.,]/.test(nitValue)) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('El NIT debe tener entre 7 y 10 dígitos, no se permite signos de puntuacion.');
+        }
+    });
+    document.getElementById('nombre').addEventListener('input', function () {
+        var nombreValue = this.value;
+        
+        // Verificar 
+        if (/^[A-Za-zñÑ\s]{3,}$/.test(nombreValue) && !/[.]/.test(nombreValue)) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('El nombre debe contener minimo 3 letras, no se permite signos de puntuacion.');
+        }
+    });
+    document.getElementById('telefono').addEventListener('input', function () {
+        var telefonoValue = this.value;
+        
+        // Verificar 
+        if (/^\d{10}$/.test(telefonoValue) && !/[.]/.test(telefonoValue)) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('El teléfono debe contener exactamente 10 dígitos 57+.');
+        }
+    });
+</script>
 <?php include "../Template/footer.php"; ?>

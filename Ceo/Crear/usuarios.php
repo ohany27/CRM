@@ -1,67 +1,73 @@
-<?php include "../Template/header.php"; ?>
 <?php
-require_once ("../../Config/conexion.php");
+include "../Template/header.php";
+require_once("../../Config/conexion.php");
+
 $Conexion = new Database;
 $con = $Conexion->conectar();
-
-// Assign PDO object to $pdo
 $pdo = $con;
 
-// Inicializar mensaje de error
 $error = '';
 
-// Verificar si se ha enviado el formulario de registro
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obtener los datos del formulario
     $documento = $_POST["documento"];
     $nombre = $_POST["nombre"];
     $correo = $_POST["correo"];
-    $password = $_POST["password"];
-    $pin = $_POST["pin"];
     $telefono = $_POST["telefono"];
     $direccion = $_POST["direccion"];
     $nitc = $_POST["nitc"];
     $id_tip_usu = $_POST["id_tip_usu"];
 
-    // Validar campos obligatorios
-    if (empty($documento) || empty($nombre) || empty($correo) || empty($password) || empty($pin) || empty($telefono) || empty($direccion) || empty($nitc) || empty($id_tip_usu)) {
+    if (empty($documento) || empty($nombre) || empty($correo) || empty($telefono) || empty($direccion) || empty($nitc) || empty($id_tip_usu)) {
         echo "<script>alert('Todos los campos son obligatorios.')</script>";
     } else {
-        // Verificar si ya existe un usuario con el mismo correo, pin o documento
-        $query = "SELECT * FROM usuario WHERE correo = :correo OR pin = :pin OR documento = :documento";
-        $stmt = $pdo->prepare($query);
-        $stmt->execute(array(':correo' => $correo, ':pin' => $pin, ':documento' => $documento));
+        $password = generarContraseñaAleatoria();
+        $pin = generarPinAleatorio();
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-        // Si se encuentra algún registro, mostrar un mensaje de error
-        if ($stmt->rowCount() > 0) {
-            echo "<script>alert('Correo existente o pin')</script>";
+        $query_insert_user = "INSERT INTO usuario (documento, nombre, correo, password, pin, telefono, direccion, nitc, id_tip_usu, id_estado) 
+                                VALUES (:documento, :nombre, :correo, :password, :pin, :telefono, :direccion, :nitc, :id_tip_usu, 1)";
+        $stmt_insert_user = $pdo->prepare($query_insert_user);
+        $stmt_insert_user->execute(
+            array(
+                ':documento' => $documento,
+                ':nombre' => $nombre,
+                ':correo' => $correo,
+                ':password' => $hashed_password,
+                ':pin' => $pin,
+                ':telefono' => $telefono,
+                ':direccion' => $direccion,
+                ':nitc' => $nitc,
+                ':id_tip_usu' => $id_tip_usu
+            )
+        );
+
+        $mensaje = "Estimado/a $nombre,\n\nHemos generado una contraseña segura para tu cuenta en CRM. Por favor, utiliza la siguiente contraseña para iniciar sesión:\n\nContraseña: $password\n\n Recuerda que esta es una contraseña temporal y te recomendamos cambiarla tan pronto como inicies sesión. Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.\n\nAtentamente,\nEquipo de Soporte Cloud Chasers";
+        $asunto = "Confirmacion Usuario - Cloud Chasers";
+        $headers = "From: Soporte Cloud Chasers <soporte@cloudchasers.com>\r\n";
+
+        if (mail($correo, $asunto, $mensaje, $headers)) {
+            echo "<script>alert('Administrador creado'); window.location='../Visualizar/usuarios.php';</script>";
         } else {
-            // Si no hay registros duplicados, insertar el nuevo usuario
-            // Encriptar la contraseña antes de insertarla en la base de datos
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-            $query_insert_user = "INSERT INTO usuario (documento, nombre, correo, password, pin, telefono, direccion, nitc, id_tip_usu) 
-                                VALUES (:documento, :nombre, :correo, :password, :pin, :telefono, :direccion, :nitc, :id_tip_usu)";
-            $stmt_insert_user = $pdo->prepare($query_insert_user);
-            $stmt_insert_user->execute(
-                array(
-                    ':documento' => $documento,
-                    ':nombre' => $nombre,
-                    ':correo' => $correo,
-                    ':password' => $hashed_password,
-                    ':pin' => $pin,
-                    ':telefono' => $telefono,
-                    ':direccion' => $direccion,
-                    ':nitc' => $nitc,
-                    ':id_tip_usu' => $id_tip_usu
-                )
-            );
-
-            // Mostrar alerta de registro exitoso
-            echo "<script>alert('Usuario creado'); window.location='../Visualizar/usuarios.php';</script>";
-            exit();
+            echo "<script>alert('No se logró enviar el mensaje a su destino.'); window.location.href='../Visualizar/usuarios.php';</script>";
         }
     }
+}
+
+function generarContraseñaAleatoria($longitud = 10) {
+    $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $contraseña = '';
+    for ($i = 0; $i < $longitud; $i++) {
+        $contraseña .= $caracteres[rand(0, strlen($caracteres) - 1)];
+    }
+    return $contraseña;
+}
+
+function generarPinAleatorio($longitud = 4) {
+    $pin = '';
+    for ($i = 0; $i < $longitud; $i++) {
+        $pin .= rand(0, 9);
+    }
+    return $pin;
 }
 ?>
 <div class="content-wrapper">
@@ -105,20 +111,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <label for="">Correo</label>
                                     <input type="text" class="form-control" id="correo" name="correo"
                                         placeholder="Correo-Electronico" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Contraseña</label>
-                                    <input type="password" class="form-control" id="password" name="password"
-                                        placeholder="Password" pattern="^(?=.*\d)(?=.*[a-zA-Z]).{5,}$" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Pin</label>
-                                    <input type="number" class="form-control" id="pin" name="pin" placeholder="Pin"
-                                        pattern="\d{5,}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">

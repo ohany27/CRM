@@ -32,7 +32,7 @@ $con = $DataBase->conectar();
                         </thead>
                         <tbody>
                             <?php
-                            $consulta = "SELECT * FROM estado";
+                            $consulta = "SELECT * FROM estado WHERE estado.id_est <= 2";
 
                             $resultado = $con->query($consulta);
                             while ($fila = $resultado->fetch()) {
@@ -45,11 +45,6 @@ $con = $DataBase->conectar();
                                 <i class="fas fa-pencil-alt">
                                 </i>
                                 Editar
-                            </a>
-                            <a  href="../Eliminar/estados.php?id=' . $fila["id_est"] . '" class="btn btn-danger btn-sm" href="#">
-                                <i class="fas fa-trash">
-                                </i>
-                                Eliminar
                             </a>
                         </td>
                 </tr>';

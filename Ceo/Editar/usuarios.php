@@ -1,6 +1,6 @@
 <?php include "../Template/header.php"; ?>
 <?php
-require_once ("../../../Config/conexion.php");
+require_once ("../../Config/conexion.php");
 $conexion = new Database();
 $con = $conexion->conectar();
 
