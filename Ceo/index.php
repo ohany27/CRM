@@ -221,7 +221,7 @@
                 <div class="inner">
                   <h3>53</h3>
 
-                  <p>Administradores activos </p>
+                  <p>Administradores </p>
                 </div>
                 <div class="icon">
                   <i class="fas fa-user-lock"></i>
@@ -253,7 +253,7 @@
                 <div class="inner">
                   <h3>65</h3>
 
-                  <p>Licencias</p>
+                  <p>Licencias Activas</p>
                 </div>
                 <div class="icon">
                   <i class="fab fa-soundcloud"></i>

@@ -23,14 +23,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         try {
             $pdo->beginTransaction();
 
-            // Verificar si hay alguna licencia activa con estado = 1
-            $query_verificar = "SELECT COUNT(*) as count FROM licencia WHERE estado = 1";
+            // Verificar si hay una licencia activa con estado = 1 para el mismo NIT
+            $query_verificar = "SELECT COUNT(*) as count FROM licencia WHERE nitc = :nitc AND estado = 1";
             $statement_verificar = $pdo->prepare($query_verificar);
-            $statement_verificar->execute();
+            $statement_verificar->execute(array('nitc' => $nit));
             $resultado_verificar = $statement_verificar->fetch(PDO::FETCH_ASSOC);
 
             if ($resultado_verificar['count'] > 0) {
-                echo "<script>alert('Ya existe una licencia activa en el sistema.');</script>";
+                echo "<script>alert('Ya existe una licencia activa para este NIT en el sistema.');</script>";
             } else {
                 $query = "INSERT INTO licencia (licencia, nitc, estado, fecha_inicial, fecha_final) VALUES (:licencia, :nitc, :estado, :fecha_inicial, :fecha_final)";
                 $statement = $pdo->prepare($query);
@@ -62,7 +62,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $database = new Database();
 $pdo = $database->conectar();
-$query_licencias = "SELECT licencia, nitc, estado, fecha_inicial, fecha_final FROM licencia";
+$query_licencias = "SELECT l.licencia, e.nombre as nombre_empresa, es.tip_est as estado, l.fecha_inicial, l.fecha_final 
+                    FROM licencia l
+                    JOIN empresa e ON l.nitc = e.nitc
+                    JOIN estado es ON l.estado = es.id_est";
 $statement_licencias = $pdo->prepare($query_licencias);
 $statement_licencias->execute();
 $licencias = $statement_licencias->fetchAll(PDO::FETCH_ASSOC);
@@ -132,7 +135,7 @@ $licencias = $statement_licencias->fetchAll(PDO::FETCH_ASSOC);
                             <?php foreach ($licencias as $licencia): ?>
                                 <tr>
                                     <td><?php echo $licencia['licencia']; ?></td>
-                                    <td><?php echo $licencia['nitc']; ?></td>
+                                    <td><?php echo $licencia['nombre_empresa']; ?></td>
                                     <td><?php echo $licencia['estado']; ?></td>
                                     <td><?php echo $licencia['fecha_inicial']; ?></td>
                                     <td><?php echo $licencia['fecha_final']; ?></td>
@@ -146,14 +149,5 @@ $licencias = $statement_licencias->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </section>
 </div>
-<script>
-    // Obtener el valor de la licencia generada en PHP
-    var licencia = "<?php echo $licencia; ?>";
 
-    // Generar el código de barras utilizando jsBarcode
-    JsBarcode("#barcode", licencia, {
-        format: "CODE128", // Puedes ajustar el formato según tus necesidades
-        displayValue: true // Mostrar el valor de la licencia debajo del código de barras
-    });
-</script>
 <?php include "../Template/footer.php"; ?>

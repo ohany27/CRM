@@ -1,6 +1,6 @@
 <?php
 include "../Template/header.php";
-require_once("../../Config/conexion.php");
+require_once ("../../Config/conexion.php");
 
 $Conexion = new Database;
 $con = $Conexion->conectar();
@@ -17,8 +17,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nitc = $_POST["nitc"];
     $id_tip_usu = $_POST["id_tip_usu"];
 
-    if (empty($documento) || empty($nombre) || empty($correo) || empty($telefono) || empty($direccion) || empty($nitc) || empty($id_tip_usu)) {
-        echo "<script>alert('Todos los campos son obligatorios.')</script>";
+    // Verificar si el documento, correo o teléfono ya existen en la base de datos
+    $query_verificar = "SELECT * FROM usuario WHERE documento = :documento OR correo = :correo OR telefono = :telefono";
+    $stmt_verificar = $pdo->prepare($query_verificar);
+    $stmt_verificar->execute(array(':documento' => $documento, ':correo' => $correo, ':telefono' => $telefono));
+    $existe_registro = $stmt_verificar->fetch();
+
+    if ($existe_registro) {
+        echo "<script>alert('Ya existe un usuario con el mismo documento, correo o teléfono.')</script>";
     } else {
         $password = generarContraseñaAleatoria();
         $pin = generarPinAleatorio();
@@ -53,7 +59,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-function generarContraseñaAleatoria($longitud = 10) {
+function generarContraseñaAleatoria($longitud = 10)
+{
     $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
     $contraseña = '';
     for ($i = 0; $i < $longitud; $i++) {
@@ -62,7 +69,8 @@ function generarContraseñaAleatoria($longitud = 10) {
     return $contraseña;
 }
 
-function generarPinAleatorio($longitud = 4) {
+function generarPinAleatorio($longitud = 4)
+{
     $pin = '';
     for ($i = 0; $i < $longitud; $i++) {
         $pin .= rand(0, 9);
@@ -96,7 +104,7 @@ function generarPinAleatorio($longitud = 4) {
                                 <div class="form-group">
                                     <label for="">Documento</label>
                                     <input type="number" class="form-control" id="documento" name="documento"
-                                        placeholder="Documento" minlength="9" required>
+                                        placeholder="Documento"  required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -109,7 +117,7 @@ function generarPinAleatorio($longitud = 4) {
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">Correo</label>
-                                    <input type="text" class="form-control" id="correo" name="correo"
+                                    <input type="email" class="form-control" id="correo" name="correo"
                                         placeholder="Correo-Electronico" required>
                                 </div>
                             </div>
@@ -117,7 +125,7 @@ function generarPinAleatorio($longitud = 4) {
                                 <div class="form-group">
                                     <label for="">Telefono</label>
                                     <input type="number" class="form-control" id="telefono" name="telefono"
-                                        placeholder="Telefono" pattern="\d{9,}" required>
+                                        placeholder="Telefono"  required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -139,9 +147,14 @@ function generarPinAleatorio($longitud = 4) {
                                                         placeholder="Nitc:" required>
                                                         <option value="">Seleccione_Empresa</option>
                                                         <?php
-                                                        // Obtener las empresas
-                                                        $query_empresas = "SELECT * FROM empresa";
+                                                        // Consulta SQL para obtener las empresas que tengan un estado = 1 en la tabla licencia
+                                                        $query_empresas = "SELECT empresa.nitc, empresa.nombre 
+                                                            FROM empresa 
+                                                            INNER JOIN licencia ON empresa.nitc = licencia.nitc 
+                                                            WHERE licencia.estado = 1";
+                                                        // Ejecutar la consulta
                                                         $stmt_empresas = $con->query($query_empresas);
+                                                        // Iterar sobre los resultados y generar las opciones del menú desplegable
                                                         while ($row_empresas = $stmt_empresas->fetch(PDO::FETCH_ASSOC)) {
                                                             echo "<option value='" . $row_empresas['nitc'] . "'>" . $row_empresas['nombre'] . "</option>";
                                                         }
@@ -160,13 +173,17 @@ function generarPinAleatorio($longitud = 4) {
                                         <div class="input-group">
                                             <div class="custom-file">
                                                 <label for="id_tip_usu">
-                                                    <select class="form-control"  id="id_tip_usu" name="id_tip_usu" placeholder="rol:"
-                                                        required>
+                                                    <select class="form-control" id="id_tip_usu" name="id_tip_usu"
+                                                        placeholder="rol:" required>
                                                         <option value="">Seleccione_Rol</option>
                                                         <?php
-                                                        // Obtener los roles
-                                                        $query_roles = "SELECT * FROM roles";
+                                                        // Consulta SQL para obtener los roles que tengan un id_tip_usu igual o menor a 1
+                                                        $query_roles = "SELECT * FROM roles WHERE id_tip_usu <= 1";
+
+                                                        // Ejecutar la consulta
                                                         $stmt_roles = $con->query($query_roles);
+
+                                                        // Iterar sobre los resultados y generar las opciones del menú desplegable
                                                         while ($row_roles = $stmt_roles->fetch(PDO::FETCH_ASSOC)) {
                                                             echo "<option value='" . $row_roles['id_tip_usu'] . "'>" . $row_roles['tip_usu'] . "</option>";
                                                         }
@@ -190,4 +207,43 @@ function generarPinAleatorio($longitud = 4) {
         </div>
     </section>
 </div>
+<script>
+    document.getElementById('documento').addEventListener('input', function () {
+        var documentoValue = this.value;
+        
+        // Verificar si el documento tiene entre 7 y 11 números
+        if (/^\d{7,11}$/.test(documentoValue)) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('El documento debe tener entre 7 y 11 números.');
+        }
+    });
+
+    document.getElementById('nombre').addEventListener('input', function () {
+        var nombreValue = this.value;
+        
+        // Verificar si el nombre tiene al menos 3 letras y no contiene puntos
+        if (/^[A-Za-zñÑ\s]{3,}$/.test(nombreValue) && !/[.]/.test(nombreValue)) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('El nombre debe contener al menos 3 letras y no se permiten signos de puntuación.');
+        }
+    });
+
+    document.getElementById('telefono').addEventListener('input', function () {
+        var telefonoValue = this.value;
+        
+        // Verificar si el teléfono tiene 10 números
+        if (/^\d{10}$/.test(telefonoValue)) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('El teléfono debe tener 10 números.');
+        }
+    });
+</script>
+
+
+
+
+
 <?php include "../Template/footer.php"; ?>
