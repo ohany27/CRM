@@ -25,18 +25,43 @@ $con = $DataBase->conectar();
           <table id="example1" class="table table-bordered table-striped">
             <thead>
               <tr>
-                <th>Llamada</th>
-                <th>Codigo Ticket</th> 
-                <th>Fecha</th>
-                <th>Hora</th>
-                <th>Nombre</th>
+                <th>N° de Llamada</th>
+                <th>N° de Ticket</th> 
+                <th>Fecha finalizado</th>
+                <th>Cliente</th>
                 <th>Documento</th>
                 <th>Tipo de Problema</th>
+                <th>Descripcion</th>
                 <th>Estado</th>
               </tr>
             </thead>
             <tbody>
-            <!-- Cuerpo -->
+            <?php
+            // Consulta de Empleados
+            $consulta = "SELECT * FROM detalle_ticket, ticket, llamadas, usuario, tipo_daño, estado
+            WHERE detalle_ticket.id_ticket = ticket.id_ticket 
+            AND ticket.id_llamada = llamadas.id_llamada
+            AND ticket.id_estado = estado.id_est
+            AND llamadas.id_daño = tipo_daño.id_daño
+            AND llamadas.documento = usuario.documento
+            AND ticket.id_estado = 5 ";
+            $resultado = $con->query($consulta);
+
+            while ($fila = $resultado->fetch()) {
+                echo '
+                <tr>
+                    <td>' . $fila["id_llamada"] . '</td>
+                    <td>' . $fila["id_ticket"] . '</td>
+                    <td>' . $fila["fecha"] . '</td>
+                    <td>' . $fila["nombre"] . '</td>
+                    <td>' . $fila["documento"] . '</td>
+                    <td>' . $fila["nombredano"] . '</td>
+                    <td>' . $fila["descripcion"] . '</td>
+                    <td>' . $fila["tip_est"] . '</td>
+                </tr>';
+            }
+            ?>
+        </tbody>
             </tbody>
           </table>
         </div>

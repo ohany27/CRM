@@ -3,6 +3,25 @@ include "../Template/header.php";
 require_once ("../../Config/conexion.php");
 $DataBase = new Database;
 $con = $DataBase->conectar();
+
+// Consulta para obtener las llamadas de software con id_est = 4
+$consulta_software = "SELECT llamadas.*, tipo_daño.nombredano AS tipo_daño_nombre, usuario.nombre AS nombre_usuario 
+                      FROM llamadas 
+                      INNER JOIN tipo_daño ON llamadas.id_daño = tipo_daño.id_daño 
+                      INNER JOIN categoria ON tipo_daño.id_categoria = categoria.id_cat 
+                      INNER JOIN usuario ON llamadas.documento = usuario.documento
+                      WHERE categoria.tip_cat = 'SOFTWARE' AND llamadas.id_est = 3";
+$resultado_software = $con->query($consulta_software);
+
+// Consulta para obtener las llamadas de hardware con id_est = 4
+$consulta_hardware = "SELECT llamadas.*, tipo_daño.nombredano AS tipo_daño_nombre, usuario.nombre AS nombre_usuario 
+                      FROM llamadas 
+                      INNER JOIN tipo_daño ON llamadas.id_daño = tipo_daño.id_daño 
+                      INNER JOIN categoria ON tipo_daño.id_categoria = categoria.id_cat 
+                      INNER JOIN usuario ON llamadas.documento = usuario.documento
+                      WHERE categoria.tip_cat = 'HARDWARE' AND llamadas.id_est = 3";
+$resultado_hardware = $con->query($consulta_hardware);
+
 ?>
 
 <!DOCTYPE html>
@@ -36,21 +55,19 @@ $con = $DataBase->conectar();
             </div>
             <div class="card-body">
               <ul class="recent-posts">
+                <?php while ($fila = $resultado_software->fetch(PDO::FETCH_ASSOC)): ?>
                   <li>
-                    <a href="llamada.php">
-                      <div class="article-post"> <span class="user-info"> <span>By:</span> Ohany Garcia / <span>Fecha:</span> 12 Jun 2024 / <span>Hora:</span> 09:27 AM </span>
-                        <p>Tipo de Daño</p>
+                      <div class="article-post">
+                        <p>Llamada N°<?php echo $fila['id_llamada']; ?></p>
+                        <button class="btn btn-primary float-right"><a href="crear_ticket.php?id_llamada=<?php echo $fila['id_llamada']; ?>&fecha_inicio=<?php echo date('Y-m-d H:i:s'); ?>">Empezar llamada</a></button>
+                        <span class="user-info">
+                          <span>By:</span> <?php echo $fila['nombre_usuario']; ?> /
+                          <span>Fecha:</span> <?php echo $fila['fecha']; ?> 
+                        <p><?php echo $fila['tipo_daño_nombre']; ?></p>
                       </div>
-                    </a>
                   </li>
-                  <li>
-                    <a href="llamada.php">
-                      <div class="article-post"> <span class="user-info"> <span>By:</span> Ohany Garcia / <span>Fecha:</span> 12 Jun 2024 / <span>Hora:</span> 09:27 AM </span>
-                        <p>Tipo de Daño</p>
-                      </div>
-                    </a>
-                  </li>
-                </ul>
+                <?php endwhile; ?>
+              </ul>
             </div>
           </div>
         </div>
@@ -61,20 +78,18 @@ $con = $DataBase->conectar();
             </div>
             <div class="card-body">
               <ul class="recent-posts">
-                <li>
-                  <a href="llamada.php">
-                    <div class="article-post"> <span class="user-info"> <span>By:</span> Ohany Garcia / <span>Fecha:</span> 12 Jun 2024 / <span>Hora:</span> 09:27 AM </span>
-                      <p>Tipo de Daño</p>
-                    </div>
-                  </a>
-                </li>
-                <li>
-                  <a href="llamada.php">
-                    <div class="article-post"> <span class="user-info"> <span>By:</span> Ohany Garcia / <span>Fecha:</span> 12 Jun 2024 / <span>Hora:</span> 09:27 AM </span>
-                      <p>Tipo de Daño</p>
-                    </div>
-                  </a>
-                </li>
+                <?php while ($fila = $resultado_hardware->fetch(PDO::FETCH_ASSOC)): ?>
+                  <li>
+                      <div class="article-post">
+                        <p>Llamada N°<?php echo $fila['id_llamada']; ?></p>
+                        <button class="btn btn-primary float-right" onclick="actualizarEstado(<?php echo $fila['id_llamada']; ?>)">Empezar llamada</button>
+                        <span class="user-info">
+                          <span>By:</span> <?php echo $fila['nombre_usuario']; ?>  /
+                          <span>Fecha:</span> <?php echo $fila['fecha']; ?> 
+                        <p><?php echo $fila['tipo_daño_nombre']; ?></p>
+                      </div>
+                  </li>
+                <?php endwhile; ?>
               </ul>
             </div>
           </div>
@@ -85,6 +100,8 @@ $con = $DataBase->conectar();
 </div>
 
 <?php include "../Template/footer.php"; ?>
+
+<script src="../dist/js/sol_curso.js"></script>
 
 </body>
 </html>

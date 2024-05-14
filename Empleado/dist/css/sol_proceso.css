@@ -10,6 +10,12 @@
     color: #333; 
 }
 
+.recent-posts li button a {
+    text-decoration: none; 
+    color: #ffffff; 
+}
+
+
 .user-info span {
     font-weight: bold; 
 }
@@ -17,3 +23,4 @@
 .article-post p {
     color: #007bff; 
 }
+

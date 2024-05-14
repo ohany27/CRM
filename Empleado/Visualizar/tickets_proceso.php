@@ -25,19 +25,17 @@ $con = $DataBase->conectar();
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                            <th>Codigo Ticket</th> 
-                            <th>Fecha Inicio</th>
-                            <th>Fecha Final</th>
-                            <th>Nombre Tecnico</th>
-                            <th>Nombre Cliente</th>
-                            <th>Tipo de Problema</th>
+                            <th>N° de Llamada</th>
+                            <th>N° de Ticket</th> 
+                            <th>Cliente</th>
+                            <th>Documento</th>
                             <th>Direccion</th>
+                            <th>Tipo de Problema</th>
                             <th>Urgencia</th>
                             <th>Estado</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            
+                        <tbody>     
                         </tbody>
                     </table>
                 </div>
