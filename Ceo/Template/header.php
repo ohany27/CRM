@@ -128,6 +128,30 @@
             </li>
             <li class="nav-item">
               <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-user-tag"></i>
+                <p>
+                  Roles
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="../Visualizar/roles.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Visualizar</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="../Crear/roles.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Crear</p>
+                  </a>
+                </li>
+              </ul>
+              </li>
+              <li class="nav-header">Clasificacion</li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-clipboard-check"></i>
                 <p>
                   Estados
@@ -148,6 +172,30 @@
                   </a>
                 </li>
               </ul>
+              </li>
+              <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-folder-open"></i>
+                <p>
+                  Categorias
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="../Visualizar/categorias.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Visualizar</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="../Crear/categorias.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Crear</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
             <li class="nav-header">Empresas</li>
             <li class="nav-item">
               <a href="#" class="nav-link">

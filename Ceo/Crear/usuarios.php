@@ -17,6 +17,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nitc = $_POST["nitc"];
     $id_tip_usu = $_POST["id_tip_usu"];
 
+    // Verificar si ya existe un administrador para la empresa
+    if ($id_tip_usu == 1) {
+        $query_verificar_admin = "SELECT * FROM usuario WHERE id_tip_usu = 1 AND nitc = :nitc";
+        $stmt_verificar_admin = $pdo->prepare($query_verificar_admin);
+        $stmt_verificar_admin->execute(array(':nitc' => $nitc));
+        $existe_admin = $stmt_verificar_admin->fetch();
+
+        if ($existe_admin) {
+            echo "<script>alert('Ya existe un administrador para esta empresa.');window.location='../Visualizar/usuarios.php';</script>";
+            exit();
+        }
+    }
+
     // Verificar si el documento, correo o teléfono ya existen en la base de datos
     $query_verificar = "SELECT * FROM usuario WHERE documento = :documento OR correo = :correo OR telefono = :telefono";
     $stmt_verificar = $pdo->prepare($query_verificar);
@@ -72,7 +85,7 @@ function generarContraseñaAleatoria($longitud = 10)
 function generarPinAleatorio($longitud = 4)
 {
     $pin = '';
-    for ($i = 0; $i < $longitud; $i++) {
+    for ($i = 0; $longitud > $i; $i++) {
         $pin .= rand(0, 9);
     }
     return $pin;
@@ -104,7 +117,7 @@ function generarPinAleatorio($longitud = 4)
                                 <div class="form-group">
                                     <label for="">Documento</label>
                                     <input type="number" class="form-control" id="documento" name="documento"
-                                        placeholder="Documento"  required>
+                                        placeholder="Documento" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -125,7 +138,7 @@ function generarPinAleatorio($longitud = 4)
                                 <div class="form-group">
                                     <label for="">Telefono</label>
                                     <input type="number" class="form-control" id="telefono" name="telefono"
-                                        placeholder="Telefono"  required>
+                                        placeholder="Telefono" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -138,61 +151,51 @@ function generarPinAleatorio($longitud = 4)
 
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="nitc">
-                                        <label for="">Empresas</label>
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <label for="nitc">
-                                                    <select id="nitc" class="form-control" name="nitc"
-                                                        placeholder="Nitc:" required>
-                                                        <option value="">Seleccione_Empresa</option>
-                                                        <?php
-                                                        // Consulta SQL para obtener las empresas que tengan un estado = 1 en la tabla licencia
-                                                        $query_empresas = "SELECT empresa.nitc, empresa.nombre 
-                                                            FROM empresa 
-                                                            INNER JOIN licencia ON empresa.nitc = licencia.nitc 
-                                                            WHERE licencia.estado = 1";
-                                                        // Ejecutar la consulta
-                                                        $stmt_empresas = $con->query($query_empresas);
-                                                        // Iterar sobre los resultados y generar las opciones del menú desplegable
-                                                        while ($row_empresas = $stmt_empresas->fetch(PDO::FETCH_ASSOC)) {
-                                                            echo "<option value='" . $row_empresas['nitc'] . "'>" . $row_empresas['nombre'] . "</option>";
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                </label>
-                                            </div>
+                                    <label for="nitc">Empresas</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <select id="nitc" class="form-control" name="nitc" required>
+                                                <option value="">Seleccione_Empresa</option>
+                                                <?php
+                                                // Consulta SQL para obtener las empresas que tengan un estado = 1 en la tabla licencia
+                                                $query_empresas = "SELECT empresa.nitc, empresa.nombre 
+                                                    FROM empresa 
+                                                    INNER JOIN licencia ON empresa.nitc = licencia.nitc 
+                                                    WHERE licencia.estado = 1";
+                                                // Ejecutar la consulta
+                                                $stmt_empresas = $con->query($query_empresas);
+                                                // Iterar sobre los resultados y generar las opciones del menú desplegable
+                                                while ($row_empresas = $stmt_empresas->fetch(PDO::FETCH_ASSOC)) {
+                                                    echo "<option value='" . $row_empresas['nitc'] . "'>" . $row_empresas['nombre'] . "</option>";
+                                                }
+                                                ?>
+                                            </select>
                                         </div>
-                                    </label>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="nitc">
-                                        <label for="">Rol</label>
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <label for="id_tip_usu">
-                                                    <select class="form-control" id="id_tip_usu" name="id_tip_usu"
-                                                        placeholder="rol:" required>
-                                                        <option value="">Seleccione_Rol</option>
-                                                        <?php
-                                                        // Consulta SQL para obtener los roles que tengan un id_tip_usu igual o menor a 1
-                                                        $query_roles = "SELECT * FROM roles WHERE id_tip_usu <= 1";
+                                    <label for="id_tip_usu">Rol</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <select class="form-control" id="id_tip_usu" name="id_tip_usu" required>
+                                                <option value="">Seleccione_Rol</option>
+                                                <?php
+                                                // Consulta SQL para obtener los roles que tengan un id_tip_usu igual o menor a 1
+                                                $query_roles = "SELECT * FROM roles WHERE id_tip_usu <= 1";
 
-                                                        // Ejecutar la consulta
-                                                        $stmt_roles = $con->query($query_roles);
+                                                // Ejecutar la consulta
+                                                $stmt_roles = $con->query($query_roles);
 
-                                                        // Iterar sobre los resultados y generar las opciones del menú desplegable
-                                                        while ($row_roles = $stmt_roles->fetch(PDO::FETCH_ASSOC)) {
-                                                            echo "<option value='" . $row_roles['id_tip_usu'] . "'>" . $row_roles['tip_usu'] . "</option>";
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                </label>
-                                            </div>
+                                                // Iterar sobre los resultados y generar las opciones del menú desplegable
+                                                while ($row_roles = $stmt_roles->fetch(PDO::FETCH_ASSOC)) {
+                                                    echo "<option value='" . $row_roles['id_tip_usu'] . "'>" . $row_roles['tip_usu'] . "</option>";
+                                                }
+                                                ?>
+                                            </select>
                                         </div>
-                                    </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -202,7 +205,6 @@ function generarPinAleatorio($longitud = 4)
                             <button type="submit" class="btn btn-primary">Crear</button>
                         </div>
                 </form>
-
             </div>
         </div>
     </section>
@@ -210,7 +212,7 @@ function generarPinAleatorio($longitud = 4)
 <script>
     document.getElementById('documento').addEventListener('input', function () {
         var documentoValue = this.value;
-        
+
         // Verificar si el documento tiene entre 7 y 11 números
         if (/^\d{7,11}$/.test(documentoValue)) {
             this.setCustomValidity('');
@@ -221,7 +223,7 @@ function generarPinAleatorio($longitud = 4)
 
     document.getElementById('nombre').addEventListener('input', function () {
         var nombreValue = this.value;
-        
+
         // Verificar si el nombre tiene al menos 3 letras y no contiene puntos
         if (/^[A-Za-zñÑ\s]{3,}$/.test(nombreValue) && !/[.]/.test(nombreValue)) {
             this.setCustomValidity('');
@@ -232,7 +234,7 @@ function generarPinAleatorio($longitud = 4)
 
     document.getElementById('telefono').addEventListener('input', function () {
         var telefonoValue = this.value;
-        
+
         // Verificar si el teléfono tiene 10 números
         if (/^\d{10}$/.test(telefonoValue)) {
             this.setCustomValidity('');
@@ -241,9 +243,5 @@ function generarPinAleatorio($longitud = 4)
         }
     });
 </script>
-
-
-
-
 
 <?php include "../Template/footer.php"; ?>

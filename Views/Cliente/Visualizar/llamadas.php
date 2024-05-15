@@ -17,9 +17,9 @@ include "../Template/header.php";
         </a>
     </li>
     <li class="nav-item" role="presentation">
-        <a class="nav-link px-4 " href="../Visualizar/nuevo_llamada.php">
+        <a class="nav-link px-4 " href="../Visualizar/solicitud.php">
             <span class="d-block d-sm-none"><i class="mdi mdi-menu-open"></i></span>
-            <span class="d-none d-sm-block">Empieza Una Llamada </span>
+            <span class="d-none d-sm-block">Empieza Una Solicitud </span>
         </a>
     </li>
 </ul>

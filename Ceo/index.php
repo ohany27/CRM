@@ -6,8 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Panel Admin | CRM</title>
 
+
   <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <!-- Ionicons -->
@@ -26,7 +28,38 @@
   <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
+  <style>
+    .modal-content {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      max-width: 30%;
+      /* Cambia el valor según sea necesario */
+      margin: 0 auto;
+      /* Centra horizontalmente */
+      padding: 20px;
+      /* Añade algo de espacio alrededor del contenido */
+    }
+  </style>
 </head>
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h5 class="modal-title">Solo Personal autorizado</h5>
+    </div>
+    <div class="modal-body">
+      <input type="password" id="passwordInput" class="form-control" placeholder="Contraseña">
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-primary" onclick="validarCodigo()">Aceptar</button>
+    </div>
+  </div>
+</div>
+
+
+
 
 <body class="hold-transition sidebar-mini layout-fixed">
   <div class="wrapper">
@@ -48,7 +81,7 @@
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
         <!-- Navbar Search -->
-        
+
         <li class="nav-item">
           <a class="nav-link" data-widget="fullscreen" href="#" role="button">
             <i class="fas fa-expand-arrows-alt"></i>
@@ -64,7 +97,8 @@
     <aside class="main-sidebar sidebar-dark-primary elevation-4">
       <!-- Brand Logo -->
       <a href="../index.php" class="brand-link">
-        <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+        <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+          style="opacity: .8">
         <span class="brand-text font-weight-light">CRM</span>
       </a>
 
@@ -96,7 +130,7 @@
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-users"></i>
                 <p>
-                Administradores
+                  Administradores
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
@@ -115,6 +149,30 @@
                 </li>
               </ul>
             </li>
+            <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-user-tag"></i>
+                <p>
+                  Roles
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="Visualizar/roles.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Visualizar</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="Crear/roles.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Crear</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-header">Clasificacion</li>
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-clipboard-check"></i>
@@ -137,6 +195,30 @@
                   </a>
                 </li>
               </ul>
+              </li>
+              <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-folder-open"></i>
+                <p>
+                  Categorias
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="Visualizar/categorias.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Visualizar</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="Crear/categorias.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Crear</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
             <li class="nav-header">Empresas</li>
             <li class="nav-item">
               <a href="#" class="nav-link">
@@ -211,7 +293,7 @@
                 <div class="icon">
                   <i class="fab fa-wpforms"></i>
                 </div>
-                
+
               </div>
             </div>
             <!-- ./col -->
@@ -226,7 +308,7 @@
                 <div class="icon">
                   <i class="fas fa-user-lock"></i>
                 </div>
-                
+
               </div>
             </div>
             <!-- ./col -->
@@ -241,7 +323,7 @@
                 <div class="icon">
                   <i class="	fas fa-calendar-check"></i>
                 </div>
-                
+
               </div>
             </div>
 
@@ -258,7 +340,7 @@
                 <div class="icon">
                   <i class="fab fa-soundcloud"></i>
                 </div>
-              
+
               </div>
             </div>
             <!-- ./col -->
@@ -322,6 +404,7 @@
   <script src="dist/js/demo.js"></script>
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <script src="dist/js/pages/dashboard.js"></script>
+  <script src="build/js/validacion.js"></script>
 </body>
 
 </html>

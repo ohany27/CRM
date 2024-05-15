@@ -32,7 +32,7 @@ $con = $DataBase->conectar();
                         </thead>
                         <tbody>
                             <?php
-                            $consulta = "SELECT * FROM estado WHERE estado.id_est <= 2";
+                            $consulta = "SELECT * FROM estado WHERE estado.id_est ";
 
                             $resultado = $con->query($consulta);
                             while ($fila = $resultado->fetch()) {

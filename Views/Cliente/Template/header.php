@@ -107,7 +107,7 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                                 <div class="ms-3">
                                     <div>
                                         <h4 class="card-title mb-2">Tienes Problemas!</h4>
-                                        <p class="mb-0 text-muted">Saludos cordiales. Antes de comenzar un ticket, te solicitamos amablemente que esperes a que un empleado esté disponible para atender tu llamada. Esta acción asegura una asistencia más eficiente y personalizada.</p>
+                                        <p class="mb-0 text-muted">Saludos cordiales. Antes de comenzar un ticket, te solicitamos amablemente que esperes a que un empleado esté disponible para atender tu Solicitud. Esta acción asegura una asistencia más eficiente y personalizada.</p>
                                     </div>
                                     <div class="row my-4">
                                         <div class="col-md-12">

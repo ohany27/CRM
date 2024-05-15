@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 09-05-2024 a las 15:38:09
+-- Tiempo de generación: 15-05-2024 a las 19:26:37
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -91,7 +91,6 @@ INSERT INTO `detalle_daño` (`id_detalle_daño`, `id_daño`, `pasos_solucion`) V
 CREATE TABLE `detalle_ticket` (
   `id_detalle_ticket` int(10) NOT NULL,
   `id_ticket` int(10) NOT NULL,
-  `id_detalle_daño` int(10) NOT NULL,
   `id_tecnico` int(10) NOT NULL,
   `id_riesgo` int(10) NOT NULL,
   `fecha` date NOT NULL,
@@ -116,7 +115,9 @@ CREATE TABLE `empresa` (
 --
 
 INSERT INTO `empresa` (`nitc`, `nombre`, `direccion`, `telefono`) VALUES
-(12345, 'google', 'Estados-Unidos', '3110852930');
+(12345, 'google', 'Estados-Unidos', '3110852930'),
+(12345678, 'coca cola', 'polo norte', '3202174961'),
+(87654321, 'pepsi', 'polo sur', '3202174962');
 
 -- --------------------------------------------------------
 
@@ -135,12 +136,10 @@ CREATE TABLE `estado` (
 
 INSERT INTO `estado` (`id_est`, `tip_est`) VALUES
 (1, 'Activo'),
-(2, 'Inactivo'),
+(2, 'Desactivado'),
 (3, 'Esperando'),
-(4, 'Aceptada'),
-(5, 'Procesando'),
-(6, 'Esperando'),
-(8, 'Finalizado');
+(4, 'En proceso'),
+(5, 'Solucionado');
 
 -- --------------------------------------------------------
 
@@ -162,6 +161,8 @@ CREATE TABLE `licencia` (
 --
 
 INSERT INTO `licencia` (`codigo`, `licencia`, `nitc`, `estado`, `fecha_inicial`, `fecha_final`) VALUES
+(2, 'AMsS0BAy8yy85kystWhh', 12345678, 1, '2024-05-11', '2025-05-11'),
+(9, 'Ohs64s1y7ZsksEyMa%BM', 87654321, 1, '2024-05-12', '2025-05-12'),
 (919, 'MshylaWEj18%ShuhhMy0', 12345, 1, '2024-05-04', '2025-05-04');
 
 -- --------------------------------------------------------
@@ -179,15 +180,6 @@ CREATE TABLE `llamadas` (
   `descripcion` varchar(150) NOT NULL,
   `id_empleado` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `llamadas`
---
-
-INSERT INTO `llamadas` (`id_llamada`, `documento`, `id_daño`, `id_est`, `fecha`, `descripcion`, `id_empleado`) VALUES
-(19, 32145784, 1, 3, '2024-05-08', 'ggjlkfg', 654789123),
-(20, 32145784, 2, 3, '2024-05-09', 'hthgjh', 654789123),
-(21, 32145784, 5, 4, '2024-05-09', 'dios sito', 544536534);
 
 -- --------------------------------------------------------
 
@@ -245,6 +237,18 @@ CREATE TABLE `ticket` (
   `fecha-final` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Disparadores `ticket`
+--
+DELIMITER $$
+CREATE TRIGGER `codigoticket` BEFORE INSERT ON `ticket` FOR EACH ROW BEGIN
+	INSERT INTO trigger_ticket VALUES (NULL);
+    SET NEW.id_ticket = CONCAT ("Tk_",
+LPAD(LAST_INSERT_ID(), 2, "0"));
+	END
+$$
+DELIMITER ;
+
 -- --------------------------------------------------------
 
 --
@@ -283,6 +287,112 @@ INSERT INTO `tipo_daño` (`id_daño`, `nombre`, `foto`, `precio`, `id_categoria`
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `trigger_ticket`
+--
+
+CREATE TABLE `trigger_ticket` (
+  `id` bigint(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `trigger_ticket`
+--
+
+INSERT INTO `trigger_ticket` (`id`) VALUES
+(1),
+(6),
+(7),
+(8),
+(9),
+(10),
+(11),
+(12),
+(13),
+(14),
+(15),
+(16),
+(17),
+(18),
+(19),
+(20),
+(21),
+(22),
+(23),
+(24),
+(25),
+(26),
+(27),
+(28),
+(29),
+(30),
+(31),
+(32),
+(33),
+(34),
+(1),
+(6),
+(7),
+(8),
+(9),
+(10),
+(11),
+(12),
+(13),
+(14),
+(15),
+(16),
+(17),
+(18),
+(19),
+(20),
+(21),
+(22),
+(23),
+(24),
+(25),
+(26),
+(27),
+(28),
+(29),
+(30),
+(31),
+(32),
+(33),
+(34),
+(1),
+(6),
+(7),
+(8),
+(9),
+(10),
+(11),
+(12),
+(13),
+(14),
+(15),
+(16),
+(17),
+(18),
+(19),
+(20),
+(21),
+(22),
+(23),
+(24),
+(25),
+(26),
+(27),
+(28),
+(29),
+(30),
+(31),
+(32),
+(33),
+(34);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `trigger_usuarios`
 --
 
@@ -313,6 +423,24 @@ INSERT INTO `trigger_usuarios` (`documento`, `correo`, `password`, `telefono`, `
 (12457485, 'cesar@misenaf', '$2y$10$9lgZDI6cVDhRFM7SP0qnAOjVi3.vMK0ihB/2oX/mBV5U850kX.5ti', 320216567, '2024-05-04', 'root@localhost'),
 (1104544423, 'brandon@gmail.com', '$2y$10$nXoUElKZTBlO4rKtLaaZAOJRE4xrmn/z8KYkTF4HHsIFFavKpiVkS', 31194675, '2024-05-06', 'root@localhost'),
 (12454465, 'ceshgar@gmail.com', '$2y$10$.19dW/jm/hgqeinchEvvx.vZatGvtuOgF4WD4XgSKEBTEEX4OiN6e', 367, '2024-05-06', 'root@localhost'),
+(123456345, 'cocacola@misena', '$2y$10$tc0LtScCkLJhOcb5OTtp.OyH7xkOc2QOemJClB0S2/GhmjXHsAofG', 310467283, '2024-05-06', 'root@localhost'),
+(32145784, 'daniel@gamil.com', '$2y$10$sYKawhdRLQVLRiKNmAmbne8l6Rukq7FItqvnjor5IzqiwIzC5xYYG', 2147483647, '2024-05-11', 'root@localhost'),
+(544536534, 'tecnelectrics@gmail.com', '$2y$10$OZc/uJ7V1VjkZUT9IFmF..uw4BWOOCQVAogcvi5tQ5EaInKbKncU2', 2147483647, '2024-05-11', 'root@localhost'),
+(654789123, 'santiago@misena', '$2y$10$VSbHEFu/n3X7yN42zNlgm.DLtQre8Q5mKS/O/u0wAMNpRH7cVYYnq', 311804567, '2024-05-11', 'root@localhost'),
+(1104544454, 'brayan@misena', '$2y$10$HImeOt.1u8kVSfQSzd4By.gRY.YMaRuCkIwzoAgdCI37agwsFqbi6', 2147483647, '2024-05-11', 'root@localhost'),
+(1104544455, 'bfsanchez@misena.edu', '$2y$10$tH6Kdc4W4zSM6Ntp52lcTuyFuc/5mpg8FYMb3gENICH7amrRi46Le', 2147483647, '2024-05-11', 'root@localhost'),
+(1104544455, 'bfsanchez@misena.edu.co', '$2y$10$k9wN14QOeiP/mWFPZjE0OunK2h9xxpCsGTchK.Bws1IyWJhphmzGS', 2147483647, '2024-05-11', 'root@localhost'),
+(65346643, 'fjhj@gfsdj', '$2y$10$fJPPCu55PAqRZuB4QrzwLOFH3fBFT4O89Rxlg2QTLXmPcssHBfc6y', 876565, '2024-05-11', 'root@localhost'),
+(1104544454, 'bfsanchez45@misena.edu.co', '$2y$10$r/2MKBG7gFz.hL6FTPhHSOyrUGA1104Nes/zzUbAjf8.UD/oRsjzy', 2147483647, '2024-05-11', 'root@localhost'),
+(1104544455, 'tecnelectrics@gmail.com', '$2y$10$MfEg3UF/1cKujxu.ko916.O7NtuZ1g43o36OmsdFMBfgpF9NaHnvG', 2147483647, '2024-05-11', 'root@localhost'),
+(54547, 'daniel@gamil.com', '$2y$10$noyMsBx7LvoQ22zuD7Op.OcEb2Z7YUlkz9p8Li4FuBrrib5Oz34yy', 2147483647, '2024-05-11', 'root@localhost'),
+(1104544455, 'bfsanchez45@misena.edu.co', '$2y$10$aZ0HE7ob/vEwXyDaEwkQbOGQbQApQ7eJciRKMR.zvBVBkEemYk.Q.', 2147483647, '2024-05-11', 'root@localhost'),
+(1104544455, 'bfsanchez45@misena.edu.co', '$2y$10$WyCKr0TZxgHBIiSvw/o6huZG3PGVejX/I5vCyJPhsiCNw7y1fGm32', 2147483647, '2024-05-11', 'root@localhost'),
+(1105610405, 'jdmolina504@misena.edu.co', '$2y$10$IAU0raEutK2B23laBrlZQOVzbzT25JxLIGwe3GnNyx0q6DHS7.kHS', 357864121, '2024-03-01', 'root@localhost'),
+(123456345, 'cocacola@misena', '$2y$10$tc0LtScCkLJhOcb5OTtp.OyH7xkOc2QOemJClB0S2/GhmjXHsAofG', 310467283, '2024-05-06', 'root@localhost'),
+(1105610405, 'jdmolina504@misena.edu.co', '$2y$10$IAU0raEutK2B23laBrlZQOVzbzT25JxLIGwe3GnNyx0q6DHS7.kHS', 357864121, '2024-03-01', 'root@localhost'),
+(123456345, 'cocacola@misena', '$2y$10$tc0LtScCkLJhOcb5OTtp.OyH7xkOc2QOemJClB0S2/GhmjXHsAofG', 310467283, '2024-05-06', 'root@localhost'),
+(1105610405, 'jdmolina504@misena.edu.co', '$2y$10$IAU0raEutK2B23laBrlZQOVzbzT25JxLIGwe3GnNyx0q6DHS7.kHS', 357864121, '2024-03-01', 'root@localhost'),
 (123456345, 'cocacola@misena', '$2y$10$tc0LtScCkLJhOcb5OTtp.OyH7xkOc2QOemJClB0S2/GhmjXHsAofG', 310467283, '2024-05-06', 'root@localhost');
 
 -- --------------------------------------------------------
@@ -330,18 +458,17 @@ CREATE TABLE `usuario` (
   `telefono` varchar(11) NOT NULL,
   `direccion` varchar(50) NOT NULL,
   `nitc` int(10) DEFAULT NULL,
-  `id_tip_usu` int(10) NOT NULL
+  `id_tip_usu` int(10) NOT NULL,
+  `id_estado` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `usuario`
 --
 
-INSERT INTO `usuario` (`documento`, `nombre`, `correo`, `password`, `pin`, `telefono`, `direccion`, `nitc`, `id_tip_usu`) VALUES
-(32145784, 'daniel', 'daniel@gamil.com', '$2y$10$sYKawhdRLQVLRiKNmAmbne8l6Rukq7FItqvnjor5IzqiwIzC5xYYG', 4326, '3202174900', 'mz casa 14 fg', 12345, 2),
-(544536534, 'Ana Paul', 'tecnelectrics@gmail.com', '$2y$10$Celf6v/bvPkbKps57zqiauIrvliq8PtEZ6naSM20A8htKVVcOa24W', 6535, '3202174961', 'mz casa 145445', 12345, 3),
-(654789123, 'santiago', 'santiago@misena', '$2y$10$VSbHEFu/n3X7yN42zNlgm.DLtQre8Q5mKS/O/u0wAMNpRH7cVYYnq', 987654, '311804567', 'mz-casa-11', 12345, 4),
-(1104544454, 'brayan', 'brayan@misena', '$2y$10$HImeOt.1u8kVSfQSzd4By.gRY.YMaRuCkIwzoAgdCI37agwsFqbi6', 12345, '3202174961', 'mz-casa-14', 12345, 1);
+INSERT INTO `usuario` (`documento`, `nombre`, `correo`, `password`, `pin`, `telefono`, `direccion`, `nitc`, `id_tip_usu`, `id_estado`) VALUES
+(1104544451, 'cesar', 'tecnelectrics@gmail.com', '$2y$10$h/EuRXXl/Lx.0CiV88DUQ.juy7nOiyWhnJnbL1RLgmA8zOrCEQ8BG', 2146, '3118052930', 'Sena', 87654321, 1, 1),
+(1104544455, 'brayan', 'bfsanchez45@misena.edu.co', '$2y$10$jpL4IuvgmwvPYmNliQIcoeTnHnITmi8LaK9K2Vihfsd3H3ExgXG5G', 2369, '3202174961', 'mz casa 14', 12345678, 1, 1);
 
 --
 -- Disparadores `usuario`
@@ -375,8 +502,7 @@ ALTER TABLE `detalle_daño`
 ALTER TABLE `detalle_ticket`
   ADD PRIMARY KEY (`id_detalle_ticket`),
   ADD KEY `id_tecnico` (`id_tecnico`),
-  ADD KEY `id_riesgo` (`id_riesgo`),
-  ADD KEY `detalle_ticket_ibfk_1` (`id_detalle_daño`);
+  ADD KEY `id_riesgo` (`id_riesgo`);
 
 --
 -- Indices de la tabla `empresa`
@@ -441,7 +567,8 @@ ALTER TABLE `tipo_daño`
 ALTER TABLE `usuario`
   ADD PRIMARY KEY (`documento`),
   ADD KEY `nitc` (`nitc`),
-  ADD KEY `id_tip_usu` (`id_tip_usu`);
+  ADD KEY `id_tip_usu` (`id_tip_usu`),
+  ADD KEY `id_estado` (`id_estado`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
@@ -521,7 +648,6 @@ ALTER TABLE `detalle_daño`
 -- Filtros para la tabla `detalle_ticket`
 --
 ALTER TABLE `detalle_ticket`
-  ADD CONSTRAINT `detalle_ticket_ibfk_1` FOREIGN KEY (`id_detalle_daño`) REFERENCES `detalle_daño` (`id_detalle_daño`),
   ADD CONSTRAINT `detalle_ticket_ibfk_2` FOREIGN KEY (`id_tecnico`) REFERENCES `usuario` (`id_tip_usu`),
   ADD CONSTRAINT `detalle_ticket_ibfk_3` FOREIGN KEY (`id_riesgo`) REFERENCES `riesgos` (`id_riesgo`);
 
@@ -559,7 +685,8 @@ ALTER TABLE `tipo_daño`
 --
 ALTER TABLE `usuario`
   ADD CONSTRAINT `usuario_ibfk_1` FOREIGN KEY (`nitc`) REFERENCES `empresa` (`nitc`),
-  ADD CONSTRAINT `usuario_ibfk_2` FOREIGN KEY (`id_tip_usu`) REFERENCES `roles` (`id_tip_usu`);
+  ADD CONSTRAINT `usuario_ibfk_2` FOREIGN KEY (`id_tip_usu`) REFERENCES `roles` (`id_tip_usu`),
+  ADD CONSTRAINT `usuario_ibfk_3` FOREIGN KEY (`id_estado`) REFERENCES `estado` (`id_est`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
