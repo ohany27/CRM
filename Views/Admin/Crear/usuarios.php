@@ -145,16 +145,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                 <label for="nitc">
                                                     <select id="nitc" class="form-control" name="nitc"
                                                         placeholder="Nitc:" required>
-                                                        <option value="">Seleccione_Empresa</option>
                                                         <?php
-                                                        // Obtener las empresas
-                                                        $query_empresas = "SELECT * FROM empresa";
-                                                        $stmt_empresas = $con->query($query_empresas);
-                                                        while ($row_empresas = $stmt_empresas->fetch(PDO::FETCH_ASSOC)) {
-                                                            echo "<option value='" . $row_empresas['nitc'] . "'>" . $row_empresas['nombre'] . "</option>";
+                                                        // Obtener el NITC de la empresa asociada al usuario en sesión
+                                                        $nitc_usuario = $_SESSION['usuario']['nitc'];
+
+                                                        // Obtener la información de la empresa asociada al usuario en sesión
+                                                        $query_empresa_usuario = "SELECT * FROM empresa WHERE nitc = :nitc_usuario";
+                                                        $stmt_empresa_usuario = $pdo->prepare($query_empresa_usuario);
+                                                        $stmt_empresa_usuario->execute(array(':nitc_usuario' => $nitc_usuario));
+                                                        $row_empresa_usuario = $stmt_empresa_usuario->fetch(PDO::FETCH_ASSOC);
+
+                                                        // Verificar si se encontró la empresa asociada al usuario en sesión
+                                                        if ($row_empresa_usuario) {
+                                                            // Mostrar la opción de la empresa asociada al usuario en sesión
+                                                            echo "<option value='" . $row_empresa_usuario['nitc'] . "' selected>" . $row_empresa_usuario['nombre'] . "</option>";
+                                                        } else {
+                                                            // Si no se encuentra la empresa asociada al usuario en sesión, mostrar un mensaje de error
+                                                            echo "<option value='' disabled>No se encontró la empresa asociada al usuario en sesión</option>";
                                                         }
                                                         ?>
                                                     </select>
+
                                                 </label>
                                             </div>
                                         </div>
@@ -168,12 +179,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         <div class="input-group">
                                             <div class="custom-file">
                                                 <label for="id_tip_usu">
-                                                    <select class="form-control"  id="id_tip_usu" name="id_tip_usu" placeholder="rol:"
-                                                        required>
+                                                    <select class="form-control" id="id_tip_usu" name="id_tip_usu"
+                                                        placeholder="rol:" required>
                                                         <option value="">Seleccione_Rol</option>
                                                         <?php
                                                         // Obtener los roles
-                                                        $query_roles = "SELECT * FROM roles";
+                                                        $query_roles = "SELECT * FROM roles WHERE id_tip_usu > 1";
                                                         $stmt_roles = $con->query($query_roles);
                                                         while ($row_roles = $stmt_roles->fetch(PDO::FETCH_ASSOC)) {
                                                             echo "<option value='" . $row_roles['id_tip_usu'] . "'>" . $row_roles['tip_usu'] . "</option>";

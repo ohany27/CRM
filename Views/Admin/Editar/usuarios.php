@@ -1,6 +1,7 @@
-<?php include "../Template/header.php"; ?>
-<?php
-require_once ("../../../Config/conexion.php");
+<?php 
+include "../Template/header.php";
+
+require_once("../../../Config/conexion.php");
 $conexion = new Database();
 $con = $conexion->conectar();
 
@@ -8,10 +9,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $documento = $_POST["documento"];
     $nombre = $_POST["nombre"];
     $correo = $_POST["correo"];
-    $pin = $_POST["pin"];
     $telefono = $_POST["telefono"];
     $direccion = $_POST["direccion"];
-    $password = $_POST["password"]; // No necesitas verificar si está seteado aquí
     $id_rol = $_POST["id_tip_usu"];
 
     // Verificar si el rol de usuario seleccionado existe en la tabla roles
@@ -20,20 +19,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $rol_exist = $stmt_rol->fetchColumn();
 
     if ($rol_exist) {
-        if (!empty($password)) {
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-            $actualizar_usuario = "UPDATE usuario SET nombre=?, correo=?, pin=?, telefono=?, direccion=?, id_tip_usu=?, password=? WHERE documento=?";
-            $stmt = $con->prepare($actualizar_usuario);
-            $stmt->execute([$nombre, $correo, $pin, $telefono, $direccion, $id_rol, $hashed_password, $documento]);
-        } else {
-            // Si no se proporciona una nueva contraseña, no la actualices
-            $actualizar_usuario = "UPDATE usuario SET nombre=?, correo=?, pin=?, telefono=?, direccion=?, id_tip_usu=? WHERE documento=?";
-            $stmt = $con->prepare($actualizar_usuario);
-            $stmt->execute([$nombre, $correo, $pin, $telefono, $direccion, $id_rol, $documento]);
-        }
+        // Si no se proporciona una nueva contraseña, no la actualices
+        $actualizar_usuario = "UPDATE usuario SET nombre=?, correo=?,  telefono=?, direccion=?, id_tip_usu=? WHERE documento=?";
+        $stmt = $con->prepare($actualizar_usuario);
+        $stmt->execute([$nombre, $correo,  $telefono, $direccion, $id_rol, $documento]);
 
         if ($stmt->rowCount() > 0) {
-            echo '<script>alert ("Actualización exitosa.");</script>';
+            echo '<script>alert("Actualización exitosa.");</script>';
             echo '<script>window.location="../Visualizar/usuarios.php"</script>';
             exit();
         } else {
@@ -96,20 +88,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
-                                    <label for="">Contraseña</label>
-                                    <input type="password" class="form-control" id="password" name="password"
-                                        placeholder="Password" pattern="^(?=.*\d)(?=.*[a-zA-Z]).{5,}$" >
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Pin</label>
-                                    <input type="number" class="form-control" id="pin" name="pin" placeholder="Pin" value="<?php echo $usuario["pin"]; ?>"
-                                        pattern="\d{5,}" readonly>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
                                     <label for="">Telefono</label>
                                     <input type="number" class="form-control" id="telefono" name="telefono" value="<?php echo $usuario["telefono"]; ?>"
                                         placeholder="Telefono" pattern="\d{9,}" required>
@@ -126,32 +104,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="col-sm-3">
                                 <div class="form-group">
                                     <label for="nitc">
-                                        <label for="">Empresas</label>
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <label for="nitc">
-                                                    <select id="nitc" class="form-control" name="nitc"
-                                                        placeholder="Nitc:" required>
-                                                        <option value="">Seleccione_Empresa</option>
-                                                        <?php
-                        // Obtener las empresas
-                        $query_empresas = "SELECT * FROM empresa";
-                        $stmt_empresas = $con->query($query_empresas);
-                        while ($row_empresas = $stmt_empresas->fetch(PDO::FETCH_ASSOC)) {
-                            $selected_empresa = ($row_empresas['nitc'] == $usuario['nitc']) ? 'selected' : '';
-                            echo "<option value='" . $row_empresas['nitc'] . "' $selected_empresa>" . $row_empresas['nombre'] . "</option>";
-                        }
-                        ?>
-                                                    </select>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="nitc">
                                         <label for="">Rol</label>
                                         <div class="input-group">
                                             <div class="custom-file">
@@ -160,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                                         required>
                                                         <option value="">Seleccione_Rol</option>
                                                         <?php
-                        $query_roles = "SELECT * FROM roles";
+                        $query_roles = "SELECT * FROM roles  WHERE id_tip_usu > 1";
                         $stmt_roles = $con->query($query_roles);
                         while ($row_roles = $stmt_roles->fetch(PDO::FETCH_ASSOC)) {
                             $selected = ($row_roles['id_tip_usu'] == $usuario['id_tip_usu']) ? 'selected' : '';
