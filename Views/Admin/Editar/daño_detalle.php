@@ -57,7 +57,7 @@ if (isset($_POST["update"])) {
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">Nombre</label>
-                                    <input type="text" class="form-control" name="nombre" placeholder="" value="<?php echo $usua['nombre'] ?>"
+                                    <input type="text" class="form-control" name="nombre" placeholder="" value="<?php echo $usua['id_daño'] ?>"
                                         readonly>
                                 </div>
                             </div>

@@ -39,10 +39,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($existe_registro) {
         echo "<script>alert('Ya existe un usuario con el mismo documento, correo o teléfono.')</script>";
     } else {
+        // Generar contraseña y PIN aleatorio
         $password = generarContraseñaAleatoria();
         $pin = generarPinAleatorio();
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
+        // Insertar el nuevo usuario en la base de datos
         $query_insert_user = "INSERT INTO usuario (documento, nombre, correo, password, pin, telefono, direccion, nitc, id_tip_usu, id_estado) 
                                 VALUES (:documento, :nombre, :correo, :password, :pin, :telefono, :direccion, :nitc, :id_tip_usu, 1)";
         $stmt_insert_user = $pdo->prepare($query_insert_user);
@@ -60,6 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             )
         );
 
+        // Enviar correo de confirmación
         $mensaje = "Estimado/a $nombre,\n\nHemos generado una contraseña segura para tu cuenta en CRM. Por favor, utiliza la siguiente contraseña para iniciar sesión:\n\nContraseña: $password\n\n Recuerda que esta es una contraseña temporal y te recomendamos cambiarla tan pronto como inicies sesión. Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.\n\nAtentamente,\nEquipo de Soporte Cloud Chasers";
         $asunto = "Confirmacion Usuario - Cloud Chasers";
         $headers = "From: Soporte Cloud Chasers <soporte@cloudchasers.com>\r\n";
@@ -91,6 +94,7 @@ function generarPinAleatorio($longitud = 4)
     return $pin;
 }
 ?>
+
 <div class="content-wrapper">
     <div class="content-header">
         <div class="container-fluid">

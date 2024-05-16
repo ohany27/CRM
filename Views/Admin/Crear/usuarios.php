@@ -1,69 +1,92 @@
-<?php include "../Template/header.php"; ?>
 <?php
+include "../Template/header.php";
 require_once ("../../../Config/conexion.php");
+
 $Conexion = new Database;
 $con = $Conexion->conectar();
-
-// Assign PDO object to $pdo
 $pdo = $con;
 
-// Inicializar mensaje de error
 $error = '';
 
-// Verificar si se ha enviado el formulario de registro
+// Obtener el NITC del usuario que ha iniciado sesión desde la sesión
+$nitc_usuario = $_SESSION['usuario']['nitc'];
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Obtener los datos del formulario
     $documento = $_POST["documento"];
     $nombre = $_POST["nombre"];
     $correo = $_POST["correo"];
-    $password = $_POST["password"];
-    $pin = $_POST["pin"];
     $telefono = $_POST["telefono"];
     $direccion = $_POST["direccion"];
-    $nitc = $_POST["nitc"];
     $id_tip_usu = $_POST["id_tip_usu"];
 
-    // Validar campos obligatorios
-    if (empty($documento) || empty($nombre) || empty($correo) || empty($password) || empty($pin) || empty($telefono) || empty($direccion) || empty($nitc) || empty($id_tip_usu)) {
-        echo "<script>alert('Todos los campos son obligatorios.')</script>";
+    // Utilizar el NITC del usuario que ha iniciado sesión
+    $nitc = $nitc_usuario;
+
+    // Verificar si el documento, correo o teléfono ya existen en la base de datos
+    $query_verificar = "SELECT * FROM usuario WHERE documento = :documento OR correo = :correo OR telefono = :telefono";
+    $stmt_verificar = $pdo->prepare($query_verificar);
+    $stmt_verificar->execute(array(':documento' => $documento, ':correo' => $correo, ':telefono' => $telefono));
+    $existe_registro = $stmt_verificar->fetch();
+
+    if ($existe_registro) {
+        echo "<script>alert('Ya existe un usuario con el mismo documento, correo o teléfono.')</script>";
     } else {
-        // Verificar si ya existe un usuario con el mismo correo, pin o documento
-        $query = "SELECT * FROM usuario WHERE correo = :correo OR pin = :pin OR documento = :documento";
-        $stmt = $pdo->prepare($query);
-        $stmt->execute(array(':correo' => $correo, ':pin' => $pin, ':documento' => $documento));
+        // Generar contraseña y PIN aleatorio
+        $password = generarContraseñaAleatoria();
+        $pin = generarPinAleatorio();
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
-        // Si se encuentra algún registro, mostrar un mensaje de error
-        if ($stmt->rowCount() > 0) {
-            echo "<script>alert('Correo existente o pin')</script>";
-        } else {
-            // Si no hay registros duplicados, insertar el nuevo usuario
-            // Encriptar la contraseña antes de insertarla en la base de datos
-            $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+        // Insertar el nuevo usuario en la base de datos
+        $query_insert_user = "INSERT INTO usuario (documento, nombre, correo, password, pin, telefono, direccion, nitc, id_tip_usu, id_estado) 
+                                VALUES (:documento, :nombre, :correo, :password, :pin, :telefono, :direccion, :nitc, :id_tip_usu, 1)";
+        $stmt_insert_user = $pdo->prepare($query_insert_user);
+        $stmt_insert_user->execute(
+            array(
+                ':documento' => $documento,
+                ':nombre' => $nombre,
+                ':correo' => $correo,
+                ':password' => $hashed_password,
+                ':pin' => $pin,
+                ':telefono' => $telefono,
+                ':direccion' => $direccion,
+                ':nitc' => $nitc,
+                ':id_tip_usu' => $id_tip_usu
+            )
+        );
 
-            $query_insert_user = "INSERT INTO usuario (documento, nombre, correo, password, pin, telefono, direccion, nitc, id_tip_usu) 
-                                VALUES (:documento, :nombre, :correo, :password, :pin, :telefono, :direccion, :nitc, :id_tip_usu)";
-            $stmt_insert_user = $pdo->prepare($query_insert_user);
-            $stmt_insert_user->execute(
-                array(
-                    ':documento' => $documento,
-                    ':nombre' => $nombre,
-                    ':correo' => $correo,
-                    ':password' => $hashed_password,
-                    ':pin' => $pin,
-                    ':telefono' => $telefono,
-                    ':direccion' => $direccion,
-                    ':nitc' => $nitc,
-                    ':id_tip_usu' => $id_tip_usu
-                )
-            );
+        // Enviar correo de confirmación
+        $mensaje = "Estimado/a $nombre,\n\nHemos generado una contraseña segura para tu cuenta en CRM. Por favor, utiliza la siguiente contraseña para iniciar sesión:\n\nContraseña: $password\n\n Recuerda que esta es una contraseña temporal y te recomendamos cambiarla tan pronto como inicies sesión. Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.\n\nAtentamente,\nEquipo de Soporte Cloud Chasers";
+        $asunto = "Confirmacion Usuario - Cloud Chasers";
+        $headers = "From: Soporte Cloud Chasers <soporte@cloudchasers.com>\r\n";
 
-            // Mostrar alerta de registro exitoso
+        if (mail($correo, $asunto, $mensaje, $headers)) {
             echo "<script>alert('Usuario creado'); window.location='../Visualizar/usuarios.php';</script>";
-            exit();
+        } else {
+            echo "<script>alert('No se logró enviar el mensaje a su destino.'); window.location.href='../Visualizar/usuarios.php';</script>";
         }
     }
 }
+
+function generarContraseñaAleatoria($longitud = 10)
+{
+    $caracteres = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    $contraseña = '';
+    for ($i = 0; $i < $longitud; $i++) {
+        $contraseña .= $caracteres[rand(0, strlen($caracteres) - 1)];
+    }
+    return $contraseña;
+}
+
+function generarPinAleatorio($longitud = 4)
+{
+    $pin = '';
+    for ($i = 0; $longitud > $i; $i++) {
+        $pin .= rand(0, 9);
+    }
+    return $pin;
+}
 ?>
+
 <div class="content-wrapper">
     <div class="content-header">
         <div class="container-fluid">
@@ -90,7 +113,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 <div class="form-group">
                                     <label for="">Documento</label>
                                     <input type="number" class="form-control" id="documento" name="documento"
-                                        placeholder="Documento" minlength="9" required>
+                                        placeholder="Documento" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -103,29 +126,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">Correo</label>
-                                    <input type="text" class="form-control" id="correo" name="correo"
+                                    <input type="email" class="form-control" id="correo" name="correo"
                                         placeholder="Correo-Electronico" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Contraseña</label>
-                                    <input type="password" class="form-control" id="password" name="password"
-                                        placeholder="Password" pattern="^(?=.*\d)(?=.*[a-zA-Z]).{5,}$" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Pin</label>
-                                    <input type="number" class="form-control" id="pin" name="pin" placeholder="Pin"
-                                        pattern="\d{5,}" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">Telefono</label>
                                     <input type="number" class="form-control" id="telefono" name="telefono"
-                                        placeholder="Telefono" pattern="\d{9,}" required>
+                                        placeholder="Telefono" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -135,66 +144,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                         placeholder="Direccion" required>
                                 </div>
                             </div>
-
                             <div class="col-sm-3">
                                 <div class="form-group">
-                                    <label for="nitc">
-                                        <label for="">Empresas</label>
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <label for="nitc">
-                                                    <select id="nitc" class="form-control" name="nitc"
-                                                        placeholder="Nitc:" required>
-                                                        <?php
-                                                        // Obtener el NITC de la empresa asociada al usuario en sesión
-                                                        $nitc_usuario = $_SESSION['usuario']['nitc'];
+                                    <label for="id_tip_usu">Rol</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <select class="form-control" id="id_tip_usu" name="id_tip_usu" required>
+                                                <option value="">Seleccione_Rol</option>
+                                                <?php
+                                                // Consulta SQL para obtener los roles que tengan un id_tip_usu igual o menor a 1
+                                                $query_roles = "SELECT * FROM roles WHERE id_tip_usu >= 2";
 
-                                                        // Obtener la información de la empresa asociada al usuario en sesión
-                                                        $query_empresa_usuario = "SELECT * FROM empresa WHERE nitc = :nitc_usuario";
-                                                        $stmt_empresa_usuario = $pdo->prepare($query_empresa_usuario);
-                                                        $stmt_empresa_usuario->execute(array(':nitc_usuario' => $nitc_usuario));
-                                                        $row_empresa_usuario = $stmt_empresa_usuario->fetch(PDO::FETCH_ASSOC);
+                                                // Ejecutar la consulta
+                                                $stmt_roles = $con->query($query_roles);
 
-                                                        // Verificar si se encontró la empresa asociada al usuario en sesión
-                                                        if ($row_empresa_usuario) {
-                                                            // Mostrar la opción de la empresa asociada al usuario en sesión
-                                                            echo "<option value='" . $row_empresa_usuario['nitc'] . "' selected>" . $row_empresa_usuario['nombre'] . "</option>";
-                                                        } else {
-                                                            // Si no se encuentra la empresa asociada al usuario en sesión, mostrar un mensaje de error
-                                                            echo "<option value='' disabled>No se encontró la empresa asociada al usuario en sesión</option>";
-                                                        }
-                                                        ?>
-                                                    </select>
-
-                                                </label>
-                                            </div>
+                                                // Iterar sobre los resultados y generar las opciones del menú desplegable
+                                                while ($row_roles = $stmt_roles->fetch(PDO::FETCH_ASSOC)) {
+                                                    echo "<option value='" . $row_roles['id_tip_usu'] . "'>" . $row_roles['tip_usu'] . "</option>";
+                                                }
+                                                ?>
+                                            </select>
                                         </div>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="nitc">
-                                        <label for="">Rol</label>
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <label for="id_tip_usu">
-                                                    <select class="form-control" id="id_tip_usu" name="id_tip_usu"
-                                                        placeholder="rol:" required>
-                                                        <option value="">Seleccione_Rol</option>
-                                                        <?php
-                                                        // Obtener los roles
-                                                        $query_roles = "SELECT * FROM roles WHERE id_tip_usu > 1";
-                                                        $stmt_roles = $con->query($query_roles);
-                                                        while ($row_roles = $stmt_roles->fetch(PDO::FETCH_ASSOC)) {
-                                                            echo "<option value='" . $row_roles['id_tip_usu'] . "'>" . $row_roles['tip_usu'] . "</option>";
-                                                        }
-                                                        ?>
-                                                    </select>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </label>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -204,9 +175,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <button type="submit" class="btn btn-primary">Crear</button>
                         </div>
                 </form>
-
+                <br>
+                <a href="../Crear/cvg.php" class="form-group">
+                    <h2 class="title">Formato CSV (Clientes)</h2>
+                </a>
             </div>
+
         </div>
     </section>
 </div>
+<script>
+    document.getElementById('documento').addEventListener('input', function () {
+        var documentoValue = this.value;
+
+        // Verificar si el documento tiene entre 7 y 11 números
+        if (/^\d{7,11}$/.test(documentoValue)) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('El documento debe tener entre 7 y 11 números.');
+        }
+    });
+
+    document.getElementById('nombre').addEventListener('input', function () {
+        var nombreValue = this.value;
+
+        // Verificar si el nombre tiene al menos 3 letras y no contiene puntos
+        if (/^[A-Za-zñÑ\s]{3,}$/.test(nombreValue) && !/[.]/.test(nombreValue)) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('El nombre debe contener al menos 3 letras y no se permiten signos de puntuación.');
+        }
+    });
+
+    document.getElementById('telefono').addEventListener('input', function () {
+        var telefonoValue = this.value;
+
+        // Verificar si el teléfono tiene 10 números
+        if (/^\d{10}$/.test(telefonoValue)) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('El teléfono debe tener 10 números.');
+        }
+    });
+</script>
+
 <?php include "../Template/footer.php"; ?>

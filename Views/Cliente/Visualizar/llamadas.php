@@ -58,7 +58,7 @@ include "../Template/header.php";
                         $id_empleado = $row['id_empleado'];
 
                         // Consulta para obtener el nombre del daño
-                        $query_nombre = "SELECT nombre FROM tipo_daño WHERE id_daño = ?";
+                        $query_nombre = "SELECT nombredano FROM tipo_daño WHERE id_daño = ?";
                         $stmt_nombre = $con->prepare($query_nombre);
                         $stmt_nombre->bindParam(1, $id_daño, PDO::PARAM_INT);
                         $stmt_nombre->execute();

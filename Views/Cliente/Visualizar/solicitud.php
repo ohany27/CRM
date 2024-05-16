@@ -76,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 try {
     $db = new Database();
     $conn = $db->conectar();
-    $stmt = $conn->query("SELECT id_daño, nombre, foto, precio FROM tipo_daño");
+    $stmt = $conn->query("SELECT id_daño, nombredano, foto, precio FROM tipo_daño");
     $tipo_daño = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
@@ -126,7 +126,7 @@ try {
                                 <option value="" disabled selected>Seleccione</option>
                                 <!-- Obtener opciones de tipos de daño desde la base de datos -->
                                 <?php foreach ($tipo_daño as $tipo): ?>
-                                    <option value="<?php echo $tipo['id_daño']; ?>"><?php echo $tipo['nombre']; ?></option>
+                                    <option value="<?php echo $tipo['id_daño']; ?>"><?php echo $tipo['nombredano']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>

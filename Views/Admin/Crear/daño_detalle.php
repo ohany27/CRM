@@ -76,7 +76,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                                                         $control = $con->prepare("SELECT * From tipo_daño");
                                                         $control->execute();
                                                         while ($fila = $control->fetch(PDO::FETCH_ASSOC)) {
-                                                            echo "<option value=" . $fila['id_daño'] . ">" . $fila['nombre'] . "</option>";
+                                                            echo "<option value=" . $fila['id_daño'] . ">" . $fila['nombredano'] . "</option>";
                                                         }
                                                         ?>
                                                     </select>

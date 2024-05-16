@@ -40,7 +40,7 @@ $con = $DataBase->conectar();
                                 echo '
                                 <tr>
                                 <td>' . $fila["id_detalle_daño"] . '</td>
-                                <td>' . $fila["nombre"] . '</td>
+                                <td>' . $fila["id_daño"] . '</td>
                                 <td>' . $fila["pasos_solucion"] . '</td>
                     <td class="project-actions text-center">
                             <a href="../Editar/daño_detalle.php?id_detalle_daño=' . $fila["id_detalle_daño"] . '" class="btn btn-info btn-sm" href="#">

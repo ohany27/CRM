@@ -5,23 +5,6 @@ require_once("Config/conexion.php");
 $database = new Database();
 $pdo = $database->conectar();
 
-// Verificar si se ha hecho clic en el enlace de registro
-if (isset($_GET['accion']) && $_GET['accion'] == 'registro') {
-    // Consultar cuántas licencias activas hay
-    $query = "SELECT COUNT(*) as total FROM licencia WHERE estado = 1";
-    $resultado = $pdo->query($query);
-    $row = $resultado->fetch(PDO::FETCH_ASSOC);
-    $total_licencias_activas = $row['total'];
-
-    // Si hay una o más licencias activas, realizar la acción de registro
-    if ($total_licencias_activas < 1) {
-        // Si no hay una licencia activa, redirigir al usuario al index.php
-        echo '<script>alert("No Hay una licencia Activa Si desea utilizar nuestros servicios contactanos.");</script>';
-        echo '<script>window.location = "index.php";</script>';
-        exit(); // Detener la ejecución del script
-    }
-}
-
 // Manejar el formulario de inicio de sesión
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login_form"])) {
     $correo = $_POST["correo"];
@@ -35,28 +18,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login_form"])) {
     if ($stmt->rowCount() == 1) {
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (password_verify($contraseña, $usuario['password'])) {
-            $_SESSION['usuario'] = $usuario;
+        // Verificar si el usuario tiene una licencia activa
+        $query_licencia = "SELECT * FROM licencia WHERE nitc = :nitc AND estado = 1";
+        $stmt_licencia = $pdo->prepare($query_licencia);
+        $stmt_licencia->execute(array(':nitc' => $usuario['nitc']));
 
-            if ($usuario['id_tip_usu'] == 1) {
-                header("Location: Views/Admin/index.php");
-                exit();
-            } elseif ($usuario['id_tip_usu'] == 2) {
-                header("Location: Views/Cliente/index.php");
-                exit();
-            } elseif ($usuario['id_tip_usu'] == 3) {
-                header("Location: Views/Empleado/index.php");
-                exit();
-            } elseif ($usuario['id_tip_usu'] == 4) {
-                header("Location: Views/Tecnico/index.php");
-                exit();
+        if ($stmt_licencia->rowCount() > 0) {
+            if (password_verify($contraseña, $usuario['password'])) {
+                $_SESSION['usuario'] = $usuario;
+
+                // Redireccionar según el tipo de usuario
+                switch ($usuario['id_tip_usu']) {
+                    case 1:
+                        header("Location: Views/Admin/index.php");
+                        exit();
+                    case 2:
+                        header("Location: Views/Cliente/index.php");
+                        exit();
+                    case 3:
+                        header("Location: Views/Empleado/index.php");
+                        exit();
+                    case 4:
+                        header("Location: Views/Tecnico/index.php");
+                        exit();
+                    default:
+                        header("Location: index.php?accion=registro");
+                        exit();
+                }
             } else {
-                header("Location: index.php?accion=registro");
+                $_SESSION['error'] = 'Contraseña incorrecta.';
+                echo "<script>alert('Contraseña incorrecta.'); window.location.href='login.php?accion=registro';</script>";
                 exit();
             }
         } else {
-            $_SESSION['error'] = 'Contraseña incorrecta.';
-            echo "<script>alert('Contraseña incorrecta.'); window.location.href='login.php?accion=registro';</script>";
+            // Si no tiene una licencia activa, mostrar una alerta
+            echo "<script>alert('No existe una licencia activa.'); window.location.href='index.php';</script>";
             exit();
         }
     } else {
@@ -65,9 +61,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login_form"])) {
         exit();
     }
 }
-
-
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

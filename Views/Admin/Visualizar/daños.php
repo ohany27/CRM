@@ -42,7 +42,7 @@ $con = $DataBase->conectar();
                                 echo '
                                 <tr>
                                 <td>' . $fila["id_daño"] . '</td>
-                                <td>' . $fila["nombre"] . '</td>
+                                <td>' . $fila["nombredano"] . '</td>
                                 <td>' . $fila["tip_cat"] . '</td>
                                 <td><img src="data:image/jpeg;base64,' . base64_encode($fila["foto"]) . '" width="200" height="100" alt="Foto de daño"></td>
                                 <td>' . $fila["precio"] . '</td>

@@ -1,3 +1,84 @@
+<?php
+// Establecer la conexión a la base de datos
+require_once("../Config/conexion.php");
+$DataBase = new Database;
+$con = $DataBase->conectar();
+
+// Verificar si la conexión fue exitosa
+if ($con) {
+    // Consulta SQL para obtener el número de empresas
+    $query_empresas = "SELECT COUNT(*) AS num_empresas FROM empresa";
+
+    // Ejecutar la consulta de empresas
+    $resultado_empresas = $con->query($query_empresas);
+
+    // Verificar si la consulta de empresas fue exitosa
+    if ($resultado_empresas) {
+        // Obtener el número de empresas
+        $fila_empresas = $resultado_empresas->fetch(PDO::FETCH_ASSOC);
+        $num_empresas = $fila_empresas['num_empresas'];
+    } else {
+        echo "Error en la consulta de empresas: " . $con->errorInfo()[2];
+        exit();
+    }
+
+    // Consulta SQL para obtener el número de usuarios con id_tip_usu igual a 1
+    $query_usuarios = "SELECT COUNT(*) AS num_usuarios FROM usuario WHERE id_tip_usu = 1";
+
+    // Ejecutar la consulta de usuarios
+    $resultado_usuarios = $con->query($query_usuarios);
+
+    // Verificar si la consulta de usuarios fue exitosa
+    if ($resultado_usuarios) {
+        // Obtener el número de usuarios
+        $fila_usuarios = $resultado_usuarios->fetch(PDO::FETCH_ASSOC);
+        $num_usuarios = $fila_usuarios['num_usuarios'];
+    } else {
+        echo "Error en la consulta de usuarios: " . $con->errorInfo()[2];
+        exit();
+    }
+
+    // Consulta SQL para obtener el número de registros en la tabla estado
+    $query_estados = "SELECT COUNT(*) AS num_estados FROM estado";
+
+    // Ejecutar la consulta de estados
+    $resultado_estados = $con->query($query_estados);
+
+    // Verificar si la consulta de estados fue exitosa
+    if ($resultado_estados) {
+        // Obtener el número de estados
+        $fila_estados = $resultado_estados->fetch(PDO::FETCH_ASSOC);
+        $num_estados = $fila_estados['num_estados'];
+    } else {
+        echo "Error en la consulta de estados: " . $con->errorInfo()[2];
+        exit();
+    }
+
+    // Consulta SQL para obtener el número de registros en la tabla licencia donde el estado es igual a 1
+    $query_licencias = "SELECT COUNT(*) AS num_licencias FROM licencia WHERE estado = 1";
+
+    // Ejecutar la consulta de licencias
+    $resultado_licencias = $con->query($query_licencias);
+
+    // Verificar si la consulta de licencias fue exitosa
+    if ($resultado_licencias) {
+        // Obtener el número de licencias
+        $fila_licencias = $resultado_licencias->fetch(PDO::FETCH_ASSOC);
+        $num_licencias = $fila_licencias['num_licencias'];
+    } else {
+        echo "Error en la consulta de licencias: " . $con->errorInfo()[2];
+        exit();
+    }
+} else {
+    // Mostrar un mensaje de error si la conexión falla
+    echo "Error al conectar a la base de datos.";
+}
+?>
+
+
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -286,7 +367,7 @@
               <!-- small box -->
               <div class="small-box bg-info">
                 <div class="inner">
-                  <h3>150</h3>
+                  <h3><?php echo $num_empresas; ?></h3>
 
                   <p>Empresas</p>
                 </div>
@@ -301,7 +382,7 @@
               <!-- small box -->
               <div class="small-box bg-success">
                 <div class="inner">
-                  <h3>53</h3>
+                  <h3><?php echo $num_usuarios; ?></h3>
 
                   <p>Administradores </p>
                 </div>
@@ -316,7 +397,7 @@
               <!-- small box -->
               <div class="small-box bg-warning">
                 <div class="inner">
-                  <h3>44</h3>
+                  <h3><?php echo $num_estados; ?></h3>
 
                   <p>Estados </p>
                 </div>
@@ -333,7 +414,7 @@
               <!-- small box -->
               <div class="small-box bg-danger">
                 <div class="inner">
-                  <h3>65</h3>
+                  <h3><?php echo $num_licencias; ?></h3>
 
                   <p>Licencias Activas</p>
                 </div>

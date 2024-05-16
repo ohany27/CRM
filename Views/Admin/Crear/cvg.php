@@ -1,3 +1,4 @@
+<?php include "../Template/header.php"; ?>
 <?php
 require_once("../../../Config/conexion.php");
 $Conexion = new Database;
@@ -41,21 +42,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $password = generateRandomString();
                 $pin = generateRandomPin();
 
-                // Insertar nuevo usuario
-                $query_insert_user = "INSERT INTO usuario (documento, nombre, correo, telefono, direccion, password, pin, id_tip_usu, id_estado) 
-                            VALUES (:documento, :nombre, :correo, :telefono, :direccion, :password, :pin, 1, 1)";
-                $stmt_insert_user = $pdo->prepare($query_insert_user);
-                $stmt_insert_user->execute(
-                    array(
-                        ':documento' => $documento,
-                        ':nombre' => $nombre,
-                        ':correo' => $correo,
-                        ':telefono' => $telefono,
-                        ':direccion' => $direccion,
-                        ':password' => $password,
-                        ':pin' => $pin
-                    )
-                );
+                // Verificar si $_SESSION['usuario']['nitc'] está disponible
+                if (!empty($_SESSION['usuario']['nitc'])) {
+                    $nitc_usuario = $_SESSION['usuario']['nitc'];
+
+                    // Insertar nuevo usuario
+                    $query_insert_user = "INSERT INTO usuario (documento, nombre, correo, telefono, direccion, password, pin, nitc, id_tip_usu, id_estado) 
+                                VALUES (:documento, :nombre, :correo, :telefono, :direccion, :password, :pin, :nitc, 2, 1)";
+                    $stmt_insert_user = $pdo->prepare($query_insert_user);
+                    $stmt_insert_user->execute(
+                        array(
+                            ':documento' => $documento,
+                            ':nombre' => $nombre,
+                            ':correo' => $correo,
+                            ':telefono' => $telefono,
+                            ':direccion' => $direccion,
+                            ':password' => $password,
+                            ':pin' => $pin,
+                            ':nitc' => $nitc_usuario
+                        )
+                    );
+                } else {
+                    // Manejar la falta de valor en $_SESSION['usuario']['nitc'] según tu lógica de negocio
+                }
 
                 // Envío de correo electrónico
                 $mensaje = "Estimado/a $nombre,\n\nHemos generado una contraseña segura para tu cuenta en CRM. Por favor, utiliza la siguiente contraseña para iniciar sesión:\n\nContraseña: $password\n\n Recuerda que esta es una contraseña temporal y te recomendamos cambiarla tan pronto como inicies sesión. Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.\n\nAtentamente,\nEquipo de Soporte Cloud Chasers";
@@ -111,7 +120,7 @@ function generateRandomPin($length = 5)
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Crea Un Usuario</h1>
+                    <h1 class="m-0">Sube los Datos de tus clientes</h1>
                 </div>
             </div>
         </div>

@@ -18,11 +18,11 @@ if (isset($_POST["update"])) {
         $imagen = file_get_contents($_FILES['foto']['tmp_name']);
 
         // Actualizamos la imagen junto con los otros campos
-        $updateSQL = $con->prepare("UPDATE tipo_daño SET nombre = ?, foto = ?, precio = ?, id_categoria = ? WHERE id_daño = ?");
+        $updateSQL = $con->prepare("UPDATE tipo_daño SET nombredano = ?, foto = ?, precio = ?, id_categoria = ? WHERE id_daño = ?");
         $updateSQL->execute([$tipo, $imagen, $precio, $categoria, $_GET['id_daño']]);
     } else {
         // Si no se ha subido una nueva imagen, actualizamos solo los otros campos
-        $updateSQL = $con->prepare("UPDATE tipo_daño SET nombre = ?, precio = ?, id_categoria = ? WHERE id_daño = ?");
+        $updateSQL = $con->prepare("UPDATE tipo_daño SET nombredano = ?, precio = ?, id_categoria = ? WHERE id_daño = ?");
         $updateSQL->execute([$tipo, $precio, $categoria, $_GET['id_daño']]);
     }
 
@@ -70,7 +70,7 @@ $resultado_categorias = $con->query($consulta_categorias);
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="tipo">Nombre</label>
-                                    <input type="text" class="form-control" id="tipo" name="tipo" value="<?php echo htmlspecialchars($usua['nombre']); ?>" placeholder="Nombre" required>
+                                    <input type="text" class="form-control" id="tipo" name="tipo" value="<?php echo htmlspecialchars($usua['nombredano']); ?>" placeholder="Nombre" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">

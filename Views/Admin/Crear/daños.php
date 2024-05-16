@@ -20,7 +20,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
         $foto_content = file_get_contents($foto);
     }
 
-    $sql = $con->prepare("SELECT * FROM tipo_daño WHERE id_daño='$id' or nombre='$tipo' or precio='$precio'");
+    $sql = $con->prepare("SELECT * FROM tipo_daño WHERE id_daño='$id' or nombredano='$tipo' or precio='$precio'");
     $sql->execute();
     $fila = $sql->fetchAll(PDO::FETCH_ASSOC);
 
@@ -29,7 +29,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
     } else if ($fila) {
         echo '<script>alert ("Ese tipo de daño ya está registrado.");</script>';
     } else {
-        $insertSQL = $con->prepare("INSERT INTO tipo_daño (id_daño, nombre, precio, id_categoria, foto) VALUES 
+        $insertSQL = $con->prepare("INSERT INTO tipo_daño (id_daño, nombredano, precio, id_categoria, foto) VALUES 
         ('$id', '$tipo', '$precio', '$categoria', ?)");
 
         // Bind photo content to the query

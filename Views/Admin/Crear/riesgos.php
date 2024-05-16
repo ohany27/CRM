@@ -1,41 +1,22 @@
 <?php include "../Template/header.php"; ?>
 <?php
 require_once("../../../Config/conexion.php");
-$Conexion = new Database;
-$con = $Conexion->conectar();
+$DataBase = new Database;
+$con = $DataBase->conectar();
 
-if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
-    $id = $_POST['id'];
-    $tipo = $_POST['tipo'];
-    $hora = $_POST['hora'];
+// Obtener el NITC del usuario que ha iniciado sesión desde la sesión
+$nitc_usuario = $_SESSION['usuario']['nitc'];
 
-    //4
-    $sql = $con->prepare("SELECT * FROM riesgos WHERE id_riesgo='$id' or tip_riesgo='$tipo' or tiempo_atent='$hora'");
-    $sql->execute();
-    $fila = $sql->fetchAll(PDO::FETCH_ASSOC);
-
-    if ($tipo == "" || $hora == "") {
-        echo '<script>alert ("Hay campos vacios, llena los campos.");</script>';
-
-    } else if ($fila) {
-        echo '<script>alert ("Ese tipo de riesgo ya esta registrado.");</script>';
-    } else {
-        $insertSQL = $con->prepare("INSERT INTO riesgos (id_riesgo,tip_riesgo,tiempo_atent) VALUES 
-        ('$id','$tipo','$hora')");
-
-        $insertSQL->execute();
-        echo '<script>alert ("Tipo de riesgo registrado exitosamente.");</script>';
-        echo '<script>window.location = "../Visualizar/riesgos.php"</script>';
-    }
-
-}
+// Preparar la consulta SQL con una cláusula WHERE para filtrar según NITC
+$consulta = "SELECT * FROM riesgos WHERE nitc = '$nitc_usuario'";
+$resultado = $con->query($consulta);
 ?>
 <div class="content-wrapper">
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Crea Un Riesgos</h1>
+                    <h1 class="m-0">Riesgos Registrados</h1>
                 </div>
             </div>
         </div>
@@ -43,44 +24,44 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 
     <section class="content">
         <div class="container-fluid">
-            <div class="card card-primary">
+            <div class="card">
                 <div class="card-header">
                     <h3 class="card-title"></h3>
                 </div>
-                <!-- /.card-header -->
-                <!-- form start -->
-                <form method="post" name="formreg">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <div class="form-group">
-                                    <label for="">ID de Rol</label>
-                                    <input type="number" class="form-control" placeholder="Numero" readonly required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Nombre</label>
-                                    <input type="text" class="form-control" id="tipo" name="tipo"
-                                        placeholder="Nombre" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Tiempo De Atencion</label>
-                                    <input type="text" class="form-control" id="hora" name="hora"
-                                        placeholder="Tiempo aproximado" required>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /.card-body -->
-
-                        <div class="card-footer">
-                            <button type="submit" name="inicio" class="btn btn-primary">Crear</button>
-                        </div>
-                        <input type="hidden" name="MM_insert" value="formreg">
-                </form>
-
+                <div class="card-body">
+                    <table id="example1" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Id_Riesgos</th>
+                                <th>Tipo de Riesgos</th>
+                                <th>Tiempo de atencion</th>
+                                <th>nitc</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            while ($fila = $resultado->fetch()) {
+                                echo '
+                                <tr>
+                                    <td>' . $fila["id_riesgo"] . '</td>
+                                    <td>' . $fila["tip_riesgo"] . '</td>
+                                    <td>' . $fila["tiempo_atent"] . '</td>
+                                    <td>' . $fila["nitc"] . '</td>
+                                    <td class="project-actions text-center">
+                                        <a href="../Editar/riesgos.php?id_riesgo=' . $fila["id_riesgo"] . '" class="btn btn-info btn-sm" href="#">
+                                            <i class="fas fa-pencil-alt"></i> Editar
+                                        </a>
+                                        <a href="../Eliminar/riesgos.php?id_riesgo=' . $fila["id_riesgo"] . '" class="btn btn-danger btn-sm" href="#">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </a>
+                                    </td>
+                                </tr>';
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </section>
