@@ -22,7 +22,7 @@ $resultado = $con->query($consulta);
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Usuarios Registrados <?php echo $_SESSION['usuario']['nombre']; ?></h1>
+                    <h1 class="m-0">Usuarios Registrados </h1>
                 </div>
             </div>
         </div>
