@@ -2,6 +2,10 @@
 include "../Template/header.php";
 require_once ("../../Config/conexion.php");
 
+// Asegúrate de que la biblioteca de código de barras esté cargada
+require '../vendor/autoload.php';
+use Picqer\Barcode\BarcodeGeneratorPNG;
+
 $fecha_actual = date('Y-m-d'); // Defino la fecha actual
 $fecha_vencimiento = date('Y-m-d', strtotime('+1 year', strtotime($fecha_actual))); // calculamos de tiempo para el vencimiento
 
@@ -32,6 +36,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($resultado_verificar['count'] > 0) {
                 echo "<script>alert('Ya existe una licencia activa para este NIT en el sistema.');</script>";
             } else {
+                // Generar el código de barras
+                $generator = new BarcodeGeneratorPNG();
+                $codigo_barras_imagen = $generator->getBarcode($licencia, $generator::TYPE_CODE_128);
+
+                // Guardar la imagen del código de barras
+                $ruta_imagen = __DIR__ . '/../dist/img/codigo/' . $licencia . '.png';
+                file_put_contents($ruta_imagen, $codigo_barras_imagen);
+
+                // Insertar la licencia en la base de datos
                 $query = "INSERT INTO licencia (licencia, nitc, estado, fecha_inicial, fecha_final) VALUES (:licencia, :nitc, :estado, :fecha_inicial, :fecha_final)";
                 $statement = $pdo->prepare($query);
                 $statement->execute(
@@ -124,7 +137,7 @@ $licencias = $statement_licencias->fetchAll(PDO::FETCH_ASSOC);
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Licencia</th>
+                                <th style="text-align: center;">Licencia</th>
                                 <th>NIT</th>
                                 <th>Estado</th>
                                 <th>Fecha Inicial</th>
@@ -134,7 +147,9 @@ $licencias = $statement_licencias->fetchAll(PDO::FETCH_ASSOC);
                         <tbody>
                             <?php foreach ($licencias as $licencia): ?>
                                 <tr>
-                                    <td><?php echo $licencia['licencia']; ?></td>
+                                <td style="text-align: center;">
+    <img src="../dist/img/codigo/<?= $licencia['licencia'] ?>.png" style="max-width: 400px;">
+</td>
                                     <td><?php echo $licencia['nombre_empresa']; ?></td>
                                     <td><?php echo $licencia['estado']; ?></td>
                                     <td><?php echo $licencia['fecha_inicial']; ?></td>
