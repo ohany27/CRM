@@ -35,7 +35,6 @@ $resultado = $con->query($consulta);
                                 <th>Id_Riesgos</th>
                                 <th>Tipo de Riesgos</th>
                                 <th>Tiempo de atencion</th>
-                                <th>nitc</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -47,7 +46,6 @@ $resultado = $con->query($consulta);
                                     <td>' . $fila["id_riesgo"] . '</td>
                                     <td>' . $fila["tip_riesgo"] . '</td>
                                     <td>' . $fila["tiempo_atent"] . '</td>
-                                    <td>' . $fila["nitc"] . '</td>
                                     <td class="project-actions text-center">
                                         <a href="../Editar/riesgos.php?id_riesgo=' . $fila["id_riesgo"] . '" class="btn btn-info btn-sm" href="#">
                                             <i class="fas fa-pencil-alt"></i> Editar

@@ -1,6 +1,30 @@
 <?php
+// Incluir la validación de sesión y la conexión a la base de datos
 include("../../Config/validarSesion.php");
+require_once("../../Config/conexion.php");
+
+// Obtener la conexión a la base de datos
+$DataBase = new Database;
+$con = $DataBase->conectar();
+
+// Obtener el NITC del usuario en sesión
+$nitc_usuario = $_SESSION['usuario']['nitc'];
+
+// Preparar la consulta SQL para contar los usuarios con el NITC y id_tip_usu especificados
+$consulta = "SELECT COUNT(*) as total FROM usuario WHERE nitc = :nitc_usuario AND id_tip_usu = 2";
+$stmt = $con->prepare($consulta);
+$stmt->bindParam(':nitc_usuario', $nitc_usuario);
+$stmt->execute();
+
+// Obtener el resultado de la consulta
+$totalUsuarios = 0;
+if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
+    $totalUsuarios = $fila['total'];
+}
 ?>
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -242,14 +266,14 @@ include("../../Config/validarSesion.php");
               <!-- small box -->
               <div class="small-box bg-info">
                 <div class="inner">
-                  <h3>150</h3>
+                  <h3><?php echo $totalUsuarios; ?></h3>
 
                   <p>Clientes</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-bag"></i>
                 </div>
-                <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="Visualizar/usuarios.php" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->

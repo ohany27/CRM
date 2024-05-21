@@ -117,7 +117,7 @@ try {
                 </div>
             </div>
             <div class="row" id="all-projects">
-            <form method="post">
+                <form method="post">
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="inputState">Seleccione el Tipo de Daño</label>
@@ -126,7 +126,8 @@ try {
                                 <option value="" disabled selected>Seleccione</option>
                                 <!-- Obtener opciones de tipos de daño desde la base de datos -->
                                 <?php foreach ($tipo_daño as $tipo): ?>
-                                    <option value="<?php echo $tipo['id_daño']; ?>"><?php echo $tipo['nombredano']; ?></option>
+                                    <option value="<?php echo $tipo['id_daño']; ?>"><?php echo $tipo['nombredano']; ?>
+                                    </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -141,6 +142,6 @@ try {
                     <br>
                     <button type="submit" class="btn btn-primary">Enviar</button>
                 </form>
-                </div>
+            </div>
 
-                <?php include "../Template/footer.php"; ?>
+            <?php include "../Template/footer.php"; ?>

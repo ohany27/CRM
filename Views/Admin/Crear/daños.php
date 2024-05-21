@@ -1,51 +1,42 @@
 <?php include "../Template/header.php"; ?>
 <?php
 require_once("../../../Config/conexion.php");
-$Conexion = new Database;
-$con = $Conexion->conectar();
+$DataBase = new Database;
+$con = $DataBase->conectar();
 
-// Consulta para obtener los tipos de categoría
-$consulta_categorias = "SELECT id_cat, tip_cat FROM categoria";
-$resultado_categorias = $con->query($consulta_categorias);
+// Obtener el NITC del usuario que ha iniciado sesión desde la sesión
+$nitc_usuario = $_SESSION['usuario']['nitc'];
 
-if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
-    $id = $_POST['id'];
-    $tipo = $_POST['tipo'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Recoger los datos del formulario
+    $nombredano = $_POST['nombredano'];
+    $id_categoria = $_POST['id_categoria'];
     $precio = $_POST['precio'];
-    $categoria = $_POST['categoria'];
+    $foto = file_get_contents($_FILES['foto']['tmp_name']);
 
-    // Check if the photo file is uploaded
-    if(isset($_FILES['foto'])) {
-        $foto = $_FILES['foto']['tmp_name'];
-        $foto_content = file_get_contents($foto);
-    }
-
-    $sql = $con->prepare("SELECT * FROM tipo_daño WHERE id_daño='$id' or nombredano='$tipo' or precio='$precio'");
-    $sql->execute();
-    $fila = $sql->fetchAll(PDO::FETCH_ASSOC);
-
-    if ($tipo == "") {
-        echo '<script>alert ("Hay campos vacios, llena los campos.");</script>';
-    } else if ($fila) {
-        echo '<script>alert ("Ese tipo de daño ya está registrado.");</script>';
+    // Insertar los datos en la base de datos
+    $consulta = "INSERT INTO tipo_daño (nombredano, foto, precio, id_categoria, nitc) VALUES (:nombredano, :foto, :precio, :id_categoria, :nitc)";
+    $stmt = $con->prepare($consulta);
+    $stmt->bindParam(':nombredano', $nombredano);
+    $stmt->bindParam(':foto', $foto, PDO::PARAM_LOB);
+    $stmt->bindParam(':precio', $precio);
+    $stmt->bindParam(':id_categoria', $id_categoria);
+    $stmt->bindParam(':nitc', $nitc_usuario);
+    
+    if ($stmt->execute()) {
+        echo "<script>alert('Daño creado exitosamente'); window.location.href='../Visualizar/daños.php';</script>";
     } else {
-        $insertSQL = $con->prepare("INSERT INTO tipo_daño (id_daño, nombredano, precio, id_categoria, foto) VALUES 
-        ('$id', '$tipo', '$precio', '$categoria', ?)");
-
-        // Bind photo content to the query
-        $insertSQL->bindParam(1, $foto_content, PDO::PARAM_LOB);
-        $insertSQL->execute();
-        echo '<script>alert ("Tipo de daño registrado exitosamente.");</script>';
-        echo '<script>window.location = "../Visualizar/daños.php"</script>';
+        echo "<script>alert('Error al crear el daño');</script>";
     }
 }
 ?>
+
 <div class="content-wrapper">
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Crea Un Daño</h1>
+                    <h1 class="m-0">Crear Nuevo Daño</h1>
                 </div>
             </div>
         </div>
@@ -53,65 +44,50 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 
     <section class="content">
         <div class="container-fluid">
-            <div class="card card-primary">
-                <div class="card-header">
-                    <h3 class="card-title"></h3>
-                </div>
-                <!-- /.card-header -->
-                <!-- form start -->
-                <form method="post" name="formreg" enctype="multipart/form-data">
-                        <div class="card-body">
-                            <div class="row">
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label for="">ID de Daño</label>
-                                        <input type="number" class="form-control" name="id" placeholder="Numero" readonly required>
-                                    </div>
-                                </div>
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label for="">Nombre</label>
-                                        <input type="text" class="form-control" id="tipo" name="tipo" placeholder="Nombre" required>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="">Precio</label>
-                                        <input type="number" class="form-control" id="precio" name="precio" placeholder="Precios" required>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <div class="form-group">
-                                        <label for="">Categoría</label>
-                                        <select class="form-control" id="categoria" name="categoria" required>
-                                            <option value="">Selecciona una categoría</option>
-                                            <?php
-                                            // Iterar sobre los resultados de la consulta y mostrar las opciones
-                                            while ($fila_categoria = $resultado_categorias->fetch()) {
-                                                echo '<option value="' . $fila_categoria["id_cat"] . '">' . $fila_categoria["tip_cat"] . '</option>';
-                                            }
-                                            ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <!-- File upload field -->
-                                <div class="col-sm-12">
-                                    <div class="form-group">
-                                        <label for="foto">Foto:</label>
-                                        <input type="file" class="form-control-file" name="foto" accept="image/jpeg" required>
-                                    </div>
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="nombredano">Nombre del Daño</label>
+                                    <input type="text" class="form-control" id="nombredano" name="nombredano" placeholder="Nombre del Daño" required>
                                 </div>
                             </div>
-                            <!-- /.card-body -->
-
-                            <div class="card-footer">
-                                <button type="submit" name="inicio" class="btn btn-primary">Crear</button>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="id_categoria">Categoría</label>
+                                    <select class="form-control" id="id_categoria" name="id_categoria" required>
+                                        <?php
+                                        $consultaCat = "SELECT * FROM categoria";
+                                        $resultadoCat = $con->query($consultaCat);
+                                        while ($filaCat = $resultadoCat->fetch()) {
+                                            echo '<option value="' . $filaCat["id_cat"] . '">' . $filaCat["tip_cat"] . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
                             </div>
-                            <input type="hidden" name="MM_insert" value="formreg">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="precio">Precio</label>
+                                    <input type="number" class="form-control" id="precio" name="precio" placeholder="Precio" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="foto">Foto</label>
+                                    <input type="file" class="form-control" id="foto" name="foto" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Crear</button>
+                        </div>
                     </form>
-
+                </div>
             </div>
-        </div>
     </section>
 </div>
+
 <?php include "../Template/footer.php"; ?>

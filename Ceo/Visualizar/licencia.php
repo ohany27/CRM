@@ -147,9 +147,10 @@ $licencias = $statement_licencias->fetchAll(PDO::FETCH_ASSOC);
                         <tbody>
                             <?php foreach ($licencias as $licencia): ?>
                                 <tr>
-                                <td style="text-align: center;">
-    <img src="../dist/img/codigo/<?= $licencia['licencia'] ?>.png" style="max-width: 400px;">
-</td>
+                                    <td style="text-align: center;">
+                                        <img src="../dist/img/codigo/<?= $licencia['licencia'] ?>.png"
+                                        style="max-width: 400px;">
+                                    </td>
                                     <td><?php echo $licencia['nombre_empresa']; ?></td>
                                     <td><?php echo $licencia['estado']; ?></td>
                                     <td><?php echo $licencia['fecha_inicial']; ?></td>

@@ -62,81 +62,105 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form method="post">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Documento</label>
-                                    <input type="number" class="form-control" id="documento" name="documento"
-                                        placeholder="Documento" minlength="9" value="<?php echo $usuario["documento"]; ?>" readonly>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Nombre</label>
-                                    <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $usuario["nombre"]; ?>"
-                                        placeholder="Nombre" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Correo</label>
-                                    <input type="text" class="form-control" id="correo" name="correo" value="<?php echo $usuario["correo"]; ?>"
-                                        placeholder="Correo-Electronico" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Telefono</label>
-                                    <input type="number" class="form-control" id="telefono" name="telefono" value="<?php echo $usuario["telefono"]; ?>"
-                                        placeholder="Telefono" pattern="\d{9,}" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="form-group">
-                                    <label for="">Direccion</label>
-                                    <input type="text" class="form-control" id="direccion" name="direccion" value="<?php echo $usuario["direccion"]; ?>"
-                                        placeholder="Direccion" required>
-                                </div>
-                            </div>
+                <form method="post" onsubmit="return validateForm()">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="">Documento</label>
+                        <input type="number" class="form-control" id="documento" name="documento"
+                            placeholder="Documento" minlength="9" value="<?php echo $usuario["documento"]; ?>" readonly>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="">Nombre</label>
+                        <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $usuario["nombre"]; ?>"
+                            placeholder="Nombre" required>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="">Correo</label>
+                        <input type="email" class="form-control" id="correo" name="correo" value="<?php echo $usuario["correo"]; ?>"
+                            placeholder="Correo-Electronico" required>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="">Telefono</label>
+                        <input type="number" class="form-control" id="telefono" name="telefono" value="<?php echo $usuario["telefono"]; ?>"
+                            placeholder="Telefono" required>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="form-group">
+                        <label for="">Direccion</label>
+                        <input type="text" class="form-control" id="direccion" name="direccion" value="<?php echo $usuario["direccion"]; ?>"
+                            placeholder="Direccion" required>
+                    </div>
+                </div>
 
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="nitc">
-                                        <label for="">Rol</label>
-                                        <div class="input-group">
-                                            <div class="custom-file">
-                                                <label for="id_tip_usu">
-                                                    <select class="form-control"  id="id_tip_usu" name="id_tip_usu" placeholder="rol:"
-                                                        required>
-                                                        <option value="">Seleccione_Rol</option>
-                                                        <?php
-                        $query_roles = "SELECT * FROM roles  WHERE id_tip_usu > 1";
-                        $stmt_roles = $con->query($query_roles);
-                        while ($row_roles = $stmt_roles->fetch(PDO::FETCH_ASSOC)) {
-                            $selected = ($row_roles['id_tip_usu'] == $usuario['id_tip_usu']) ? 'selected' : '';
-                            echo "<option value='" . $row_roles['id_tip_usu'] . "' $selected>"
-                                . $row_roles['tip_usu'] . "</option>";
-                        }
-                        ?>
-                                                    </select>
-                                                </label>
-                                            </div>
-                                        </div>
+                <div class="col-sm-3">
+                    <div class="form-group">
+                        <label for="nitc">
+                            <label for="">Rol</label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <label for="id_tip_usu">
+                                        <select class="form-control" id="id_tip_usu" name="id_tip_usu" placeholder="rol:"
+                                            required>
+                                            <option value="">Seleccione_Rol</option>
+                                            <?php
+                    $query_roles = "SELECT * FROM roles  WHERE id_tip_usu > 1";
+                    $stmt_roles = $con->query($query_roles);
+                    while ($row_roles = $stmt_roles->fetch(PDO::FETCH_ASSOC)) {
+                        $selected = ($row_roles['id_tip_usu'] == $usuario['id_tip_usu']) ? 'selected' : '';
+                        echo "<option value='" . $row_roles['id_tip_usu'] . "' $selected>"
+                            . $row_roles['tip_usu'] . "</option>";
+                    }
+                    ?>
+                                        </select>
                                     </label>
                                 </div>
                             </div>
-                        </div>
-                        <!-- /.card-body -->
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
 
-                        <div class="card-footer">
-                            <button type="submit" class="btn btn-primary">Editar</button>
-                        </div>
-                </form>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">Editar</button>
+            </div>
+    </form>
 
             </div>
         </div>
     </section>
 </div>
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var nombreInput = document.getElementById("nombre");
+            var telefonoInput = document.getElementById("telefono");
+
+            nombreInput.addEventListener("input", function() {
+                var nombreRegex = /^[a-zA-Z\s]{3,}$/;
+                if (!nombreRegex.test(nombreInput.value)) {
+                    nombreInput.setCustomValidity("El nombre debe tener al menos 3 letras y no debe contener signos.");
+                } else {
+                    nombreInput.setCustomValidity("");
+                }
+            });
+
+            telefonoInput.addEventListener("input", function() {
+                var telefonoRegex = /^\d{10}$/;
+                if (!telefonoRegex.test(telefonoInput.value)) {
+                    telefonoInput.setCustomValidity("El teléfono debe tener exactamente 10 números.");
+                } else {
+                    telefonoInput.setCustomValidity("");
+                }
+            });
+        });
+    </script>
 <?php include "../Template/footer.php"; ?>

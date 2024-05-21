@@ -7,16 +7,32 @@ $con = $DataBase->conectar();
 // Obtener el NITC del usuario que ha iniciado sesión desde la sesión
 $nitc_usuario = $_SESSION['usuario']['nitc'];
 
-// Preparar la consulta SQL con una cláusula WHERE para filtrar según NITC
-$consulta = "SELECT * FROM riesgos WHERE nitc = '$nitc_usuario'";
-$resultado = $con->query($consulta);
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Recoger los datos del formulario
+    $tip_riesgo = $_POST['tip_riesgo'];
+    $tiempo_atent = $_POST['tiempo_atent'];
+    
+    // Insertar los datos en la base de datos
+    $consulta = "INSERT INTO riesgos (tip_riesgo, tiempo_atent, nitc) VALUES (:tip_riesgo, :tiempo_atent, :nitc)";
+    $stmt = $con->prepare($consulta);
+    $stmt->bindParam(':tip_riesgo', $tip_riesgo);
+    $stmt->bindParam(':tiempo_atent', $tiempo_atent);
+    $stmt->bindParam(':nitc', $nitc_usuario);
+    
+    if ($stmt->execute()) {
+        echo "<script>alert('Riesgo creado exitosamente'); window.location.href='../Visualizar/riesgos.php';</script>";
+    } else {
+        echo "<script>alert('Error al crear el riesgo');</script>";
+    }
+}
 ?>
+
 <div class="content-wrapper">
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Riesgos Registrados</h1>
+                    <h1 class="m-0">Crear Nuevo Riesgo</h1>
                 </div>
             </div>
         </div>
@@ -25,45 +41,30 @@ $resultado = $con->query($consulta);
     <section class="content">
         <div class="container-fluid">
             <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title"></h3>
-                </div>
                 <div class="card-body">
-                    <table id="example1" class="table table-bordered table-striped">
-                        <thead>
-                            <tr>
-                                <th>Id_Riesgos</th>
-                                <th>Tipo de Riesgos</th>
-                                <th>Tiempo de atencion</th>
-                                <th>nitc</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            while ($fila = $resultado->fetch()) {
-                                echo '
-                                <tr>
-                                    <td>' . $fila["id_riesgo"] . '</td>
-                                    <td>' . $fila["tip_riesgo"] . '</td>
-                                    <td>' . $fila["tiempo_atent"] . '</td>
-                                    <td>' . $fila["nitc"] . '</td>
-                                    <td class="project-actions text-center">
-                                        <a href="../Editar/riesgos.php?id_riesgo=' . $fila["id_riesgo"] . '" class="btn btn-info btn-sm" href="#">
-                                            <i class="fas fa-pencil-alt"></i> Editar
-                                        </a>
-                                        <a href="../Eliminar/riesgos.php?id_riesgo=' . $fila["id_riesgo"] . '" class="btn btn-danger btn-sm" href="#">
-                                            <i class="fas fa-trash"></i> Eliminar
-                                        </a>
-                                    </td>
-                                </tr>';
-                            }
-                            ?>
-                        </tbody>
-                    </table>
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="tip_riesgo">Tipo de Riesgo</label>
+                                    <input type="text" class="form-control" id="tip_riesgo" name="tip_riesgo" placeholder="Tipo de Riesgo" required>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="tiempo_atent">Tiempo de Atención</label>
+                                    <input type="text" class="form-control" id="tiempo_atent" name="tiempo_atent" placeholder="Tiempo de Atención" required>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-primary">Crear</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
 </div>
+
 <?php include "../Template/footer.php"; ?>

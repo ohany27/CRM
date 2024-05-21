@@ -3,7 +3,15 @@
 require_once ("../../../Config/conexion.php");
 $DataBase = new Database;
 $con = $DataBase->conectar();
+
+// Obtener el NITC del usuario que ha iniciado sesión desde la sesión
+$nitc_usuario = $_SESSION['usuario']['nitc'];
+
+// Preparar la consulta SQL con una cláusula WHERE para filtrar según NITC
+$consulta = "SELECT * FROM tipo_daño WHERE nitc = '$nitc_usuario'";
+$resultado = $con->query($consulta);
 ?>
+
 <div class="content-wrapper">
     <div class="content-header">
         <div class="container-fluid">

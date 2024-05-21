@@ -68,5 +68,28 @@ if (isset($_POST["update"])) {
         </div>
     </section>
 </div>
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var nombreInput = document.getElementById("tipo");
+            var tiempoRiesgoInput = document.getElementById("hora");
 
+            nombreInput.addEventListener("input", function() {
+                var nombreRegex = /^[a-zA-Z\s]{3,}$/;
+                if (!nombreRegex.test(nombreInput.value)) {
+                    nombreInput.setCustomValidity("El nombre debe tener al menos 3 letras y no debe contener puntos ni números.");
+                } else {
+                    nombreInput.setCustomValidity("");
+                }
+            });
+
+            tiempoRiesgoInput.addEventListener("input", function() {
+                var tiempoRiesgoRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+                if (!tiempoRiesgoRegex.test(tiempoRiesgoInput.value)) {
+                    tiempoRiesgoInput.setCustomValidity("El tiempo de riesgo debe contener tanto letras como números.");
+                } else {
+                    tiempoRiesgoInput.setCustomValidity("");
+                }
+            });
+        });
+    </script>
 <?php include "../Template/footer.php"; ?>
