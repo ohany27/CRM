@@ -1,8 +1,12 @@
 <?php include "../Template/header.php"; ?>
 <?php
-require_once ("../../../Config/conexion.php");
+require_once("../../../Config/conexion.php");
+
+
 $DataBase = new Database;
 $con = $DataBase->conectar();
+
+$nitc_usuario = $_SESSION['usuario']['nitc']; // Obtener el nitc del usuario logueado
 ?>
 <div class="content-wrapper">
     <div class="content-header">
@@ -25,7 +29,6 @@ $con = $DataBase->conectar();
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Id_Detalle</th>
                                 <th>Nombre Daño</th>
                                 <th>Solucion</th>
                                 <th></th>
@@ -33,34 +36,35 @@ $con = $DataBase->conectar();
                         </thead>
                         <tbody>
                             <?php
-                            $consulta = "SELECT * FROM detalle_daño, tipo_daño WHERE detalle_daño.id_daño = tipo_daño.id_daño";
-                            $resultado = $con->query($consulta);
+                            $consulta = "SELECT detalle_daño.id_detalle_daño, tipo_daño.nombredano, detalle_daño.pasos_solucion 
+                                        FROM detalle_daño 
+                                        INNER JOIN tipo_daño ON detalle_daño.id_daño = tipo_daño.id_daño
+                                        WHERE tipo_daño.nitc = :nitc_usuario"; // Añadida la condición WHERE
+                            $stmt = $con->prepare($consulta);
+                            $stmt->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR); // Vincular el parámetro
+                            $stmt->execute();
 
-                            while ($fila = $resultado->fetch()) {
+                            while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                                 echo '
                                 <tr>
-                                <td>' . $fila["id_detalle_daño"] . '</td>
-                                <td>' . $fila["id_daño"] . '</td>
-                                <td>' . $fila["pasos_solucion"] . '</td>
-                    <td class="project-actions text-center">
-                            <a href="../Editar/daño_detalle.php?id_detalle_daño=' . $fila["id_detalle_daño"] . '" class="btn btn-info btn-sm" href="#">
-                                <i class="fas fa-pencil-alt">
-                                </i>
-                                Editar
-                            </a>
-                            <a href="../Eliminar/daño_detalle.php?id_detalle_daño=' . $fila["id_detalle_daño"] . '" class="btn btn-danger btn-sm" href="#">
-                                <i class="fas fa-trash">
-                                </i>
-                                Eliminar
-                            </a>
-                        </td>
-                </tr>';
+                                    <td>' . htmlspecialchars($fila["nombredano"]) . '</td>
+                                    <td>' . htmlspecialchars($fila["pasos_solucion"]) . '</td>
+                                    <td class="project-actions text-center">
+                                        <a href="../Editar/daño_detalle.php?id_detalle_daño=' . htmlspecialchars($fila["id_detalle_daño"]) . '" class="btn btn-info btn-sm">
+                                            <i class="fas fa-pencil-alt"></i> Editar
+                                        </a>
+                                        <a href="../Eliminar/daño_detalle.php?id_detalle_daño=' . htmlspecialchars($fila["id_detalle_daño"]) . '" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-trash"></i> Eliminar
+                                        </a>
+                                    </td>
+                                </tr>';
                             }
                             ?>
                         </tbody>
                     </table>
                 </div>
             </div>
+        </div>
     </section>
 </div>
 <?php include "../Template/footer.php"; ?>

@@ -1,8 +1,8 @@
 <?php
-include ("../../Config/validarSesion.php");
+include("../../Config/validarSesion.php");
 ?>
 <?php
-require_once ("../../Config/conexion.php");
+require_once("../../Config/conexion.php");
 $DataBase = new Database;
 $con = $DataBase->conectar();
 $id_tip_usu = $_SESSION['usuario']['id_tip_usu'];
@@ -83,10 +83,7 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
 </head>
 
 <body>
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css"
-        integrity="sha512-LX0YV/MWBEn2dwXCYgQHrpa9HJkwB+S+bnBpifSOTO1No27TqNMKYoAn6ff2FBh03THAzAiiCwQ+aPX+/Qt/Ow=="
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css" integrity="sha512-LX0YV/MWBEn2dwXCYgQHrpa9HJkwB+S+bnBpifSOTO1No27TqNMKYoAn6ff2FBh03THAzAiiCwQ+aPX+/Qt/Ow==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <div class="container">
         <div class="row">
             <div class="col-xl-8">
@@ -95,8 +92,7 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                         <div class="row align-items-center">
                             <div class="col-md-3">
                                 <div class="text-center border-end">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png"
-                                        class="img-fluid avatar-xxl rounded-circle" alt>
+                                    <img src="https://img.freepik.com/vector-premium/avatar-icono-plano-glifo-blanco-humano-sobre-fondo-azul_822686-239.jpg" class="img-fluid avatar-xxl rounded-circle" alt>
                                     <h4 class="text-primary font-size-20 mt-3 mb-2">
                                         <?php echo $_SESSION['usuario']['nombre']; ?>
                                     </h4>
@@ -120,20 +116,16 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                                     <div class="row my-4">
                                         <div class="col-md-12">
                                             <div>
-                                                <p class="text-muted mb-2 fw-medium"><i
-                                                        class="mdi mdi-email-outline me-2"> Tecnelectrics@gmail.com</i>
+                                                <p class="text-muted mb-2 fw-medium"><i class="mdi mdi-email-outline me-2"> Tecnelectrics@gmail.com</i>
                                                 </p>
-                                                <p class="text-muted fw-medium mb-0"><i
-                                                        class="mdi mdi-phone-in-talk-outline me-2"></i>+57 310 2552 339
+                                                <p class="text-muted fw-medium mb-0"><i class="mdi mdi-phone-in-talk-outline me-2"></i>+57 310 2552 339
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
-                                    <ul class="nav nav-tabs nav-tabs-custom border-bottom-0 mt-3 nav-justfied"
-                                        role="tablist">
+                                    <ul class="nav nav-tabs nav-tabs-custom border-bottom-0 mt-3 nav-justfied" role="tablist">
                                         <li class="nav-item" role="presentation">
-                                            <a class="nav-link px-4 active" data-bs-toggle="tab" href="index.php"
-                                                role="tab" aria-selected="false" tabindex="-1">
+                                            <a class="nav-link px-4 active" data-bs-toggle="tab" href="index.php" role="tab" aria-selected="false" tabindex="-1">
                                                 <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
                                                 <span class="d-none d-sm-block">Mis Tickets</span>
                                             </a>
@@ -165,190 +157,93 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                                 </div>
                             </div>
                             <div class="row" id="all-projects">
-                                <div class="col-md-6" id="project-items-1">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="d-flex mb-3">
-                                                <div class="flex-grow-1 align-items-start">
-                                                    <div>
-                                                        <h6 class="mb-0 text-muted">
-                                                            <i
-                                                                class="mdi mdi-circle-medium text-danger fs-3 align-middle"></i>
-                                                            <span class="team-date">21 Jun, 2021</span>
-                                                        </h6>
-                                                    </div>
-                                                </div>
-                                                <div class="dropdown ms-2">
-                                                    <a href="#" class="dropdown-toggle font-size-16 text-muted"
-                                                        data-bs-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                        <i class="mdi mdi-dots-horizontal"></i>
-                                                    </a>
-                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item" href="javascript: void(0);"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target=".bs-example-new-project"
-                                                            onclick="editProjects('project-items-1')">Edit</a>
-                                                        <a class="dropdown-item" href="javascript: void(0);">Share</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item delete-item"
-                                                            onclick="deleteProjects('project-items-1')"
-                                                            data-id="project-items-1"
-                                                            href="javascript: void(0);">Delete</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="mb-4">
-                                                <h5 class="mb-1 font-size-17 team-title">Hardware</h5>
-                                                <p class="text-muted mb-0 team-description">Every Marketing Plan
-                                                    Needs</p>
-                                            </div>
-                                            <div class="d-flex">
-                                                <div class="align-self-end">
-                                                    <span class="badge badge-soft-danger p-2 team-status">Pending</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6" id="project-items-2">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="d-flex mb-3">
-                                                <div class="flex-grow-1 align-items-start">
-                                                    <div>
-                                                        <h6 class="mb-0 text-muted">
-                                                            <i
-                                                                class="mdi mdi-circle-medium text-success fs-3 align-middle"></i>
-                                                            <span class="team-date">13 Aug, 2021</span>
-                                                        </h6>
-                                                    </div>
-                                                </div>
-                                                <div class="dropdown ms-2">
-                                                    <a href="#" class="dropdown-toggle font-size-16 text-muted"
-                                                        data-bs-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                        <i class="mdi mdi-dots-horizontal"></i>
-                                                    </a>
-                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item" href="javascript: void(0);"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target=".bs-example-new-project"
-                                                            onclick="editProjects('project-items-2')">Edit</a>
-                                                        <a class="dropdown-item" href="javascript: void(0);">Share</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item delete-item" href="javascript:void(0);"
-                                                            onclick="deleteProjects('project-items-2')"
-                                                            data-id="project-items-2">Delete</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="mb-4">
-                                                <h5 class="mb-1 font-size-17 team-title">Hardware</h5>
-                                                <p class="text-muted mb-0 team-description">Creating the design
-                                                    and layout of a
-                                                    website.</p>
-                                            </div>
-                                            <div class="d-flex">
-                                                <div class="align-self-end">
-                                                    <span
-                                                        class="badge badge-soft-success p-2 team-status">Completed</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6" id="project-items-3">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="d-flex mb-3">
-                                                <div class="flex-grow-1 align-items-start">
-                                                    <div>
-                                                        <h6 class="mb-0 text-muted">
-                                                            <i
-                                                                class="mdi mdi-circle-medium text-warning fs-3 align-middle"></i>
-                                                            <span class="team-date">08 Sep, 2021</span>
-                                                        </h6>
-                                                    </div>
-                                                </div>
-                                                <div class="dropdown ms-2">
-                                                    <a href="#" class="dropdown-toggle font-size-16 text-muted"
-                                                        data-bs-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                        <i class="mdi mdi-dots-horizontal"></i>
-                                                    </a>
-                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item" href="javascript: void(0);"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target=".bs-example-new-project"
-                                                            onclick="editProjects('project-items-3')">Edit</a>
-                                                        <a class="dropdown-item" href="javascript: void(0);">Share</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item delete-item" href="javascript: void(0);"
-                                                            data-id="project-items-3"
-                                                            onclick="deleteProjects('project-items-3')">Delete</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="mb-4">
-                                                <h5 class="mb-1 font-size-17 team-title">software</h5>
-                                                <p class="text-muted mb-0 team-description">Plan and onduct user
-                                                    research and analysis</p>
-                                            </div>
-                                            <div class="d-flex">
+                                <?php
+                                // Verificar si el usuario ha iniciado sesión y obtener su documento
+                                if (isset($_SESSION['usuario']['documento'])) {
+                                    $documento = $_SESSION['usuario']['documento'];
+                                    // Consulta para obtener las llamadas del usuario actual
+                                    $query = "SELECT id_llamada, fecha, id_daño, id_est, descripcion, id_empleado FROM llamadas WHERE documento = ?";
+                                    $stmt = $con->prepare($query);
+                                    $stmt->bindParam(1, $documento, PDO::PARAM_STR);
+                                    $stmt->execute();
+                                    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                                                <div class="align-self-end">
-                                                    <span
-                                                        class="badge badge-soft-warning p-2 team-status">Progress</span>
+                                    // Verificar si se encontraron resultados
+                                    foreach ($result as $row) {
+                                        $id_llamada = $row['id_llamada'];
+                                        $fecha = $row['fecha'];
+                                        $id_daño = $row['id_daño'];
+                                        $id_estado = $row['id_est'];
+                                        $descripcion = $row['descripcion'];
+                                        $id_empleado = $row['id_empleado'];
+
+                                        // Consulta para obtener el nombre del daño
+                                        $query_nombre = "SELECT nombredano FROM tipo_daño WHERE id_daño = ?";
+                                        $stmt_nombre = $con->prepare($query_nombre);
+                                        $stmt_nombre->bindParam(1, $id_daño, PDO::PARAM_INT);
+                                        $stmt_nombre->execute();
+                                        $nombre_daño = $stmt_nombre->fetchColumn();
+
+                                        $query_tip_est = "SELECT tip_est FROM estado WHERE id_est = ?";
+                                        $stmt_tip_est = $con->prepare($query_tip_est);
+                                        $stmt_tip_est->bindParam(1, $id_estado, PDO::PARAM_INT);
+                                        $stmt_tip_est->execute();
+                                        $tip_estado = $stmt_tip_est->fetchColumn();
+
+                                        // Verificar el estado y asignar la clase adecuada
+                                        $clase_estado = ($id_estado == 4) ? "badge-soft-warning" : "badge-soft-danger";
+
+                                        $clase_icono = ($id_estado == 5) ? "mdi mdi-circle-medium text-success" : "mdi mdi-circle-medium text-danger";
+
+
+                                ?>
+                                        <div class="col-md-6" id="project-items-1">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <div class="d-flex mb-3">
+                                                        <div class="flex-grow-1 align-items-start">
+                                                            <div>
+                                                                <h6 class="mb-0 text-muted">
+                                                                    <i class="<?php echo $clase_icono; ?> fs-3 align-middle"></i>
+                                                                    <span class="team-date"><?php echo $fecha; ?></span>
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+                                                        <div class="dropdown ms-2">
+                                                            <a href="#" class="dropdown-toggle font-size-16 text-muted" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                <i class="mdi mdi-dots-horizontal"></i>
+                                                            </a>
+                                                            <div class="dropdown-menu dropdown-menu-end">
+                                                                <a class="dropdown-item" href="javascript:void(0);" onclick="showDetails('<?php echo $descripcion; ?>', '<?php echo $id_empleado; ?>')">Descripcion</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="mb-4">
+                                                        <h5 class="mb-1 font-size-17 team-title"><?php echo $nombre_daño; ?></h5>
+
+                                                    </div>
+                                                    <div class="d-flex">
+                                                        <div class="align-self-end">
+                                                            <span class="badge <?php echo $clase_estado; ?> p-2 team-status"><?php echo $tip_estado; ?></span>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6" id="project-items-4">
-                                    <div class="card">
-                                        <div class="card-body">
-                                            <div class="d-flex mb-3">
-                                                <div class="flex-grow-1 align-items-start">
-                                                    <div>
-                                                        <h6 class="mb-0 text-muted">
-                                                            <i
-                                                                class="mdi mdi-circle-medium text-danger fs-3 align-middle"></i>
-                                                            <span class="team-date">20 Sep, 2021</span>
-                                                        </h6>
-                                                    </div>
-                                                </div>
-                                                <div class="dropdown ms-2">
-                                                    <a href="#" class="dropdown-toggle font-size-16 text-muted"
-                                                        data-bs-toggle="dropdown" aria-haspopup="true"
-                                                        aria-expanded="false">
-                                                        <i class="mdi mdi-dots-horizontal"></i>
-                                                    </a>
-                                                    <div class="dropdown-menu dropdown-menu-end">
-                                                        <a class="dropdown-item" href="javascript: void(0);"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target=".bs-example-new-project"
-                                                            onclick="editProjects('project-items-4')">Edit</a>
-                                                        <a class="dropdown-item" href="javascript: void(0);">Share</a>
-                                                        <div class="dropdown-divider"></div>
-                                                        <a class="dropdown-item delete-item" href="javascript:void(0);"
-                                                            data-id="project-items-4"
-                                                            onclick="deleteProjects('project-items-4')">Delete</a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="mb-4">
-                                                <h5 class="mb-1 font-size-17 team-title">software</h5>
-                                                <p class="text-muted mb-0 team-description">The procurement
-                                                    specifications should
-                                                    describe</p>
-                                            </div>
-                                            <div class="d-flex">
-
-                                                <div class="align-self-end">
-                                                    <span class="badge badge-soft-danger p-2 team-status">Pending</span>
-                                                </div>
-                                            </div>
+                                <?php
+                                    } // Cierre del foreach
+                                } // Cierre del if ($result)
+                                ?>
+                            </div>
+                            <div class="modal fade bs-example-new-project" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Detalles de la llamada</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div id="descripcion"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -368,9 +263,7 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                                 generar y dar seguimiento a tus solicitudes de tickets.</p>
 
                             <ul class="ps-3 mb-0">
-                                <li><a href="#" class="__cf_email__"
-                                        data-cfemail="105a717e637867757c7c635060627f7279733e737f7d"
-                                        data-bs-toggle="modal" data-bs-target="#modalTerminosCondiciones">[Terminos y
+                                <li><a href="#" class="__cf_email__" data-cfemail="105a717e637867757c7c635060627f7279733e737f7d" data-bs-toggle="modal" data-bs-target="#modalTerminosCondiciones">[Terminos y
                                         Condiciones]</a></li>
                             </ul>
                         </div>
@@ -379,8 +272,7 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                 <div class="card">
                     <div class="card-body">
                         <div>
-                            <h4 class="card-title mb-4"><a class="perfil" href="Visualizar/perfil.php"><i
-                                        class="mdi mdi-account-circle mdi-18px">
+                            <h4 class="card-title mb-4"><a class="perfil" href="Visualizar/perfil.php"><i class="mdi mdi-account-circle mdi-18px">
                                         Datos Personales
                                     </i></a></h4>
                             <div class="table-responsive">
@@ -442,8 +334,7 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
         </div>
     </div>
     <!-- Modal de Términos y Condiciones -->
-    <div class="modal fade" id="modalTerminosCondiciones" tabindex="-1" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="modalTerminosCondiciones" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -492,9 +383,9 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
     <script type="text/javascript">
     </script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             // Script para activar el modal de Términos y Condiciones al hacer clic en el enlace
-            $('#modalTerminosCondiciones').on('show.bs.modal', function (e) {
+            $('#modalTerminosCondiciones').on('show.bs.modal', function(e) {
                 // Aquí puedes realizar alguna acción si es necesario antes de mostrar el modal
             });
         });

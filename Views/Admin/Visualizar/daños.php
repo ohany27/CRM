@@ -4,12 +4,13 @@ require_once ("../../../Config/conexion.php");
 $DataBase = new Database;
 $con = $DataBase->conectar();
 
-// Obtener el NITC del usuario que ha iniciado sesión desde la sesión
+
 $nitc_usuario = $_SESSION['usuario']['nitc'];
 
 // Preparar la consulta SQL con una cláusula WHERE para filtrar según NITC
-$consulta = "SELECT * FROM tipo_daño WHERE nitc = '$nitc_usuario'";
-$resultado = $con->query($consulta);
+$consulta = $con->prepare("SELECT tipo_daño.*, categoria.tip_cat FROM tipo_daño INNER JOIN categoria ON tipo_daño.id_categoria = categoria.id_cat WHERE tipo_daño.nitc = :nitc");
+$consulta->bindParam(':nitc', $nitc_usuario, PDO::PARAM_STR);
+$consulta->execute();
 ?>
 
 <div class="content-wrapper">
@@ -33,7 +34,6 @@ $resultado = $con->query($consulta);
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>Id_Daños</th>
                                 <th>Tipos de Daños</th>
                                 <th>Categoria</th>
                                 <th>Foto</th>
@@ -43,22 +43,19 @@ $resultado = $con->query($consulta);
                         </thead>
                         <tbody>
                             <?php
-                            $consulta = "SELECT tipo_daño.*, categoria.tip_cat FROM tipo_daño INNER JOIN categoria ON tipo_daño.id_categoria = categoria.id_cat";
-                            $resultado = $con->query($consulta);
-
-                            while ($fila = $resultado->fetch()) {
+                            // Iterar sobre los resultados y mostrarlos en la tabla
+                            while ($fila = $consulta->fetch(PDO::FETCH_ASSOC)) {
                                 echo '
                                 <tr>
-                                <td>' . $fila["id_daño"] . '</td>
-                                <td>' . $fila["nombredano"] . '</td>
-                                <td>' . $fila["tip_cat"] . '</td>
+                                <td>' . htmlspecialchars($fila["nombredano"]) . '</td>
+                                <td>' . htmlspecialchars($fila["tip_cat"]) . '</td>
                                 <td><img src="data:image/jpeg;base64,' . base64_encode($fila["foto"]) . '" width="200" height="100" alt="Foto de daño"></td>
-                                <td>' . $fila["precio"] . '</td>
+                                <td>' . htmlspecialchars($fila["precio"]) . '</td>
                                 <td class="project-actions text-center">
-                                    <a href="../Editar/daños.php?id_daño=' . $fila["id_daño"] . '" class="btn btn-info btn-sm">
+                                    <a href="../Editar/daños.php?id_daño=' . htmlspecialchars($fila["id_daño"]) . '" class="btn btn-info btn-sm">
                                         <i class="fas fa-pencil-alt"></i> Editar
                                     </a>
-                                    <a href="../Eliminar/daños.php?id_daño=' . $fila["id_daño"] . '" class="btn btn-danger btn-sm">
+                                    <a href="../Eliminar/daños.php?id_daño=' . htmlspecialchars($fila["id_daño"]) . '" class="btn btn-danger btn-sm">
                                         <i class="fas fa-trash"></i> Eliminar
                                     </a>
                                 </td>

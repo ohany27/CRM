@@ -9,7 +9,7 @@ use Picqer\Barcode\BarcodeGeneratorPNG;
 $fecha_actual = date('Y-m-d'); // Defino la fecha actual
 $fecha_vencimiento = date('Y-m-d', strtotime('+1 year', strtotime($fecha_actual))); // calculamos de tiempo para el vencimiento
 
-$caracteres = "lkjhsysaASMNB8811AMMaksjyuyysth098765432%#%poiyAZXSDEWOjhhs";
+$caracteres = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 $long = 20;
 $licencia = substr(str_shuffle($caracteres), 0, $long);
 
