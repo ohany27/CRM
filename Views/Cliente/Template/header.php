@@ -40,11 +40,12 @@ if ($empresa_resultado) {
     $nombre_empresa = "Desconocida";
 }
 
-// Consulta SQL para contar empleados
-$sql_empleados = "SELECT COUNT(*) AS total_empleados FROM usuario WHERE id_tip_usu = 3";
+
+$sql_empleados = "SELECT COUNT(*) AS total_empleados FROM usuario WHERE id_tip_usu = 3 AND nitc = :nitc";
 
 // Preparar y ejecutar la consulta de empleados
 $stmt_empleados = $con->prepare($sql_empleados);
+$stmt_empleados->bindParam(':nitc', $nitc, PDO::PARAM_STR);
 $stmt_empleados->execute();
 $resultado_empleados = $stmt_empleados->fetch(PDO::FETCH_ASSOC);
 $total_empleados = $resultado_empleados['total_empleados'];
@@ -52,14 +53,16 @@ $total_empleados = $resultado_empleados['total_empleados'];
 // Determinar la clase del ícono de empleados
 $clase_icono_empleados = ($total_empleados <= 0) ? "mdi mdi-circle-medium text-danger fs-3 align-middle" : "mdi mdi-circle-medium text-success fs-3 align-middle";
 
-// Consulta SQL para contar técnicos
-$sql_tecnicos = "SELECT COUNT(*) AS total_tecnicos FROM usuario WHERE id_tip_usu = 4";
+// Consulta SQL para contar técnicos con el mismo nitc
+$sql_tecnicos = "SELECT COUNT(*) AS total_tecnicos FROM usuario WHERE id_tip_usu = 4 AND nitc = :nitc";
 
 // Preparar y ejecutar la consulta de técnicos
 $stmt_tecnicos = $con->prepare($sql_tecnicos);
+$stmt_tecnicos->bindParam(':nitc', $nitc, PDO::PARAM_STR);
 $stmt_tecnicos->execute();
 $resultado_tecnicos = $stmt_tecnicos->fetch(PDO::FETCH_ASSOC);
 $total_tecnicos = $resultado_tecnicos['total_tecnicos'];
+
 // Determinar la clase del ícono de técnicos
 $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-danger fs-3 align-middle" : "mdi mdi-circle-medium text-success fs-3 align-middle";
 ?>

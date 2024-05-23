@@ -1,6 +1,6 @@
 <?php include "../Template/header.php"; ?>
-<?php
 
+<?php
 // Verificar si se ha enviado el formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
@@ -26,8 +26,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Obtener el documento del usuario desde la sesión
         $documento_usuario = $_SESSION['usuario']['documento'];
 
-        // Obtener un empleado aleatorio con id_tip_usu = 3
-        $stmt_empleado = $con->prepare("SELECT documento FROM usuario WHERE id_tip_usu = 3 ORDER BY RAND() LIMIT 1");
+        // Obtener el nitc del usuario desde la sesión
+        $nitc_usuario = $_SESSION['usuario']['nitc'];
+
+        // Obtener un empleado aleatorio con id_tip_usu = 3 y el mismo nitc que el usuario
+        $stmt_empleado = $con->prepare("SELECT documento FROM usuario WHERE id_tip_usu = 3 AND nitc = :nitc ORDER BY RAND() LIMIT 1");
+        $stmt_empleado->bindParam(':nitc', $nitc_usuario, PDO::PARAM_STR);
         $stmt_empleado->execute();
         $empleado = $stmt_empleado->fetch(PDO::FETCH_ASSOC);
 
@@ -82,6 +86,7 @@ try {
     echo "Error: " . $e->getMessage();
 }
 ?>
+
 
 <ul class="nav nav-tabs nav-tabs-custom border-bottom-0 mt-3 nav-justfied" role="tablist">
     <li class="nav-item" role="presentation">
