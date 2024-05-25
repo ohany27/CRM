@@ -10,18 +10,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Obtener los datos del formulario
         $id_daño = $_POST['inputState']; // Obtener el id de daño seleccionado
         $descripcion = $_POST['descripcion']; // Obtener la descripción ingresada en el textarea
+        $fecha = $_POST['fecha']; // Obtener la fecha desde el formulario
 
         // Verificar si los campos obligatorios están llenos
-        if (empty($id_daño) || empty($descripcion)) {
+        if (empty($id_daño) || empty($descripcion) || empty($fecha)) {
             echo "<script>alert('Todos los campos son obligatorios');</script>";
             exit();
         }
 
         // Definir el id_est
         $id_est = 3; // Supongamos que el id_est siempre será 3
-
-        // Obtener la fecha actual
-        $fecha = date("Y-m-d H:i:s"); // Formato: Año-Mes-Día Hora:Minuto:Segundo
 
         // Obtener el documento del usuario desde la sesión
         $documento_usuario = $_SESSION['usuario']['documento'];
@@ -45,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $documento_empleado = $empleado['documento'];
 
         // Preparar la consulta SQL
-        $sql = "INSERT INTO llamadas (id_daño, id_est, fecha, descripcion, documento, id_empleado) VALUES (?, ?, ?, ?, ?, ?)";
+        $sql = "INSERT INTO llamadas (id_ticket, id_daño, id_est, fecha, descripcion, documento, id_empleado) VALUES (NULL, ?, ?, ?, ?, ?, ?)";
 
         // Preparar la declaración
         $stmt = $con->prepare($sql);
@@ -87,7 +85,6 @@ try {
 }
 ?>
 
-
 <ul class="nav nav-tabs nav-tabs-custom border-bottom-0 mt-3 nav-justfied" role="tablist">
     <li class="nav-item" role="presentation">
         <a class="nav-link px-4 " href="../index.php">
@@ -122,17 +119,15 @@ try {
                 </div>
             </div>
             <div class="row" id="all-projects">
-                <form method="post">
+                <form method="post" onsubmit="return establecerFecha()">
                     <div class="form-row">
                         <div class="form-group col-md-12">
                             <label for="inputState">Seleccione el Tipo de Daño</label>
-                            <select name="inputState" id="inputState" class="form-control" onchange="mostrarImagen()"
-                                required>
+                            <select name="inputState" id="inputState" class="form-control" onchange="mostrarImagen()" required>
                                 <option value="" disabled selected>Seleccione</option>
                                 <!-- Obtener opciones de tipos de daño desde la base de datos -->
                                 <?php foreach ($tipo_daño as $tipo): ?>
-                                    <option value="<?php echo $tipo['id_daño']; ?>"><?php echo $tipo['nombredano']; ?>
-                                    </option>
+                                    <option value="<?php echo $tipo['id_daño']; ?>"><?php echo $tipo['nombredano']; ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
@@ -141,12 +136,37 @@ try {
                     <div id="danioSeleccionado" class="agente-seleccionado"></div>
                     <div class="form-group">
                         <label for="descripcion">Mensaje</label>
-                        <textarea rows="4" cols="50" class="form-control" name="descripcion" id="descripcion"
-                            placeholder="Descripción" required></textarea>
+                        <textarea rows="4" cols="50" class="form-control" name="descripcion" id="descripcion" placeholder="Descripción" required></textarea>
                     </div>
                     <br>
+                    <input type="hidden" id="fecha" name="fecha">
                     <button type="submit" class="btn btn-primary">Enviar</button>
                 </form>
             </div>
+
+            <script>
+                // Función para obtener la fecha y hora actual
+                function obtenerFechaActual() {
+                    const ahora = new Date();
+                    const ano = ahora.getFullYear();
+                    const mes = ('0' + (ahora.getMonth() + 1)).slice(-2);
+                    const dia = ('0' + ahora.getDate()).slice(-2);
+                    const horas = ('0' + ahora.getHours()).slice(-2);
+                    const minutos = ('0' + ahora.getMinutes()).slice(-2);
+                    const segundos = ('0' + ahora.getSeconds()).slice(-2);
+                    return `${ano}-${mes}-${dia} ${horas}:${minutos}:${segundos}`;
+                }
+
+                // Función para establecer la fecha en el campo oculto
+                function establecerFecha() {
+                    document.getElementById('fecha').value = obtenerFechaActual();
+                    return true; // Permite que el formulario se envíe
+                }
+
+                // Establecer la fecha al cargar la página
+                document.addEventListener('DOMContentLoaded', function() {
+                    document.getElementById('fecha').value = obtenerFechaActual();
+                });
+            </script>
 
             <?php include "../Template/footer.php"; ?>

@@ -31,7 +31,6 @@ $con = $DataBase->conectar();
                 <th>Teléfono</th>
                 <th>Dirección</th>
                 <th>NITC</th>
-                <th>Tipo Usuario</th>
                 <th></th>
               </tr>
             </thead>
@@ -54,7 +53,6 @@ $con = $DataBase->conectar();
                     <td>' . $fila["telefono"] . '</td>
                     <td>' . $fila["direccion"] . '</td>
                     <td>' . ($fila["nombre_empresa"] ? $fila["nombre_empresa"] : $fila["nombre"]) . '</td>
-                    <td>' . $fila["tip_usu"] . '</td>
                     <td class="project-actions text-center">
                           <a href="../Eliminar/usuarios.php?id=' . $fila['documento'] . '" class="btn btn-danger btn-sm" href="#">
                               <i class="fas fa-trash">

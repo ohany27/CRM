@@ -1,15 +1,8 @@
 <?php include "../Template/header.php"; ?>
 <?php
-require_once("../../../Config/conexion.php");
+require_once("../../Config/conexion.php");
 $DataBase = new Database;
 $con = $DataBase->conectar();
-
-// Obtener el NITC del usuario que ha iniciado sesión desde la sesión
-$nitc_usuario = $_SESSION['usuario']['nitc'];
-
-// Preparar la consulta SQL con una cláusula WHERE para filtrar según NITC
-$consulta = "SELECT * FROM riesgos WHERE nitc = '$nitc_usuario'";
-$resultado = $con->query($consulta);
 ?>
 <div class="content-wrapper">
     <div class="content-header">
@@ -40,6 +33,9 @@ $resultado = $con->query($consulta);
                         </thead>
                         <tbody>
                             <?php
+                            $consulta = "SELECT * FROM riesgos WHERE riesgos.id_riesgo ";
+
+                            $resultado = $con->query($consulta);
                             while ($fila = $resultado->fetch()) {
                                 echo '
                                 <tr>
@@ -49,9 +45,6 @@ $resultado = $con->query($consulta);
                                     <td class="project-actions text-center">
                                         <a href="../Editar/riesgos.php?id_riesgo=' . $fila["id_riesgo"] . '" class="btn btn-info btn-sm" href="#">
                                             <i class="fas fa-pencil-alt"></i> Editar
-                                        </a>
-                                        <a href="../Eliminar/riesgos.php?id_riesgo=' . $fila["id_riesgo"] . '" class="btn btn-danger btn-sm" href="#">
-                                            <i class="fas fa-trash"></i> Eliminar
                                         </a>
                                     </td>
                                 </tr>';

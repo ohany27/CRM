@@ -1,24 +1,22 @@
 <?php include "../Template/header.php"; ?>
 <?php
-require_once("../../../Config/conexion.php");
+require_once ("../../Config/conexion.php");
 $DataBase = new Database;
 $con = $DataBase->conectar();
 
-// Obtener el NITC del usuario que ha iniciado sesión desde la sesión
-$nitc_usuario = $_SESSION['usuario']['nitc'];
+
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Recoger los datos del formulario
     $tip_riesgo = $_POST['tip_riesgo'];
     $tiempo_atent = $_POST['tiempo_atent'];
-    
+
     // Insertar los datos en la base de datos
-    $consulta = "INSERT INTO riesgos (tip_riesgo, tiempo_atent, nitc) VALUES (:tip_riesgo, :tiempo_atent, :nitc)";
+    $consulta = "INSERT INTO riesgos (tip_riesgo, tiempo_atent) VALUES (:tip_riesgo, :tiempo_atent)";
     $stmt = $con->prepare($consulta);
     $stmt->bindParam(':tip_riesgo', $tip_riesgo);
     $stmt->bindParam(':tiempo_atent', $tiempo_atent);
-    $stmt->bindParam(':nitc', $nitc_usuario);
-    
+
     if ($stmt->execute()) {
         echo "<script>alert('Riesgo creado exitosamente'); window.location.href='../Visualizar/riesgos.php';</script>";
     } else {
@@ -47,13 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="tip_riesgo">Tipo de Riesgo</label>
-                                    <input type="text" class="form-control" id="tip_riesgo" name="tip_riesgo" placeholder="Tipo de Riesgo" required>
+                                    <input type="text" class="form-control" id="tip_riesgo" name="tip_riesgo"
+                                        placeholder="Tipo de Riesgo" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="tiempo_atent">Tiempo de Atención</label>
-                                    <input type="text" class="form-control" id="tiempo_atent" name="tiempo_atent" placeholder="Tiempo de Atención" required>
+                                    <input type="text" class="form-control" id="tiempo_atent" name="tiempo_atent"
+                                        placeholder="Tiempo de Atención" required>
                                 </div>
                             </div>
                         </div>
@@ -66,5 +66,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
     </section>
 </div>
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var nombreInput = document.getElementById("tip_riesgo");
+            var tiempoRiesgoInput = document.getElementById("tiempo_atent");
 
+            nombreInput.addEventListener("input", function() {
+                var nombreRegex = /^[a-zA-Z\s]{3,}$/;
+                if (!nombreRegex.test(nombreInput.value)) {
+                    nombreInput.setCustomValidity("El nombre debe tener al menos 3 letras y no debe contener puntos ni números.");
+                } else {
+                    nombreInput.setCustomValidity("");
+                }
+            });
+
+            tiempoRiesgoInput.addEventListener("input", function() {
+                var tiempoRiesgoRegex = /^(?=.*[a-zA-Z])(?=.*\d).+$/;
+                if (!tiempoRiesgoRegex.test(tiempoRiesgoInput.value)) {
+                    tiempoRiesgoInput.setCustomValidity("El tiempo de riesgo debe contener tanto letras como números.");
+                } else {
+                    tiempoRiesgoInput.setCustomValidity("");
+                }
+            });
+        });
+    </script>
 <?php include "../Template/footer.php"; ?>
