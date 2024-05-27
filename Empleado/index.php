@@ -1,3 +1,34 @@
+<?php
+include("../../Config/validarSesion.php");
+require_once ("../../Config/conexion.php");
+$DataBase = new Database;
+$con = $DataBase->conectar();
+
+// Obtener el documento del usuario logeado desde la sesión
+$documento_empleado = $_SESSION['usuario']['documento'];
+
+// Consulta SQL para contar las solicitudes en curso del empleado logeado
+$consulta = "SELECT COUNT(*) AS num_solicitudes FROM llamadas WHERE id_est = 3 AND id_empleado = ?";
+$stmt = $con->prepare($consulta);
+$stmt->execute([$documento_empleado]);
+$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+$num_solicitudes_en_curso = $fila['num_solicitudes'];
+
+// Consulta SQL para contar las solicitudes en proceso del empleado logeado
+$consulta = "SELECT COUNT(*) AS num_solicitudes FROM llamadas WHERE id_est = 4 AND id_empleado = ?";
+$stmt = $con->prepare($consulta);
+$stmt->execute([$documento_empleado]);
+$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+$num_solicitudes_en_proceso = $fila['num_solicitudes'];
+
+// Consulta SQL para contar las solicitudes solucionadas del empleado logeado
+$consulta = "SELECT COUNT(*) AS num_solicitudes FROM llamadas WHERE id_est = 5 AND id_empleado = ?";
+$stmt = $con->prepare($consulta);
+$stmt->execute([$documento_empleado]);
+$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+$num_solicitudes_solucionadas = $fila['num_solicitudes'];
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -199,7 +230,7 @@
               <!-- small box -->
               <div class="small-box bg-success">
                 <div class="inner">
-                  <h3>00</h3>
+                  <h3><?php echo $num_solicitudes_en_curso; ?></h3>
                   <p>Solicitudes en curso</p>
                 </div>
                 <div class="icon">
@@ -213,13 +244,13 @@
               <!-- small box -->
               <div class="small-box bg-warning">
                 <div class="inner">
-                  <h3>00</h3>
-                  <p>Solicitudes Solucionadas</p>
+                  <h3><?php echo $num_solicitudes_en_proceso; ?></h3>
+                  <p>Solicitudes en Proceso</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-person-add"></i>
                 </div>
-                <a href="Visualizar/sol_solucionadas.php" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="Visualizar/tickets_proceso.php" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->
@@ -227,14 +258,13 @@
               <!-- small box -->
               <div class="small-box bg-danger">
                 <div class="inner">
-                  <h3>00</h3>
-
-                  <p>Tickets en proceso</p>
+                <h3><?php echo $num_solicitudes_solucionadas; ?></h3>
+                  <p>Solicitudes Solucionadas</p>
                 </div>
                 <div class="icon">
                   <i class="ion ion-pie-graph"></i>
                 </div>
-                <a href="Visualizar/tickets_proceso.php" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="Visualizar/sol_solucionadas.php" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->

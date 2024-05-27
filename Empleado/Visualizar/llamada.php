@@ -1,46 +1,44 @@
 <?php 
-require_once ("../../Config/conexion.php");
+session_start();
+require_once ("../../../Config/conexion.php");
 $DataBase = new Database;
 $con = $DataBase->conectar();
 
 // Consulta para obtener datos del ticket y la llamada relacionada
-$sql = $con->prepare("SELECT * FROM ticket
-    INNER JOIN llamadas ON ticket.id_llamada = llamadas.id_llamada
+$sql = $con->prepare("SELECT detalle_ticket.*, llamadas.*, usuario.*, tipo_daño.*, detalle_daño.*, tipo_daño.id_riesgos AS tipo_dano_riesgo, riesgos.tip_riesgo, riesgos.tiempo_atent
+    FROM detalle_ticket
+    INNER JOIN llamadas ON detalle_ticket.id_ticket = llamadas.id_ticket
     INNER JOIN usuario ON llamadas.documento = usuario.documento
     INNER JOIN tipo_daño ON llamadas.id_daño = tipo_daño.id_daño
     INNER JOIN detalle_daño ON llamadas.id_daño = detalle_daño.id_daño
-    WHERE ticket.id = :id");
+    INNER JOIN riesgos ON tipo_daño.id_riesgos = riesgos.id_riesgo
+    WHERE detalle_ticket.id_ticket = :id");
 $sql->bindParam(':id', $_GET['id']);
 $sql->execute();
 $usua = $sql->fetch();
 
 // Consulta para obtener los pasos de solución
-$sql = $con->prepare("
-    SELECT pasos_solucion 
-    FROM detalle_daño 
-    WHERE id_daño = ?
-");
+$sql = $con->prepare("SELECT pasos_solucion FROM detalle_daño WHERE id_daño = ?");
 $sql->execute([$usua['id_daño']]); // Pasar el valor de id_daño como un parámetro
 $pasos_solucion = $sql->fetchAll(PDO::FETCH_COLUMN);
 
-// Manejar la lógica de inserción de datos cuando se envía el formulario
 if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
     $fecha_final = $_POST['fecha_final'];
     $estado = $_POST['estado'];
-    $urgencia = $_POST['urgencia'];
-    $tecnico = $_POST['tecnico'];
     $descripcion = $_POST['descripcion'];
 
+    // Obtener el documento del empleado logeado desde la sesión
+    $documento_empleado = $_SESSION['usuario']['documento'];
+    $id_riesgo = $usua['tipo_dano_riesgo'];
+
     if ($estado == 5) { // Estado "Solucionado"
-        // Insertar datos en la tabla detalle_ticket con valores NULL en id_tecnico y id_riesgo
-        $insertSQL = $con->prepare("INSERT INTO detalle_ticket (id_ticket, id_tecnico, id_riesgo, fecha, descripcion) VALUES (:id_ticket, NULL, NULL, NOW(), :descripcion)");
+        // Insertar datos en la tabla detalle_ticket con el documento del empleado logeado
+        $insertSQL = $con->prepare("INSERT INTO detalle_ticket (id_ticket, id_estado, documento, id_riesgo, fecha_inicio, fecha_final, descripcion_detalle) VALUES (:id_ticket, :id_estado, :documento, NULL, NOW(), NOW(), :descripcion_detalle)");
         $insertSQL->bindParam(':id_ticket', $usua['id_ticket']);
-        $insertSQL->bindParam(':descripcion', $descripcion);
+        $insertSQL->bindParam(':id_estado', $estado);
+        $insertSQL->bindParam(':documento', $documento_empleado);
+        $insertSQL->bindParam(':descripcion_detalle', $descripcion);
         $insertSQL->execute();
-        // Actualizar la fecha final en la tabla ticket
-        $updateSQL = $con->prepare("UPDATE ticket SET fecha_final = NOW(), id_estado = 5 WHERE id = :id");
-        $updateSQL->bindParam(':id', $_GET['id']);
-        $updateSQL->execute();
 
         // Actualizar el estado en la tabla llamadas
         $updateLlamadaSQL = $con->prepare("UPDATE llamadas SET id_est = 5 WHERE id_llamada = :id_llamada");
@@ -51,12 +49,19 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
         header("Location: sol_solucionadas.php");
         exit(); // Detener la ejecución del script después de redirigir
     } elseif ($estado == 4) { // Estado "En proceso"
-        // Insertar datos en la tabla detalle_ticket
-        $insertSQL = $con->prepare("INSERT INTO detalle_ticket (id_ticket, id_tecnico, id_riesgo, fecha, descripcion) VALUES (:id_ticket, :id_tecnico, :id_riesgo, NOW(), :descripcion)");
+        // Obtener un técnico aleatorio con id_tip_usu = 4
+        $sql_tecnico = $con->prepare("SELECT documento FROM usuario WHERE id_tip_usu = 4 ORDER BY RAND() LIMIT 1");
+        $sql_tecnico->execute();
+        $tecnico_result = $sql_tecnico->fetch(PDO::FETCH_ASSOC);
+        $documento_tecnico = $tecnico_result['documento'];
+
+        // Insertar datos en la tabla detalle_ticket con el técnico aleatorio
+        $insertSQL = $con->prepare("INSERT INTO detalle_ticket (id_ticket, id_estado, documento, id_riesgo, fecha_inicio, descripcion_detalle) VALUES (:id_ticket, :id_estado, :documento, :id_riesgo, NOW(), :descripcion_detalle)");
         $insertSQL->bindParam(':id_ticket', $usua['id_ticket']);
-        $insertSQL->bindParam(':id_tecnico', $tecnico);
-        $insertSQL->bindParam(':id_riesgo', $urgencia);
-        $insertSQL->bindParam(':descripcion', $descripcion);
+        $insertSQL->bindParam(':id_estado', $estado);
+        $insertSQL->bindParam(':documento', $documento_tecnico); // Asignar documento del técnico aleatorio
+        $insertSQL->bindParam(':id_riesgo', $id_riesgo);
+        $insertSQL->bindParam(':descripcion_detalle', $descripcion);
         $insertSQL->execute();
 
         // Redirigir a la página de tickets en proceso
@@ -66,7 +71,6 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 
     echo '<script>alert("Datos registrados exitosamente.");</script>';
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -85,7 +89,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
             <div class="col-lg-4">
                 <aside class="aside">
                     <h5 class="text-center">Ticket</h5>
-                    <form class="formulario" enctype="multipart/form-data" method="post">
+                    <form class="formulario" enctype="multipart/form-data" method="post" onsubmit="return validarFormulario();">
                         <div class="row">
                             <div class="col">
                                 <div class="form-group">
@@ -134,31 +138,11 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                         <h5 class="text-center">Detalle Ticket</h5>
                         <div class="form-group">
                             <label for="urgencia">Urgencia</label>
-                            <select class="form-control" id="urgencia" name="urgencia">
-                                <option value="">Seleccione</option>
-                                <?php
-                                // Consulta para obtener los riesgos
-                                $control = $con->prepare("SELECT * FROM riesgos");
-                                $control->execute();
-                                while ($fila = $control->fetch(PDO::FETCH_ASSOC)) {
-                                    echo "<option value=" . $fila['id_riesgo'] . ">" . $fila['tip_riesgo'] . "</option>";
-                                }
-                                ?>
-                            </select>
+                            <input type="text" class="form-control" id="urgencia" name="urgencia" value="<?php echo $usua['tip_riesgo']?>" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="tecnico">Técnicos</label>
-                            <select class="form-control" id="tecnico" name="tecnico">
-                                <option value="">Seleccione al técnico</option>
-                                <?php
-                                // Consulta para obtener los técnicos
-                                $control = $con->prepare("SELECT * FROM usuario WHERE id_tip_usu = 4");
-                                $control->execute();
-                                while ($fila = $control->fetch(PDO::FETCH_ASSOC)) {
-                                    echo "<option value='" . $fila['id_tip_usu'] . "'>" . $fila['nombre'] . "</option>";
-                                }
-                                ?>
-                            </select>
+                            <label for="urgencia">Tiempo de atencion</label>
+                            <input type="tiempo_atencion" class="form-control" id="tiempo_atencion" name="tiempo_atencion" value="<?php echo $usua['tiempo_atent']?>" readonly>
                         </div>
                         <div class="form-group">
                             <label for="descripcion">¿Qué pasó con el problema?</label>
@@ -217,6 +201,8 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
         </div>
     </div>
     
-    <script src="../dist/js/llamada.js"></script>
+    <script src="../js/llamada.js"></script>
+    <script src="../js/alerta.js"></script>
+
 </body>
 </html>
