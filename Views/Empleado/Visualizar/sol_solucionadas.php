@@ -1,4 +1,4 @@
-<?php 
+<?php
 include "../Template/header.php"; 
 require_once ("../../../Config/conexion.php");
 $DataBase = new Database;
@@ -9,7 +9,7 @@ $con = $DataBase->conectar();
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0">Roles Registrados</h1>
+          <h1 class="m-0">Solicitudes Solucionadas</h1>
         </div>
       </div>
     </div>
@@ -36,36 +36,34 @@ $con = $DataBase->conectar();
               </tr>
             </thead>
             <tbody>
-            <?php
-            // Consulta de Empleados
-            $consulta = "SELECT * FROM detalle_ticket, ticket, llamadas, usuario, tipo_daño, estado
-            WHERE detalle_ticket.id_ticket = ticket.id_ticket 
-            AND ticket.id_llamada = llamadas.id_llamada
-            AND ticket.id_estado = estado.id_est
-            AND llamadas.id_daño = tipo_daño.id_daño
-            AND llamadas.documento = usuario.documento
-            AND ticket.id_estado = 5 ";
-            $resultado = $con->query($consulta);
+              <?php
+              $consulta = "SELECT DISTINCT llamadas.id_llamada, detalle_ticket.id_ticket, detalle_ticket.fecha_final, usuario.nombre AS cliente, usuario.documento, tipo_daño.nombredano AS tipo_problema, tipo_daño.id_daño, detalle_ticket.descripcion_detalle AS descripcion, estado.tip_est AS estado
+              FROM llamadas
+              INNER JOIN detalle_ticket ON llamadas.id_ticket = detalle_ticket.id_ticket
+              INNER JOIN usuario ON llamadas.documento = usuario.documento
+              INNER JOIN tipo_daño ON llamadas.id_daño = tipo_daño.id_daño
+              INNER JOIN estado ON detalle_ticket.id_estado = estado.id_est
+              WHERE detalle_ticket.id_estado = 5;";
+              $resultado = $con->query($consulta);
 
-            while ($fila = $resultado->fetch()) {
-                echo '
-                <tr>
-                    <td>' . $fila["id_llamada"] . '</td>
-                    <td>' . $fila["id_ticket"] . '</td>
-                    <td>' . $fila["fecha"] . '</td>
-                    <td>' . $fila["nombre"] . '</td>
-                    <td>' . $fila["documento"] . '</td>
-                    <td>' . $fila["nombredano"] . '</td>
-                    <td>' . $fila["descripcion"] . '</td>
-                    <td>' . $fila["tip_est"] . '</td>
-                </tr>';
-            }
-            ?>
-        </tbody>
+              while ($fila = $resultado->fetch()) {
+                  echo '
+                  <tr>
+                      <td>' . $fila["id_llamada"] . '</td>
+                      <td>' . $fila["id_ticket"] . '</td>
+                      <td>' . $fila["fecha_final"] . '</td>
+                      <td>' . $fila["cliente"] . '</td>
+                      <td>' . $fila["documento"] . '</td>
+                      <td>' . $fila["tipo_problema"] . '</td>
+                      <td>' . $fila["descripcion"] . '</td>
+                      <td>' . $fila["estado"] . '</td>
+                  </tr>';
+              }
+              ?>
             </tbody>
-          </table>
-        </div>
-      </div>
-  </section>
-</div>
-<?php include "../Template/footer.php"; ?>
+                      </table>
+                    </div>
+                  </div>
+              </section>
+            </div>
+            <?php include "../Template/footer.php"; ?>

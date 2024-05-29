@@ -1,3 +1,6 @@
+<?php 
+include("../../../Config/validarSesion.php");
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -71,7 +74,7 @@
             <span class="float-right text-muted text-sm">visitar</span>
           </a>
           <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
+          <a href="../../../Config/validarSesion.php?logout=true" class="dropdown-item">
             <i class="fas fa-sign-out-alt mr-2"></i> Salir
             <span class="float-right text-muted text-sm">accion</span>
           </a>

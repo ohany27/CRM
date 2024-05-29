@@ -37,7 +37,7 @@ include "../Template/header.php";
                 </div>
             </div>
             <div class="row" id="all-projects">
-            <?php
+                <?php
                 // Verificar si el usuario ha iniciado sesión y obtener su documento
                 if (isset($_SESSION['usuario']['documento'])) {
                     $documento = $_SESSION['usuario']['documento'];
@@ -64,18 +64,20 @@ include "../Template/header.php";
                         $stmt_nombre->execute();
                         $nombre_daño = $stmt_nombre->fetchColumn();
 
-                        $query_tip_est = "SELECT tip_est FROM estado WHERE id_est = ?";
-                        $stmt_tip_est = $con->prepare($query_tip_est);
-                        $stmt_tip_est->bindParam(1, $id_estado, PDO::PARAM_INT);
-                        $stmt_tip_est->execute();
-                        $tip_estado = $stmt_tip_est->fetchColumn();
+                        // Definir el nombre del estado
+                        if ($id_estado == 4) {
+                            $tip_estado = "Aceptada";
+                        } else {
+                            $query_tip_est = "SELECT tip_est FROM estado WHERE id_est = ?";
+                            $stmt_tip_est = $con->prepare($query_tip_est);
+                            $stmt_tip_est->bindParam(1, $id_estado, PDO::PARAM_INT);
+                            $stmt_tip_est->execute();
+                            $tip_estado = $stmt_tip_est->fetchColumn();
+                        }
 
                         // Verificar el estado y asignar la clase adecuada
                         $clase_estado = ($id_estado == 4) ? "badge-soft-success" : "badge-soft-danger";
-
                         $clase_icono = ($id_estado == 4) ? "mdi mdi-circle-medium text-success" : "mdi mdi-circle-medium text-danger";
-                        
-                        
                         ?>
                         <div class="col-md-6" id="project-items-1">
                             <div class="card">
@@ -95,7 +97,8 @@ include "../Template/header.php";
                                                 <i class="mdi mdi-dots-horizontal"></i>
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
-                                            <a class="dropdown-item" href="javascript:void(0);" onclick="showDetails('<?php echo $descripcion; ?>', '<?php echo $id_empleado; ?>')">Descripcion</a>
+                                                <a class="dropdown-item" href="javascript:void(0);"
+                                                    onclick="showDetails('<?php echo $descripcion; ?>', '<?php echo $id_empleado; ?>')">Descripcion</a>
                                             </div>
                                         </div>
                                     </div>
@@ -117,7 +120,8 @@ include "../Template/header.php";
                 } // Cierre del if ($result)
                 ?>
             </div>
-            <div class="modal fade bs-example-new-project" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal fade bs-example-new-project" tabindex="-1" role="dialog"
+                aria-labelledby="myLargeModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">

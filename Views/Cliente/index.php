@@ -1,8 +1,8 @@
 <?php
-include("../../Config/validarSesion.php");
+include ("../../Config/validarSesion.php");
 ?>
 <?php
-require_once("../../Config/conexion.php");
+require_once ("../../Config/conexion.php");
 $DataBase = new Database;
 $con = $DataBase->conectar();
 $id_tip_usu = $_SESSION['usuario']['id_tip_usu'];
@@ -84,7 +84,10 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
 </head>
 
 <body>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css" integrity="sha512-LX0YV/MWBEn2dwXCYgQHrpa9HJkwB+S+bnBpifSOTO1No27TqNMKYoAn6ff2FBh03THAzAiiCwQ+aPX+/Qt/Ow==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.2.96/css/materialdesignicons.min.css"
+        integrity="sha512-LX0YV/MWBEn2dwXCYgQHrpa9HJkwB+S+bnBpifSOTO1No27TqNMKYoAn6ff2FBh03THAzAiiCwQ+aPX+/Qt/Ow=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
     <div class="container">
         <div class="row">
             <div class="col-xl-8">
@@ -93,7 +96,8 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                         <div class="row align-items-center">
                             <div class="col-md-3">
                                 <div class="text-center border-end">
-                                    <img src="https://cdn-icons-png.freepik.com/512/2867/2867297.png" class="img-fluid avatar-xxl rounded-circle" alt>
+                                    <img src="https://cdn-icons-png.freepik.com/512/2867/2867297.png"
+                                        class="img-fluid avatar-xxl rounded-circle" alt>
                                     <h4 class="text-primary font-size-20 mt-3 mb-2">
                                         <?php echo $_SESSION['usuario']['nombre']; ?>
                                     </h4>
@@ -117,16 +121,20 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                                     <div class="row my-4">
                                         <div class="col-md-12">
                                             <div>
-                                                <p class="text-muted mb-2 fw-medium"><i class="mdi mdi-email-outline me-2"> Tecnelectrics@gmail.com</i>
+                                                <p class="text-muted mb-2 fw-medium"><i
+                                                        class="mdi mdi-email-outline me-2"> Tecnelectrics@gmail.com</i>
                                                 </p>
-                                                <p class="text-muted fw-medium mb-0"><i class="mdi mdi-phone-in-talk-outline me-2"></i>+57 310 2552 339
+                                                <p class="text-muted fw-medium mb-0"><i
+                                                        class="mdi mdi-phone-in-talk-outline me-2"></i>+57 310 2552 339
                                                 </p>
                                             </div>
                                         </div>
                                     </div>
-                                    <ul class="nav nav-tabs nav-tabs-custom border-bottom-0 mt-3 nav-justfied" role="tablist">
+                                    <ul class="nav nav-tabs nav-tabs-custom border-bottom-0 mt-3 nav-justfied"
+                                        role="tablist">
                                         <li class="nav-item" role="presentation">
-                                            <a class="nav-link px-4 active" data-bs-toggle="tab" href="index.php" role="tab" aria-selected="false" tabindex="-1">
+                                            <a class="nav-link px-4 active" data-bs-toggle="tab" href="index.php"
+                                                role="tab" aria-selected="false" tabindex="-1">
                                                 <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
                                                 <span class="d-none d-sm-block">Mis Tickets</span>
                                             </a>
@@ -163,7 +171,7 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                                 if (isset($_SESSION['usuario']['documento'])) {
                                     $documento = $_SESSION['usuario']['documento'];
                                     // Consulta para obtener las llamadas del usuario actual
-                                    $query = "SELECT id_llamada, fecha, id_daño, id_est, descripcion, id_empleado FROM llamadas WHERE documento = ?";
+                                    $query = "SELECT id_llamada, id_ticket, fecha, id_daño, id_est, descripcion, id_empleado FROM llamadas WHERE documento = ?";
                                     $stmt = $con->prepare($query);
                                     $stmt->bindParam(1, $documento, PDO::PARAM_STR);
                                     $stmt->execute();
@@ -172,83 +180,122 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                                     // Verificar si se encontraron resultados
                                     foreach ($result as $row) {
                                         $id_llamada = $row['id_llamada'];
-                                        $fecha = $row['fecha'];
+                                        $id_ticket = $row['id_ticket'];
                                         $id_daño = $row['id_daño'];
-                                        $id_estado = $row['id_est'];
                                         $descripcion = $row['descripcion'];
                                         $id_empleado = $row['id_empleado'];
 
-                                        // Consulta para obtener el nombre del daño
-                                        $query_nombre = "SELECT nombredano FROM tipo_daño WHERE id_daño = ?";
-                                        $stmt_nombre = $con->prepare($query_nombre);
-                                        $stmt_nombre->bindParam(1, $id_daño, PDO::PARAM_INT);
-                                        $stmt_nombre->execute();
-                                        $nombre_daño = $stmt_nombre->fetchColumn();
+                                        // Consulta para obtener el detalle del ticket con el id_estado más alto disponible
+                                        $query_detalle = "
+                SELECT fecha_inicio, id_estado, descripcion_detalle
+                FROM detalle_ticket
+                WHERE id_ticket = ?
+                ORDER BY id_estado DESC
+                LIMIT 1";
+                                        $stmt_detalle = $con->prepare($query_detalle);
+                                        $stmt_detalle->bindParam(1, $id_ticket, PDO::PARAM_INT);
+                                        $stmt_detalle->execute();
+                                        $detalle = $stmt_detalle->fetch(PDO::FETCH_ASSOC);
 
-                                        $query_tip_est = "SELECT tip_est FROM estado WHERE id_est = ?";
-                                        $stmt_tip_est = $con->prepare($query_tip_est);
-                                        $stmt_tip_est->bindParam(1, $id_estado, PDO::PARAM_INT);
-                                        $stmt_tip_est->execute();
-                                        $tip_estado = $stmt_tip_est->fetchColumn();
+                                        if ($detalle) {
+                                            $fecha_inicio = $detalle['fecha_inicio'];
+                                            $id_estado_detalle = $detalle['id_estado'];
+                                            $descripcion_detalle = $detalle['descripcion_detalle'];
 
-                                        // Verificar el estado y asignar la clase adecuada
-                                        $clase_estado = ($id_estado == 4) ? "badge-soft-warning" : "badge-soft-danger";
+                                            // Consulta para obtener el nombre del daño
+                                            $query_nombre = "SELECT nombredano FROM tipo_daño WHERE id_daño = ?";
+                                            $stmt_nombre = $con->prepare($query_nombre);
+                                            $stmt_nombre->bindParam(1, $id_daño, PDO::PARAM_INT);
+                                            $stmt_nombre->execute();
+                                            $nombre_daño = $stmt_nombre->fetchColumn();
 
-                                        $clase_icono = ($id_estado == 5) ? "mdi mdi-circle-medium text-success" : "mdi mdi-circle-medium text-danger";
+                                            // Consulta para obtener el estado del detalle del ticket
+                                            $query_tip_est = "SELECT tip_est FROM estado WHERE id_est = ?";
+                                            $stmt_tip_est = $con->prepare($query_tip_est);
+                                            $stmt_tip_est->bindParam(1, $id_estado_detalle, PDO::PARAM_INT);
+                                            $stmt_tip_est->execute();
+                                            $tip_estado = $stmt_tip_est->fetchColumn();
 
+                                            // Consulta para obtener el nombre del empleado
+                                            $query_empleado = "SELECT nombre FROM usuario WHERE documento = ?";
+                                            $stmt_empleado = $con->prepare($query_empleado);
+                                            $stmt_empleado->bindParam(1, $id_empleado, PDO::PARAM_STR);
+                                            $stmt_empleado->execute();
+                                            $nombre_empleado = $stmt_empleado->fetchColumn();
 
-                                ?>
-                                        <div class="col-md-6" id="project-items-1">
-                                            <div class="card">
-                                                <div class="card-body">
-                                                    <div class="d-flex mb-3">
-                                                        <div class="flex-grow-1 align-items-start">
-                                                            <div>
-                                                                <h6 class="mb-0 text-muted">
-                                                                    <i class="<?php echo $clase_icono; ?> fs-3 align-middle"></i>
-                                                                    <span class="team-date"><?php echo $fecha; ?></span>
-                                                                </h6>
+                                            // Verificar el estado y asignar la clase adecuada
+                                            if ($id_estado_detalle == 3) {
+                                                $clase_estado = "badge-soft-danger";
+                                                $clase_icono = "mdi mdi-circle-medium text-danger";
+                                            } elseif ($id_estado_detalle == 4) {
+                                                $clase_estado = "badge-soft-warning";
+                                                $clase_icono = "mdi mdi-circle-medium text-warning";
+                                            } elseif ($id_estado_detalle == 5) {
+                                                $clase_estado = "badge-soft-success";
+                                                $clase_icono = "mdi mdi-circle-medium text-success";
+                                            }
+                                            ?>
+                                            <div class="col-md-6" id="project-items-1">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="d-flex mb-3">
+                                                            <div class="flex-grow-1 align-items-start">
+                                                                <div>
+                                                                    <h6 class="mb-0 text-muted">
+                                                                        <i
+                                                                            class="<?php echo $clase_icono; ?> fs-3 align-middle"></i>
+                                                                        <span class="team-date"><?php echo $fecha_inicio; ?></span>
+                                                                    </h6>
+                                                                </div>
+                                                            </div>
+                                                            <div class="dropdown ms-2">
+                                                                <a href="#" class="dropdown-toggle font-size-16 text-muted"
+                                                                    data-bs-toggle="dropdown" aria-haspopup="true"
+                                                                    aria-expanded="false">
+                                                                    <i class="mdi mdi-dots-horizontal"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-end">
+                                                                    <a class="dropdown-item" href="javascript:void(0);"
+                                                                        onclick="showDetails('<?php echo $descripcion_detalle; ?>', '<?php echo $nombre_empleado; ?>')">Descripcion</a>
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                        <div class="dropdown ms-2">
-                                                            <a href="#" class="dropdown-toggle font-size-16 text-muted" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                <i class="mdi mdi-dots-horizontal"></i>
-                                                            </a>
-                                                            <div class="dropdown-menu dropdown-menu-end">
-                                                                <a class="dropdown-item" href="javascript:void(0);" onclick="showDetails('<?php echo $descripcion; ?>', '<?php echo $id_empleado; ?>')">Descripcion</a>
-                                                            </div>
+                                                        <div class="mb-4">
+                                                            <h5 class="mb-1 font-size-17 team-title"><?php echo $id_ticket; ?></h5>
                                                         </div>
-                                                    </div>
-                                                    <div class="mb-4">
-                                                        <h5 class="mb-1 font-size-17 team-title"><?php echo $nombre_daño; ?></h5>
-
-                                                    </div>
-                                                    <div class="d-flex">
-                                                        <div class="align-self-end">
-                                                            <span class="badge <?php echo $clase_estado; ?> p-2 team-status"><?php echo $tip_estado; ?></span>
+                                                        <div class="d-flex">
+                                                            <div class="align-self-end">
+                                                                <span
+                                                                    class="badge <?php echo $clase_estado; ?> p-2 team-status"><?php echo $tip_estado; ?></span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                <?php
+                                            <?php
+                                        } // Cierre del if ($detalle)
                                     } // Cierre del foreach
                                 } // Cierre del if ($result)
                                 ?>
                             </div>
-                            <div class="modal fade bs-example-new-project" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+
+                            <div class="modal fade bs-example-new-project" tabindex="-1" role="dialog"
+                                aria-labelledby="myLargeModalLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-lg">
                                     <div class="modal-content">
                                         <div class="modal-header">
-                                            <h5 class="modal-title">Detalles de la llamada</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <h5 class="modal-title">Detalles del Ticket</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div id="descripcion"></div>
+                                            <div id="descripcion_detalle"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
                     </div>
                 </div>
@@ -264,7 +311,9 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                                 generar y dar seguimiento a tus solicitudes de tickets.</p>
 
                             <ul class="ps-3 mb-0">
-                                <li><a href="#" class="__cf_email__" data-cfemail="105a717e637867757c7c635060627f7279733e737f7d" data-bs-toggle="modal" data-bs-target="#modalTerminosCondiciones">[Terminos y
+                                <li><a href="#" class="__cf_email__"
+                                        data-cfemail="105a717e637867757c7c635060627f7279733e737f7d"
+                                        data-bs-toggle="modal" data-bs-target="#modalTerminosCondiciones">[Terminos y
                                         Condiciones]</a></li>
                             </ul>
                         </div>
@@ -273,7 +322,8 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                 <div class="card">
                     <div class="card-body">
                         <div>
-                            <h4 class="card-title mb-4"><a class="perfil" href="Visualizar/perfil.php"><i class="mdi mdi-account-circle mdi-18px">
+                            <h4 class="card-title mb-4"><a class="perfil" href="Visualizar/perfil.php"><i
+                                        class="mdi mdi-account-circle mdi-18px">
                                         Datos Personales
                                     </i></a></h4>
                             <div class="table-responsive">
@@ -335,7 +385,8 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
         </div>
     </div>
     <!-- Modal de Términos y Condiciones -->
-    <div class="modal fade" id="modalTerminosCondiciones" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modalTerminosCondiciones" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -384,9 +435,19 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
     <script type="text/javascript">
     </script>
     <script>
-        $(document).ready(function() {
+        function showDetails(descripcion_detalle, nombre_empleado) {
+            document.getElementById('descripcion').innerText = "Empleado Asignado: " + nombre_empleado;
+            
+            document.getElementById('descripcion_detalle').innerText = "Mensaje: " + descripcion_detalle;
+            
+            var myModal = new bootstrap.Modal(document.querySelector('.bs-example-new-project'));
+            myModal.show();
+        }
+    </script>
+    <script>
+        $(document).ready(function () {
             // Script para activar el modal de Términos y Condiciones al hacer clic en el enlace
-            $('#modalTerminosCondiciones').on('show.bs.modal', function(e) {
+            $('#modalTerminosCondiciones').on('show.bs.modal', function (e) {
                 // Aquí puedes realizar alguna acción si es necesario antes de mostrar el modal
             });
         });
