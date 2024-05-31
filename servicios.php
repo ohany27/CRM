@@ -97,6 +97,7 @@
                     <a href="nosotros.php" class="nav-item nav-link">Nosotros</a>
                     <a href="servicios.php" class="nav-item nav-link  active">Servicios</a>
                     <a href="contactanos.php" class="nav-item nav-link ">Contactanos</a>
+                    <a href="login.php?accion=registro" class="nav-item nav-link "><i class="fas fa-user-plus"></i></a>
                 </div>
             </div>
         </nav>
@@ -217,14 +218,9 @@
                         <a href="index.html" class="navbar-brand">
                             <h1 class="m-0 text-white"><i class="fa fa-user-tie me-2"></i>CRM</h1>
                         </a>
-                        <p class="mt-3 mb-4">"¡Mantente actualizado! Regístrate aquí para recibir nuestras últimas
-                            noticias y actualizaciones directamente en tu bandeja de entrada!"</p>
-                        <form action="">
-                            <div class="input-group">
-                                <input type="text" class="form-control border-white p-3" placeholder="Correo Electronico">
-                                <button class="btn btn-dark">Inscribirse</button>
-                            </div>
-                        </form>
+                        <p class="mt-3 mb-4">"¡Mantente actualizado! Visita nuestro sitio web amenudo para recibir nuestras últimas noticias y actualizaciones directamente en tu bandeja de entrada!"</p>
+
+
                     </div>
                 </div>
                 <div class="col-lg-8 col-md-6">

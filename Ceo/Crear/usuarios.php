@@ -6,6 +6,8 @@ $Conexion = new Database;
 $con = $Conexion->conectar();
 $pdo = $con;
 
+$id_tip_usu = 1; // Valor predeterminado para id_tip_usu
+
 $error = '';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -15,7 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $telefono = $_POST["telefono"];
     $direccion = $_POST["direccion"];
     $nitc = $_POST["nitc"];
-    $id_tip_usu = $_POST["id_tip_usu"];
+    // No es necesario recuperar $_POST["id_tip_usu"] porque ya está definido como 1
 
     // Verificar si ya existe un administrador para la empresa
     if ($id_tip_usu == 1) {
@@ -153,7 +155,7 @@ function generarPinAleatorio($longitud = 4)
                                 </div>
                             </div>
 
-                            <div class="col-sm-3">
+                            <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="nitc">Empresas</label>
                                     <div class="input-group">
@@ -178,30 +180,7 @@ function generarPinAleatorio($longitud = 4)
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="id_tip_usu">Rol</label>
-                                    <div class="input-group">
-                                        <div class="custom-file">
-                                            <select class="form-control" id="id_tip_usu" name="id_tip_usu" required>
-                                                <option value="">Seleccione_Rol</option>
-                                                <?php
-                                                // Consulta SQL para obtener los roles que tengan un id_tip_usu igual o menor a 1
-                                                $query_roles = "SELECT * FROM roles WHERE id_tip_usu <= 1";
-
-                                                // Ejecutar la consulta
-                                                $stmt_roles = $con->query($query_roles);
-
-                                                // Iterar sobre los resultados y generar las opciones del menú desplegable
-                                                while ($row_roles = $stmt_roles->fetch(PDO::FETCH_ASSOC)) {
-                                                    echo "<option value='" . $row_roles['id_tip_usu'] . "'>" . $row_roles['tip_usu'] . "</option>";
-                                                }
-                                                ?>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            
                         </div>
                         <!-- /.card-body -->
 

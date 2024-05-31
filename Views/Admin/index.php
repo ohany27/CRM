@@ -1,7 +1,7 @@
 <?php
 // Incluir la validación de sesión y la conexión a la base de datos
-include("../../Config/validarSesion.php");
-require_once("../../Config/conexion.php");
+include ("../../Config/validarSesion.php");
+require_once ("../../Config/conexion.php");
 
 // Obtener la conexión a la base de datos
 $DataBase = new Database;
@@ -19,7 +19,7 @@ $stmt->execute();
 // Obtener el resultado de la consulta
 $totalUsuarios = 0;
 if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
-    $totalUsuarios = $fila['total'];
+  $totalUsuarios = $fila['total'];
 }
 ?>
 
@@ -56,22 +56,22 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
   <!-- Favicon -->
   <link rel="apple-touch-icon" sizes="57x57" href="../../Assets/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="../../Assets/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="../../Assets/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="../../Assets/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="../../Assets/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="../../Assets/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="../../Assets/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="../../Assets/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="../../Assets/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="../../Assets/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="../../Assets/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="../../Assets/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../../Assets/favicon/favicon-16x16.png">
-    <link rel="manifest" href="../../Assets/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../Assets/favicon/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../Assets/favicon/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../Assets/favicon/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../Assets/favicon/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../Assets/favicon/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../Assets/favicon/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../Assets/favicon/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../Assets/favicon/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="../../Assets/favicon/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../Assets/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="../../Assets/favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../Assets/favicon/favicon-16x16.png">
+  <link rel="manifest" href="../../Assets/favicon/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -95,35 +95,30 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
       <ul class="navbar-nav ml-auto">
         <!-- Navbar Search -->
         <li class="nav-item">
-          <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-            <i class="fas fa-th-large"></i>
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-link" data-widget="fullscreen" href="#" role="button">
             <i class="fas fa-expand-arrows-alt"></i>
           </a>
         </li>
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="fas fa-cogs"></i>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">Opciones</span>
-          <div class="dropdown-divider"></div>
-          <a href="Visualizar/perfil.php" class="dropdown-item">
-            <i class="fas fa-user mr-2"></i> Perfil
-            <span class="float-right text-muted text-sm">visitar</span>
+          <a class="nav-link" data-toggle="dropdown" href="#">
+            <i class="fas fa-cogs"></i>
           </a>
-          <div class="dropdown-divider"></div>
-          <a href="../../Config/validarSesion.php?logout=true" class="dropdown-item">
-            <i class="fas fa-sign-out-alt mr-2"></i> Salir
-            <span class="float-right text-muted text-sm">accion</span>
-          </a>
-        </div>
-      </li>
-        
+          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <span class="dropdown-item dropdown-header">Opciones</span>
+            <div class="dropdown-divider"></div>
+            <a href="Visualizar/perfil.php" class="dropdown-item">
+              <i class="fas fa-user mr-2"></i> Perfil
+              <span class="float-right text-muted text-sm">visitar</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="../../Config/validarSesion.php?logout=true" class="dropdown-item">
+              <i class="fas fa-sign-out-alt mr-2"></i> Salir
+              <span class="float-right text-muted text-sm">accion</span>
+            </a>
+          </div>
+        </li>
+
       </ul>
     </nav>
     <!-- /.navbar -->
@@ -184,9 +179,9 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 </li>
               </ul>
             </li>
-            
+
             <li class="nav-header">RIESGOLOGIA</li>
-            
+
             <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-exclamation-triangle"></i>
@@ -269,7 +264,8 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 <div class="icon">
                   <i class="ion ion-bag"></i>
                 </div>
-                <a href="Visualizar/usuarios.php" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="Visualizar/usuarios.php" class="small-box-footer">Busca <i
+                    class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->
@@ -374,8 +370,7 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
   <!-- AdminLTE App -->
   <script src="dist/js/adminlte.js"></script>
-  <!-- AdminLTE for demo purposes -->
-  <script src="dist/js/demo.js"></script>
+
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <script src="dist/js/pages/dashboard.js"></script>
 </body>

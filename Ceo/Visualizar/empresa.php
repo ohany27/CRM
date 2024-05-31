@@ -129,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary">Crear Empresa</button>
+                        <button type="submit" class="btn btn-primary">Guardar Empresa</button>
                     </form>
                     <br>
                     <table id="example1" class="table table-bordered table-striped">
@@ -202,7 +202,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (/^\d{10}$/.test(telefonoValue) && !/[.]/.test(telefonoValue)) {
             this.setCustomValidity('');
         } else {
-            this.setCustomValidity('El teléfono debe contener exactamente 10 dígitos 57+.');
+            this.setCustomValidity('El teléfono debe contener exactamente 10 dígitos.');
         }
     });
 </script>
