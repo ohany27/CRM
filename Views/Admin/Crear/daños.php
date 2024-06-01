@@ -12,15 +12,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $nombredano = $_POST['nombredano'];
     $id_categoria = $_POST['id_categoria'];
     $precio = $_POST['precio'];
+    $id_riesgos = $_POST['id_riesgos'];
     $foto = file_get_contents($_FILES['foto']['tmp_name']);
 
     // Insertar los datos en la base de datos
-    $consulta = "INSERT INTO tipo_daño (nombredano, foto, precio, id_categoria, nitc) VALUES (:nombredano, :foto, :precio, :id_categoria, :nitc)";
+    $consulta = "INSERT INTO tipo_daño (nombredano, foto, precio, id_categoria, id_riesgos, nitc) VALUES (:nombredano, :foto, :precio, :id_categoria, :id_riesgos, :nitc)";
     $stmt = $con->prepare($consulta);
     $stmt->bindParam(':nombredano', $nombredano);
     $stmt->bindParam(':foto', $foto, PDO::PARAM_LOB);
     $stmt->bindParam(':precio', $precio);
     $stmt->bindParam(':id_categoria', $id_categoria);
+    $stmt->bindParam(':id_riesgos', $id_riesgos);
     $stmt->bindParam(':nitc', $nitc_usuario);
     
     if ($stmt->execute()) {
@@ -46,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="container-fluid">
             <div class="card">
                 <div class="card-body">
-                    <form method="post" enctype="multipart/form-data">
+                    <form method="post" enctype="multipart/form-data" id="formularioDano">
                         <div class="row">
                             <div class="col-sm-6">
                                 <div class="form-group">
@@ -76,8 +78,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
+                                    <label for="id_riesgos">Riesgo</label>
+                                    <select class="form-control" id="id_riesgos" name="id_riesgos" required>
+                                        <?php
+                                        $consultaRiesgo = "SELECT * FROM riesgos";
+                                        $resultadoRiesgo = $con->query($consultaRiesgo);
+                                        while ($filaRiesgo = $resultadoRiesgo->fetch()) {
+                                            echo '<option value="' . $filaRiesgo["id_riesgo"] . '">' . $filaRiesgo["tip_riesgo"] . '</option>';
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
                                     <label for="foto">Foto</label>
-                                    <input type="file" class="form-control" id="foto" name="foto" required>
+                                    <input type="file" class="form-control" id="foto" name="foto" accept="image/*" required>
                                 </div>
                             </div>
                         </div>
@@ -89,5 +105,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
     </section>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('nombredano').addEventListener('input', function () {
+        var nombreValue = this.value;
+        var nombreRegex = /^[A-Za-z0-9\sñÑ]{3,}$/;
+        if (nombreRegex.test(nombreValue)) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('El nombre del daño debe tener al menos 3 letras o números y no puede contener signos de puntuación.');
+        }
+    });
+
+    document.getElementById('precio').addEventListener('input', function () {
+        var precioValue = this.value;
+        var precioRegex = /^[0-9]+([.,][0-9]+)?$/;
+        if (precioRegex.test(precioValue) && parseFloat(precioValue) > 0) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('El precio debe ser un número positivo.');
+        }
+    });
+
+    document.getElementById('foto').addEventListener('change', function () {
+        var foto = this.files[0];
+        var validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        if (validImageTypes.includes(foto.type)) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('Solo se permiten archivos de imagen (JPG, PNG, GIF).');
+        }
+    });
+});
+</script>
 
 <?php include "../Template/footer.php"; ?>
