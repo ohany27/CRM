@@ -5,8 +5,11 @@ $Conexion = new Database;
 $con = $Conexion->conectar();
 
 
-$sql = $con->prepare("SELECT * FROM detalle_daño,tipo_daño WHERE  detalle_daño.id_daño = tipo_daño. id_daño AND id_detalle_daño = '" . $_GET['id_detalle_daño'] . "'");
-$sql->execute();
+$sql = $con->prepare("SELECT detalle_daño.*, tipo_daño.nombredano 
+                    FROM detalle_daño 
+                    JOIN tipo_daño ON detalle_daño.id_daño = tipo_daño.id_daño 
+                    WHERE detalle_daño.id_detalle_daño = ?");
+$sql->execute([$_GET['id_detalle_daño']]);
 $usua = $sql->fetch();
 ?>
 
@@ -44,7 +47,7 @@ if (isset($_POST["update"])) {
                 </div>
                 <!-- /.card-header -->
                 <!-- form start -->
-                <form method="post" name="formreg">
+                <form id="formularioDetalle" method="post" name="formreg">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-6">
@@ -57,7 +60,7 @@ if (isset($_POST["update"])) {
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">Nombre</label>
-                                    <input type="text" class="form-control" name="nombre" placeholder="" value="<?php echo $usua['id_daño'] ?>"
+                                    <input type="text" class="form-control" name="nombre" placeholder="" value="<?php echo $usua['nombredano'] ?>"
                                         readonly>
                                 </div>
                             </div>
@@ -81,4 +84,25 @@ if (isset($_POST["update"])) {
         </div>
     </section>
 </div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var solucionInput = document.getElementById('solucion');
+    solucionInput.addEventListener('input', function () {
+        var solucionValue = solucionInput.value.replace(/\s/g, ''); // Remove all spaces
+        if (solucionValue.length < 10) {
+            solucionInput.setCustomValidity('La solución debe contener al menos 10 letras.');
+        } else {
+            solucionInput.setCustomValidity('');
+        }
+    });
+
+    document.getElementById('formularioDetalle').addEventListener('submit', function (event) {
+        var solucionValue = solucionInput.value.replace(/\s/g, ''); // Remove all spaces
+        if (solucionValue.length < 10) {
+            alert('La solución debe contener al menos 10 letras.');
+            event.preventDefault();
+        }
+    });
+});
+</script>
 <?php include "../Template/footer.php"; ?>

@@ -49,7 +49,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                 <div class="card-header">
                     <h3 class="card-title"></h3>
                 </div>
-                <form method="post" name="formreg">
+                <form id="formularioDetalle" method="post" name="formreg">
                     <div class="card-body">
                         <div class="row">
                             <div class="col-sm-6">
@@ -98,4 +98,27 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
         </div>
     </section>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var solucionInput = document.getElementById('solucion');
+    solucionInput.addEventListener('input', function () {
+        var solucionValue = solucionInput.value.replace(/\s/g, ''); // Remove all spaces
+        if (solucionValue.length < 10) {
+            solucionInput.setCustomValidity('La solución debe contener al menos 10 letras.');
+        } else {
+            solucionInput.setCustomValidity('');
+        }
+    });
+
+    document.getElementById('formularioDetalle').addEventListener('submit', function (event) {
+        var solucionValue = solucionInput.value.replace(/\s/g, ''); // Remove all spaces
+        if (solucionValue.length < 10) {
+            alert('La solución debe contener al menos 10 letras.');
+            event.preventDefault();
+        }
+    });
+});
+</script>
+
 <?php include "../Template/footer.php"; ?>
