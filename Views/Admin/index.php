@@ -259,12 +259,12 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 <div class="inner">
                   <h3><?php echo $totalUsuarios; ?></h3>
 
-                  <p>Clientes</p>
+                  <p>Solucitudes Pendientes</p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-bag"></i>
+                  <i class="ion ion-email-unread"></i> 
                 </div>
-                <a href="Visualizar/usuarios.php" class="small-box-footer">Busca <i
+                <a href="Visualizar/llamadas.php" class="small-box-footer">Busca <i
                     class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
@@ -275,10 +275,10 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 <div class="inner">
                   <h3>53</h3>
 
-                  <p>Tickets En Espera</p>
+                  <p>LLamadas Finalizadas</p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-stats-bars"></i>
+                  <i class="ion ion-android-call"></i>
                 </div>
                 <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
               </div>
@@ -293,7 +293,7 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                   <p>Tickets En Proceso</p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-person-add"></i>
+                  <i class="ion ion-android-star-half"></i>
                 </div>
                 <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
               </div>
@@ -308,12 +308,26 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                   <p>Tickets Finalizados</p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-pie-graph"></i>
+                  <i class="ion ion-android-star"></i>
                 </div>
                 <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->
+            <div class="col-md-6">
+              <!-- Usuarios -->
+              <div class="card card-gray">
+
+              <div class="card-header">
+                <h3 class="card-title">Grafica De Usuarios </h3>
+
+              </div>
+              <div class="card-body">
+                <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            </div>
           </div>
           <!-- /.row -->
           <!-- Main row -->
@@ -373,6 +387,39 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <script src="dist/js/pages/dashboard.js"></script>
+  <script>
+  $(function () {
+    //-------------
+    //- DONUT CHART -
+    //-------------
+    // Get context with jQuery - using jQuery's .get() method.
+    var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
+    var donutData        = {
+      labels: [
+          'Clientes',
+          'Empleados',
+          'Tecnicos',
+      ],
+      datasets: [
+        {
+          data: [15,5,5],
+          backgroundColor : ['#3c8dbc', '#d2d6de', '#f56954'],
+        }
+      ]
+    }
+    var donutOptions     = {
+      maintainAspectRatio : false,
+      responsive : true,
+    }
+    //Create pie or douhnut chart
+    // You can switch between pie and douhnut using the method below.
+    new Chart(donutChartCanvas, {
+      type: 'doughnut',
+      data: donutData,
+      options: donutOptions
+    })
+  })
+</script>
 </body>
 
 </html>

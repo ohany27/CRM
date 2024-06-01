@@ -217,6 +217,16 @@ function generarPinAleatorio($longitud = 4)
             this.setCustomValidity('El teléfono debe tener 10 números.');
         }
     });
+    document.getElementById('direccion').addEventListener('input', function () {
+        var direccionValue = this.value;
+
+        // Verificar si la dirección tiene al menos 3 caracteres (letras o números)
+        if (/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ\s]{3,}$/.test(direccionValue)) {
+            this.setCustomValidity('');
+        } else {
+            this.setCustomValidity('La dirección debe contener al menos 3 caracteres (letras o números).');
+        }
+    });
 </script>
 
 <?php include "../Template/footer.php"; ?>

@@ -162,5 +162,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             });
         });
+
+        document.getElementById('direccion').addEventListener('input', function () {
+            var direccionValue = this.value;
+
+            // Verificar si la dirección tiene al menos 3 caracteres (letras o números)
+            if (/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ\s]{3,}$/.test(direccionValue)) {
+                this.setCustomValidity('');
+            } else {
+                this.setCustomValidity('La dirección debe contener al menos 3 caracteres (letras o números).');
+            }
+        });
+
+        // Función para validar el formulario y verificar cambios
+        function validateForm() {
+            // Obtener valores originales
+            var originalNombre = "<?php echo $usuario['nombre']; ?>";
+            var originalCorreo = "<?php echo $usuario['correo']; ?>";
+            var originalTelefono = "<?php echo $usuario['telefono']; ?>";
+            var originalDireccion = "<?php echo $usuario['direccion']; ?>";
+            var originalRol = "<?php echo $usuario['id_tip_usu']; ?>";
+
+            // Obtener valores actuales
+            var currentNombre = document.getElementById("nombre").value;
+            var currentCorreo = document.getElementById("correo").value;
+            var currentTelefono = document.getElementById("telefono").value;
+            var currentDireccion = document.getElementById("direccion").value;
+            var currentRol = document.getElementById("id_tip_usu").value;
+
+            // Verificar si hay cambios
+            if (
+                originalNombre === currentNombre &&
+                originalCorreo === currentCorreo &&
+                originalTelefono === currentTelefono &&
+                originalDireccion === currentDireccion &&
+                originalRol === currentRol
+            ) {
+                alert("Realiza algún cambio para editar.");
+                return false; // Evita el envío del formulario
+            }
+            return true; // Permite el envío del formulario
+        }
     </script>
 <?php include "../Template/footer.php"; ?>
+
