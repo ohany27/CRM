@@ -4,10 +4,11 @@ require_once("../../../Config/conexion.php");
 $DataBase = new Database;
 $con = $DataBase->conectar();
 
+// Configurar la zona horaria
+date_default_timezone_set('America/Bogota'); // Ajusta esto a tu zona horaria
+
 // Obtener datos del enlace
 $id_llamada = $_GET['id_llamada'];
-$fecha_inicio = $_GET['fecha_inicio'];
-
 // Obtener el documento del usuario logeado desde la sesión
 $documento_empleado = $_SESSION['usuario']['documento'];
 
@@ -37,9 +38,24 @@ try {
     $sql_update_llamada->bindParam(':id_llamada', $id_llamada);
     $sql_update_llamada->execute();
 
-    // Insertar en la tabla detalle_ticket utilizando el ID del ticket y el documento del empleado
-    $sql_insert_detalle = $con->prepare("INSERT INTO detalle_ticket (id_ticket, id_estado, documento, id_riesgo, fecha_inicio, fecha_final, descripcion_detalle) VALUES (?, 3, ?, NULL, ?, NULL, NULL)");
-    $sql_insert_detalle->execute([$id_ticket, $documento_empleado, $fecha_inicio]);
+    
+    // Obtener el id_riesgo de la llamada
+    $sql_get_id_riesgo = $con->prepare("SELECT tipo_daño.id_riesgos AS id_riesgo 
+                                        FROM llamadas 
+                                        INNER JOIN tipo_daño ON llamadas.id_daño = tipo_daño.id_daño 
+                                        WHERE llamadas.id_llamada = :id_llamada");
+    $sql_get_id_riesgo->bindParam(':id_llamada', $id_llamada);
+    $sql_get_id_riesgo->execute();
+    $id_riesgo_row = $sql_get_id_riesgo->fetch(PDO::FETCH_ASSOC);
+    $id_riesgo = $id_riesgo_row['id_riesgo'];
+
+    // Obtener la fecha y hora actual para la fecha_final
+    $fecha = date("Y-m-d H:i:s");
+
+    // Insertar en la tabla detalle_ticket utilizando el ID del ticket, el documento del empleado, y las fechas
+    $sql_insert_detalle = $con->prepare("INSERT INTO detalle_ticket (id_ticket, id_estado, documento, id_riesgo, fecha_inicio, fecha_final, descripcion_detalle) VALUES (?, 3, ?, ?, ?, ?, NULL)");
+    $sql_insert_detalle->execute([$id_ticket, $documento_empleado, $id_riesgo, $fecha, $fecha]);
+
 
     // Confirmar la transacción
     $con->commit();

@@ -33,12 +33,18 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 
     if ($estado == 5) { // Estado "Solucionado"
         // Insertar datos en la tabla detalle_ticket con el documento del empleado logeado
-        $insertSQL = $con->prepare("INSERT INTO detalle_ticket (id_ticket, id_estado, documento, id_riesgo, fecha_inicio, fecha_final, descripcion_detalle) VALUES (:id_ticket, :id_estado, :documento, NULL, NOW(), NOW(), :descripcion_detalle)");
+        $insertSQL = $con->prepare("INSERT INTO detalle_ticket (id_ticket, id_estado, documento, id_riesgo, fecha_inicio, fecha_final, descripcion_detalle) VALUES (:id_ticket, :id_estado, :documento, :id_riesgo, NOW(), NOW(), :descripcion_detalle)");
         $insertSQL->bindParam(':id_ticket', $usua['id_ticket']);
         $insertSQL->bindParam(':id_estado', $estado);
         $insertSQL->bindParam(':documento', $documento_empleado);
+        $insertSQL->bindParam(':id_riesgo', $id_riesgo);
         $insertSQL->bindParam(':descripcion_detalle', $descripcion);
         $insertSQL->execute();
+
+        // Actualizar el estado en la tabla llamadas
+        $updateLlamadaSQL = $con->prepare("UPDATE llamadas SET id_est = 5 WHERE id_llamada = :id_llamada");
+        $updateLlamadaSQL->bindParam(':id_llamada', $usua['id_llamada']);
+        $updateLlamadaSQL->execute();
 
         // Redirigir a la página de tickets solucionados
         header("Location: sol_solucionadas.php");
@@ -140,7 +146,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                             <input type="tiempo_atencion" class="form-control" id="tiempo_atencion" name="tiempo_atencion" value="<?php echo $usua['tiempo_atent']?>" readonly>
                         </div>
                         <div class="form-group">
-                            <label for="descripcion">¿Qué pasó con el problema?</label>
+                            <label for="descripcion">Detalles del problema</label>
                             <textarea class="form-control form-control-rounded" id="review_text" rows="8" placeholder="Write your message here..." required="" name="descripcion"></textarea>
                         </div>
                         <div class="form-group text-right">

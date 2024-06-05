@@ -23,11 +23,11 @@ $llamadas_riesgo_medio = [];
 $llamadas_riesgo_bajo = [];
 
 foreach ($resultado_llamadas as $fila) {
-    if ($fila['id_riesgo'] == 1) { // Supongamos que 1 es Alto
+    if ($fila['id_riesgo'] == 1) { // 1 es Alto
         $llamadas_riesgo_alto[] = $fila;
-    } elseif ($fila['id_riesgo'] == 2) { // Supongamos que 2 es Medio
+    } elseif ($fila['id_riesgo'] == 2) { // 2 es Medio
         $llamadas_riesgo_medio[] = $fila;
-    } elseif ($fila['id_riesgo'] == 3) { // Supongamos que 3 es Bajo
+    } elseif ($fila['id_riesgo'] == 3) { // 3 es Bajo
         $llamadas_riesgo_bajo[] = $fila;
     }
 }
@@ -49,7 +49,7 @@ foreach ($resultado_llamadas as $fila) {
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0">Solicitudes en proceso</h1>
+          <h1 class="m-0">SOLICITUDES</h1>
         </div>
       </div>
     </div>

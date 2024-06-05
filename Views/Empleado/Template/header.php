@@ -159,7 +159,7 @@ include("../../../Config/validarSesion.php");
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-clipboard-check"></i>
                 <p>
-                  Solicitudes Tecnico
+                  Tecnicos
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>

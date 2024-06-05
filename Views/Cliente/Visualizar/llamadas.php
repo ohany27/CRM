@@ -65,7 +65,7 @@ include "../Template/header.php";
                         $nombre_daño = $stmt_nombre->fetchColumn();
 
                         // Definir el nombre del estado
-                        if ($id_estado == 4) {
+                        if ($id_estado == 4 || $id_estado == 5) {
                             $tip_estado = "Aceptada";
                         } else {
                             $query_tip_est = "SELECT tip_est FROM estado WHERE id_est = ?";
@@ -76,8 +76,9 @@ include "../Template/header.php";
                         }
 
                         // Verificar el estado y asignar la clase adecuada
-                        $clase_estado = ($id_estado == 4) ? "badge-soft-success" : "badge-soft-danger";
-                        $clase_icono = ($id_estado == 4) ? "mdi mdi-circle-medium text-success" : "mdi mdi-circle-medium text-danger";
+                        $clase_estado = ($id_estado == 4 || $id_estado == 5) ? "badge-soft-success" : "badge-soft-danger";
+                        $clase_icono = ($id_estado == 4 || $id_estado == 5) ? "mdi mdi-circle-medium text-success" : "mdi mdi-circle-medium text-danger";
+
                         ?>
                         <div class="col-md-6" id="project-items-1">
                             <div class="card">

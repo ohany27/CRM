@@ -10,17 +10,48 @@ $con = $DataBase->conectar();
 // Obtener el NITC del usuario en sesión
 $nitc_usuario = $_SESSION['usuario']['nitc'];
 
-// Preparar la consulta SQL para contar los usuarios con el NITC y id_tip_usu especificados
-$consulta = "SELECT COUNT(*) as total FROM usuario WHERE nitc = :nitc_usuario AND id_tip_usu = 2";
+$consulta = "SELECT COUNT(*) as total FROM llamadas WHERE documento = :nitc_usuario AND id_est = 3";
 $stmt = $con->prepare($consulta);
 $stmt->bindParam(':nitc_usuario', $nitc_usuario);
 $stmt->execute();
 
 // Obtener el resultado de la consulta
-$totalUsuarios = 0;
+$totalSolicitudes = 0;
 if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
-  $totalUsuarios = $fila['total'];
+  $totalSolicitudes = $fila['total'];
 }
+
+$consulta = "SELECT COUNT(*) as total FROM llamadas WHERE id_est IN (4, 5) ";
+$stmt = $con->prepare($consulta);
+$stmt->execute();
+
+// Obtener el resultado de la consulta
+$totalLlamadasFinalizadas = 0;
+if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
+  $totalLlamadasFinalizadas = $fila['total'];
+}
+
+$consulta = "SELECT COUNT(*) as total FROM detalle_ticket WHERE id_estado = 4 AND documento = :nitc_usuario";
+$stmt = $con->prepare($consulta);
+$stmt->bindParam(':nitc_usuario', $nitc_usuario);
+$stmt->execute();
+
+// Obtener el resultado de la consulta
+$totalTicketProceso = 0;
+if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
+  $totalTicketProceso = $fila['total'];
+}
+
+$consulta = "SELECT COUNT(*) as total FROM detalle_ticket WHERE id_estado = 5";
+$stmt = $con->prepare($consulta);
+$stmt->execute();
+
+// Obtener el resultado de la consulta
+$totalTicketFinalizados = 0;
+if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
+  $totalTicketFinalizados = $fila['total'];
+}
+
 ?>
 
 
@@ -257,7 +288,7 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
               <!-- small box -->
               <div class="small-box bg-info">
                 <div class="inner">
-                  <h3><?php echo $totalUsuarios; ?></h3>
+                  <h3><?php echo $totalSolicitudes; ?></h3>
 
                   <p>Solucitudes Pendientes</p>
                 </div>
@@ -273,7 +304,7 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
               <!-- small box -->
               <div class="small-box bg-success">
                 <div class="inner">
-                  <h3>53</h3>
+                  <h3><?php echo $totalLlamadasFinalizadas; ?></h3>
 
                   <p>LLamadas Finalizadas</p>
                 </div>
@@ -288,7 +319,7 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
               <!-- small box -->
               <div class="small-box bg-warning">
                 <div class="inner">
-                  <h3>44</h3>
+                  <h3><?php echo $totalTicketProceso; ?></h3>
 
                   <p>Tickets En Proceso</p>
                 </div>
@@ -303,7 +334,7 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
               <!-- small box -->
               <div class="small-box bg-danger">
                 <div class="inner">
-                  <h3>65</h3>
+                  <h3><?php echo $totalTicketFinalizados; ?></h3>
 
                   <p>Tickets Finalizados</p>
                 </div>
@@ -402,7 +433,7 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
       ],
       datasets: [
         {
-          data: [15,5,5],
+          data: [1,1,1],
           backgroundColor : ['#3c8dbc', '#d2d6de', '#f56954'],
         }
       ]

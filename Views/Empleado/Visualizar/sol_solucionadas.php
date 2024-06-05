@@ -9,7 +9,7 @@ $con = $DataBase->conectar();
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0">Solicitudes Solucionadas</h1>
+          <h1 class="m-0">SOLICITUDES SOLUCIONADAS</h1>
         </div>
       </div>
     </div>
@@ -25,9 +25,8 @@ $con = $DataBase->conectar();
           <table id="example1" class="table table-bordered table-striped">
             <thead>
               <tr>
-                <th>N° de Llamada</th>
                 <th>N° de Ticket</th> 
-                <th>Fecha finalizado</th>
+                <th>Fecha y Hora Finalizacion</th>
                 <th>Cliente</th>
                 <th>Documento</th>
                 <th>Tipo de Problema</th>
@@ -37,7 +36,15 @@ $con = $DataBase->conectar();
             </thead>
             <tbody>
               <?php
-              $consulta = "SELECT DISTINCT llamadas.id_llamada, detalle_ticket.id_ticket, detalle_ticket.fecha_final, usuario.nombre AS cliente, usuario.documento, tipo_daño.nombredano AS tipo_problema, tipo_daño.id_daño, detalle_ticket.descripcion_detalle AS descripcion, estado.tip_est AS estado
+              $consulta = "SELECT DISTINCT llamadas.id_llamada,
+               detalle_ticket.id_ticket, 
+               detalle_ticket.fecha_final, 
+               usuario.nombre AS cliente, 
+               usuario.documento, 
+               tipo_daño.nombredano AS tipo_problema, 
+               tipo_daño.id_daño, 
+               detalle_ticket.descripcion_detalle AS descripcion, 
+               estado.tip_est AS estado
               FROM llamadas
               INNER JOIN detalle_ticket ON llamadas.id_ticket = detalle_ticket.id_ticket
               INNER JOIN usuario ON llamadas.documento = usuario.documento
@@ -49,7 +56,6 @@ $con = $DataBase->conectar();
               while ($fila = $resultado->fetch()) {
                   echo '
                   <tr>
-                      <td>' . $fila["id_llamada"] . '</td>
                       <td>' . $fila["id_ticket"] . '</td>
                       <td>' . $fila["fecha_final"] . '</td>
                       <td>' . $fila["cliente"] . '</td>
