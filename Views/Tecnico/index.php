@@ -124,7 +124,7 @@ require_once ("../../Config/conexion.php");
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-users"></i>
                 <p>
-                  En Curso
+                Solicitudes Tecnico
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
@@ -280,8 +280,7 @@ require_once ("../../Config/conexion.php");
   <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
   <!-- AdminLTE App -->
   <script src="dist/js/adminlte.js"></script>
-  <!-- AdminLTE for demo purposes -->
-  <script src="dist/js/demo.js"></script>
+
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <script src="dist/js/pages/dashboard.js"></script>
 </body>

@@ -1,6 +1,6 @@
 <?php
-include("../../Config/validarSesion.php");
-require_once("../../Config/conexion.php");
+include ("../../Config/validarSesion.php");
+require_once ("../../Config/conexion.php");
 
 $DataBase = new Database;
 $con = $DataBase->conectar();
@@ -20,11 +20,12 @@ $statement->execute();
 $resultado = $statement->fetch(PDO::FETCH_ASSOC);
 
 if ($resultado) {
-    $totalSolicitudes = $resultado['cantidad_llamadas_est_3'];
+  $totalSolicitudes = $resultado['cantidad_llamadas_est_3'];
 } else {
-    // Manejo de errores si la consulta no devuelve resultados
-    $totalSolicitudes = "Error al ejecutar la consulta.";
+  // Manejo de errores si la consulta no devuelve resultados
+  $totalSolicitudes = "Error al ejecutar la consulta.";
 }
+
 // Consulta para obtener la cantidad de llamadas donde el documento coincide con el NITC del usuario en sesión y el id_est es igual a 4 o 5
 $query = "SELECT COUNT(l.id_est) AS cantidad_llamadas_est_45
           FROM llamadas l
@@ -38,11 +39,12 @@ $statement->execute();
 $resultado = $statement->fetch(PDO::FETCH_ASSOC);
 
 if ($resultado) {
-    $totalLlamadasFinalizadas = $resultado['cantidad_llamadas_est_45'];
+  $totalLlamadasFinalizadas = $resultado['cantidad_llamadas_est_45'];
 } else {
-    // Manejo de errores si la consulta no devuelve resultados
-    $totalLlamadasFinalizadas = "Error al ejecutar la consulta.";
+  // Manejo de errores si la consulta no devuelve resultados
+  $totalLlamadasFinalizadas = "Error al ejecutar la consulta.";
 }
+
 // Consulta para obtener la cantidad de registros en la tabla detalle_ticket donde el documento coincide con el NITC del usuario en sesión y el id_estado sea igual a 4
 $query = "SELECT COUNT(t.id_estado) AS cantidad_tickets_proceso
           FROM detalle_ticket t
@@ -56,10 +58,10 @@ $statement->execute();
 $resultado = $statement->fetch(PDO::FETCH_ASSOC);
 
 if ($resultado) {
-    $totalTicketProceso = $resultado['cantidad_tickets_proceso'];
+  $totalTicketProceso = $resultado['cantidad_tickets_proceso'];
 } else {
-    // Manejo de errores si la consulta no devuelve resultados
-    $totalTicketProceso = "Error al ejecutar la consulta.";
+  // Manejo de errores si la consulta no devuelve resultados
+  $totalTicketProceso = "Error al ejecutar la consulta.";
 }
 
 $query = "SELECT COUNT(t.id_estado) AS cantidad_tickets_finalizados
@@ -74,10 +76,10 @@ $statement->execute();
 $resultado = $statement->fetch(PDO::FETCH_ASSOC);
 
 if ($resultado) {
-    $totalTicketFinalizados = $resultado['cantidad_tickets_finalizados'];
+  $totalTicketFinalizados = $resultado['cantidad_tickets_finalizados'];
 } else {
-    // Manejo de errores si la consulta no devuelve resultados
-    $totalTicketFinalizados = "Error al ejecutar la consulta.";
+  // Manejo de errores si la consulta no devuelve resultados
+  $totalTicketFinalizados = "Error al ejecutar la consulta.";
 }
 
 // Consulta para obtener el recuento de clientes
@@ -100,6 +102,31 @@ $statement_tecnicos = $con->prepare($query_tecnicos);
 $statement_tecnicos->execute();
 $resultado_tecnicos = $statement_tecnicos->fetch(PDO::FETCH_ASSOC);
 $cantidad_tecnicos = $resultado_tecnicos['cantidad_tecnicos'];
+
+// Consulta para obtener los id_ticket con id_estado 3, 4 y 5
+$query = "SELECT t.id_ticket, COUNT(DISTINCT t.id_estado) AS estados
+          FROM detalle_ticket t
+          INNER JOIN usuario u ON t.documento = u.documento
+          WHERE u.nitc = :nitc_usuario
+          AND t.id_estado IN (3, 4, 5)
+          GROUP BY t.id_ticket
+          HAVING estados IN (2, 3)";
+
+$statement = $con->prepare($query);
+$statement->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
+$statement->execute();
+$resultado = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+$empleados = 0;
+$tecnicos = 0;
+
+foreach ($resultado as $row) {
+    if ($row['estados'] == 2) {
+        $empleados++;
+    } elseif ($row['estados'] == 3) {
+        $tecnicos++;
+    }
+}
 ?>
 
 
@@ -305,8 +332,8 @@ $cantidad_tecnicos = $resultado_tecnicos['cantidad_tecnicos'];
                   </a>
                 </li>
               </ul>
-              <li class="nav-header">REPORTES</li>
-              <li class="nav-item">
+            <li class="nav-header">REPORTES</li>
+            <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-database"></i>
                 <p>
@@ -357,10 +384,9 @@ $cantidad_tecnicos = $resultado_tecnicos['cantidad_tecnicos'];
                   <p>Solucitudes Pendientes</p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-email-unread"></i> 
+                  <i class="ion ion-email-unread"></i>
                 </div>
-                <a href="#" class="small-box-footer">Busca <i
-                    class="fas fa-arrow-circle-right"></i></a>
+                <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->
@@ -413,16 +439,33 @@ $cantidad_tecnicos = $resultado_tecnicos['cantidad_tecnicos'];
               <!-- Usuarios -->
               <div class="card card-gray">
 
-              <div class="card-header">
-                <h3 class="card-title">Grafica De Usuarios </h3>
+                <div class="card-header">
+                  <h3 class="card-title">Grafica De Usuarios </h3>
 
+                </div>
+                <div class="card-body">
+                  <canvas id="donutChart"
+                    style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                </div>
+                <!-- /.card-body -->
               </div>
-              <div class="card-body">
-                <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+            </div>
+            <div class="col-md-6">
+              <div class="card card-primary">
+                <div class="card-header">
+                  <h3 class="card-title">Finalizadores</h3>
+
+                </div>
+                <div class="card-body">
+                  <div class="chart">
+                    <canvas id="barChart"
+                      style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+                  </div>
+                </div>
+                <!-- /.card-body -->
               </div>
-              <!-- /.card-body -->
             </div>
-            </div>
+
           </div>
           <!-- /.row -->
           <!-- Main row -->
@@ -489,7 +532,7 @@ $cantidad_tecnicos = $resultado_tecnicos['cantidad_tecnicos'];
         labels: ['Clientes', 'Empleados', 'Técnicos'],
         datasets: [{
           data: [<?php echo $cantidad_clientes; ?>, <?php echo $cantidad_empleados; ?>, <?php echo $cantidad_tecnicos; ?>],
-          backgroundColor: ['#3c8dbc', '#d2d6de', '#f56954'],
+          backgroundColor: ['#f56954', '#d2d6de', '#3c8dbc'],
         }]
       };
       var donutOptions = {
@@ -501,8 +544,58 @@ $cantidad_tecnicos = $resultado_tecnicos['cantidad_tecnicos'];
         data: donutData,
         options: donutOptions
       });
+
+      var empleados = <?php echo $empleados; ?>;
+      var tecnicos = <?php echo $tecnicos; ?>;
+
+      var barChartCanvas = $('#barChart').get(0).getContext('2d');
+      var areaChartData = {
+        labels  : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio'],
+        datasets: [
+          {
+            label               : 'Tecnicos',
+            backgroundColor     : 'rgba(60,141,188,0.9)',
+            borderColor         : 'rgba(60,141,188,0.8)',
+            pointRadius         : false,
+            pointColor          : '#3b8bba',
+            pointStrokeColor    : 'rgba(60,141,188,1)',
+            pointHighlightFill  : '#fff',
+            pointHighlightStroke: 'rgba(60,141,188,1)',
+            data                : [0, 0, 0, 0, 0, tecnicos, 0]
+          },
+          {
+            label               : 'Empleados',
+            backgroundColor     : 'rgba(210, 214, 222, 1)',
+            borderColor         : 'rgba(210, 214, 222, 1)',
+            pointRadius         : false,
+            pointColor          : 'rgba(210, 214, 222, 1)',
+            pointStrokeColor    : '#c1c7d1',
+            pointHighlightFill  : '#fff',
+            pointHighlightStroke: 'rgba(220,220,220,1)',
+            data                : [0, 0, 0, 0, 0, empleados, 0]
+          },
+        ]
+      };
+
+      var barChartData = $.extend(true, {}, areaChartData);
+      var temp0 = areaChartData.datasets[0];
+      var temp1 = areaChartData.datasets[1];
+      barChartData.datasets[0] = temp1;
+      barChartData.datasets[1] = temp0;
+
+      var barChartOptions = {
+        responsive              : true,
+        maintainAspectRatio     : false,
+        datasetFill             : false
+      };
+
+      new Chart(barChartCanvas, {
+        type: 'bar',
+        data: barChartData,
+        options: barChartOptions
+      });
     });
-  </script>
+    </script>
 </body>
 
 </html>

@@ -152,13 +152,13 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
             <!-- /.tab-pane -->
             <div class="tab-pane" id="timeline">
               <div class="card-body">
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="example2" class="table table-bordered table-striped">
                   <thead>
                     <tr>
                       <th>ID Ticket</th>
                       <th>Estado</th>
                       <th>Riesgo</th>
-                      <th>Empleado</th>
+                      <th>Tecnico Asignado</th>
                       <th>Descripción Detalle</th>
                       <th>Fecha</th>
                     </tr>
@@ -198,7 +198,7 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
 
             <div class="tab-pane" id="settings">
               <div class="card-body">
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="example3" class="table table-bordered table-striped">
                   <thead>
                     <tr>
                       <th>ID Ticket</th>
