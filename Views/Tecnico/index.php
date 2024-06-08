@@ -154,24 +154,6 @@ require_once ("../../Config/conexion.php");
                 </li>
               </ul>
             </li>
-            <li class="nav-header">SEGUIMIENTO</li>
-            <li class="nav-item">
-              <a href="#" class="nav-link">
-                <i class="nav-icon fas fa-clipboard-check"></i>
-                <p>
-                  Solicitudes empleado
-                  <i class="fas fa-angle-left right"></i>
-                </p>
-              </a>
-              <ul class="nav nav-treeview">
-                <li class="nav-item">
-                  <a href="Visualizar/tickets_proceso.php" class="nav-link">
-                    <i class="far fa-circle nav-icon"></i>
-                    <p>Visualizar</p>
-                  </a>
-                </li>
-              </ul>
-            </li>
           </ul>
         </nav>
         <!-- /.sidebar-menu -->

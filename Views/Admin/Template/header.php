@@ -209,6 +209,23 @@ include("../../../Config/validarSesion.php");
                   </a>
                 </li>
               </ul>
+              <li class="nav-header">REPORTES</li>
+              <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-database"></i>
+                <p>
+                  Llamadas-Tickets
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="../Visualizar/reportes.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Visualizar</p>
+                  </a>
+                </li>
+              </ul>
           </ul>
         </nav>
         <!-- /.sidebar-menu -->

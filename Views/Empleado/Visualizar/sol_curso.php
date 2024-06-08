@@ -1,8 +1,21 @@
-<?php 
+<?php
 include "../Template/header.php";
-require_once ("../../../Config/conexion.php");
+require_once("../../../Config/conexion.php");
 $DataBase = new Database;
 $con = $DataBase->conectar();
+
+$nitc_usuario = $_SESSION['usuario']['nitc'];
+
+$consulta_tecnicos_disponibles = "SELECT COUNT(*) AS total_tecnicos 
+                                  FROM usuario 
+                                  WHERE id_tip_usu = 4 AND nitc = :nitc_usuario";
+$stmt_tecnicos_disponibles = $con->prepare($consulta_tecnicos_disponibles);
+$stmt_tecnicos_disponibles->bindParam(':nitc_usuario', $nitc_usuario);
+$stmt_tecnicos_disponibles->execute();
+$resultado_tecnicos_disponibles = $stmt_tecnicos_disponibles->fetch(PDO::FETCH_ASSOC);
+
+$hay_tecnicos_disponibles = ($resultado_tecnicos_disponibles['total_tecnicos'] > 0);
+
 
 // Consulta para obtener las llamadas con id_est = 3 y id_empleado igual al usuario en sesión, agrupadas por riesgo
 $consulta_llamadas = "SELECT llamadas.*, tipo_daño.nombredano AS tipo_daño_nombre, usuario.nombre AS nombre_usuario, riesgos.tip_riesgo, tipo_daño.id_riesgos AS id_riesgo
@@ -71,9 +84,9 @@ foreach ($resultado_llamadas as $fila) {
                     <li>
                         <div class="article-post">
                           <p>Llamada N°<?php echo $fila['id_llamada']; ?></p>
-                          <button class="btn btn-primary float-right" onclick="actualizarEstado(<?php echo $fila['id_llamada']; ?>)">Empezar llamada</button>
+                          <button class="btn btn-primary float-right" <?php echo (!$hay_tecnicos_disponibles ? "disabled" : ""); ?> onclick="actualizarEstado(<?php echo $fila['id_llamada']; ?>)">Empezar llamada</button>
                           <span class="user-info">
-                            <span>By:</span> <?php echo $fila['nombre_usuario']; ?> /
+                            <span>Por:</span> <?php echo $fila['nombre_usuario']; ?> /
                             <span>Fecha:</span> <?php echo $fila['fecha']; ?> 
                           <p><?php echo $fila['tipo_daño_nombre']; ?></p>
                         </div>
@@ -100,9 +113,9 @@ foreach ($resultado_llamadas as $fila) {
                     <li>
                         <div class="article-post">
                           <p>Llamada N°<?php echo $fila['id_llamada']; ?></p>
-                          <button class="btn btn-primary float-right" onclick="actualizarEstado(<?php echo $fila['id_llamada']; ?>)">Empezar llamada</button>
+                          <button class="btn btn-primary float-right" <?php echo (!$hay_tecnicos_disponibles ? "disabled" : ""); ?> onclick="actualizarEstado(<?php echo $fila['id_llamada']; ?>)">Empezar llamada</button>
                           <span class="user-info">
-                            <span>By:</span> <?php echo $fila['nombre_usuario']; ?> /
+                            <span>Por:</span> <?php echo $fila['nombre_usuario']; ?> /
                             <span>Fecha:</span> <?php echo $fila['fecha']; ?> 
                           <p><?php echo $fila['tipo_daño_nombre']; ?></p>
                         </div>
@@ -129,9 +142,9 @@ foreach ($resultado_llamadas as $fila) {
                     <li>
                         <div class="article-post">
                           <p>Llamada N°<?php echo $fila['id_llamada']; ?></p>
-                          <button class="btn btn-primary float-right" onclick="actualizarEstado(<?php echo $fila['id_llamada']; ?>)">Empezar llamada</button>
+                          <button class="btn btn-primary float-right" <?php echo (!$hay_tecnicos_disponibles ? "disabled" : ""); ?> onclick="actualizarEstado(<?php echo $fila['id_llamada']; ?>)">Empezar llamada</button>
                           <span class="user-info">
-                            <span>By:</span> <?php echo $fila['nombre_usuario']; ?> /
+                            <span>Por:</span> <?php echo $fila['nombre_usuario']; ?> /
                             <span>Fecha:</span> <?php echo $fila['fecha']; ?> 
                           <p><?php echo $fila['tipo_daño_nombre']; ?></p>
                         </div>

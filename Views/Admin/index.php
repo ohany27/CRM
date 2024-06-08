@@ -1,59 +1,106 @@
 <?php
-// Incluir la validación de sesión y la conexión a la base de datos
-include ("../../Config/validarSesion.php");
-require_once ("../../Config/conexion.php");
+include("../../Config/validarSesion.php");
+require_once("../../Config/conexion.php");
 
-// Obtener la conexión a la base de datos
 $DataBase = new Database;
 $con = $DataBase->conectar();
 
-// Obtener el NITC del usuario en sesión
 $nitc_usuario = $_SESSION['usuario']['nitc'];
 
-$consulta = "SELECT COUNT(*) as total FROM llamadas WHERE documento = :nitc_usuario AND id_est = 3";
-$stmt = $con->prepare($consulta);
-$stmt->bindParam(':nitc_usuario', $nitc_usuario);
-$stmt->execute();
+// Consulta para obtener la cantidad de llamadas donde el documento coincida con el NITC del usuario en sesión
+$query = "SELECT COUNT(l.id_est) AS cantidad_llamadas_est_3
+          FROM llamadas l
+          INNER JOIN usuario u ON l.documento = u.documento
+          WHERE u.nitc = :nitc_usuario
+          AND l.id_est = 3";
 
-// Obtener el resultado de la consulta
-$totalSolicitudes = 0;
-if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
-  $totalSolicitudes = $fila['total'];
+$statement = $con->prepare($query);
+$statement->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
+$statement->execute();
+$resultado = $statement->fetch(PDO::FETCH_ASSOC);
+
+if ($resultado) {
+    $totalSolicitudes = $resultado['cantidad_llamadas_est_3'];
+} else {
+    // Manejo de errores si la consulta no devuelve resultados
+    $totalSolicitudes = "Error al ejecutar la consulta.";
+}
+// Consulta para obtener la cantidad de llamadas donde el documento coincide con el NITC del usuario en sesión y el id_est es igual a 4 o 5
+$query = "SELECT COUNT(l.id_est) AS cantidad_llamadas_est_45
+          FROM llamadas l
+          INNER JOIN usuario u ON l.documento = u.documento
+          WHERE u.nitc = :nitc_usuario
+          AND (l.id_est = 4 OR l.id_est = 5)";
+
+$statement = $con->prepare($query);
+$statement->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
+$statement->execute();
+$resultado = $statement->fetch(PDO::FETCH_ASSOC);
+
+if ($resultado) {
+    $totalLlamadasFinalizadas = $resultado['cantidad_llamadas_est_45'];
+} else {
+    // Manejo de errores si la consulta no devuelve resultados
+    $totalLlamadasFinalizadas = "Error al ejecutar la consulta.";
+}
+// Consulta para obtener la cantidad de registros en la tabla detalle_ticket donde el documento coincide con el NITC del usuario en sesión y el id_estado sea igual a 4
+$query = "SELECT COUNT(t.id_estado) AS cantidad_tickets_proceso
+          FROM detalle_ticket t
+          INNER JOIN usuario u ON t.documento = u.documento
+          WHERE u.nitc = :nitc_usuario
+          AND t.id_estado = 4";
+
+$statement = $con->prepare($query);
+$statement->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
+$statement->execute();
+$resultado = $statement->fetch(PDO::FETCH_ASSOC);
+
+if ($resultado) {
+    $totalTicketProceso = $resultado['cantidad_tickets_proceso'];
+} else {
+    // Manejo de errores si la consulta no devuelve resultados
+    $totalTicketProceso = "Error al ejecutar la consulta.";
 }
 
-$consulta = "SELECT COUNT(*) as total FROM llamadas WHERE id_est IN (4, 5) ";
-$stmt = $con->prepare($consulta);
-$stmt->execute();
+$query = "SELECT COUNT(t.id_estado) AS cantidad_tickets_finalizados
+          FROM detalle_ticket t
+          INNER JOIN usuario u ON t.documento = u.documento
+          WHERE u.nitc = :nitc_usuario
+          AND t.id_estado = 5";
 
-// Obtener el resultado de la consulta
-$totalLlamadasFinalizadas = 0;
-if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
-  $totalLlamadasFinalizadas = $fila['total'];
+$statement = $con->prepare($query);
+$statement->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
+$statement->execute();
+$resultado = $statement->fetch(PDO::FETCH_ASSOC);
+
+if ($resultado) {
+    $totalTicketFinalizados = $resultado['cantidad_tickets_finalizados'];
+} else {
+    // Manejo de errores si la consulta no devuelve resultados
+    $totalTicketFinalizados = "Error al ejecutar la consulta.";
 }
 
-$consulta = "SELECT COUNT(*) as total FROM detalle_ticket WHERE id_estado = 4 AND documento = :nitc_usuario";
-$stmt = $con->prepare($consulta);
-$stmt->bindParam(':nitc_usuario', $nitc_usuario);
-$stmt->execute();
+// Consulta para obtener el recuento de clientes
+$query_clientes = "SELECT COUNT(*) AS cantidad_clientes FROM usuario WHERE id_tip_usu = 2";
+$statement_clientes = $con->prepare($query_clientes);
+$statement_clientes->execute();
+$resultado_clientes = $statement_clientes->fetch(PDO::FETCH_ASSOC);
+$cantidad_clientes = $resultado_clientes['cantidad_clientes'];
 
-// Obtener el resultado de la consulta
-$totalTicketProceso = 0;
-if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
-  $totalTicketProceso = $fila['total'];
-}
+// Consulta para obtener el recuento de empleados
+$query_empleados = "SELECT COUNT(*) AS cantidad_empleados FROM usuario WHERE id_tip_usu = 3";
+$statement_empleados = $con->prepare($query_empleados);
+$statement_empleados->execute();
+$resultado_empleados = $statement_empleados->fetch(PDO::FETCH_ASSOC);
+$cantidad_empleados = $resultado_empleados['cantidad_empleados'];
 
-$consulta = "SELECT COUNT(*) as total FROM detalle_ticket WHERE id_estado = 5";
-$stmt = $con->prepare($consulta);
-$stmt->execute();
-
-// Obtener el resultado de la consulta
-$totalTicketFinalizados = 0;
-if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
-  $totalTicketFinalizados = $fila['total'];
-}
-
+// Consulta para obtener el recuento de técnicos
+$query_tecnicos = "SELECT COUNT(*) AS cantidad_tecnicos FROM usuario WHERE id_tip_usu = 4";
+$statement_tecnicos = $con->prepare($query_tecnicos);
+$statement_tecnicos->execute();
+$resultado_tecnicos = $statement_tecnicos->fetch(PDO::FETCH_ASSOC);
+$cantidad_tecnicos = $resultado_tecnicos['cantidad_tecnicos'];
 ?>
-
 
 
 <!DOCTYPE html>
@@ -258,6 +305,23 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                   </a>
                 </li>
               </ul>
+              <li class="nav-header">REPORTES</li>
+              <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas fa-database"></i>
+                <p>
+                  Llamadas-Tickets
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="Visualizar/reportes.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Visualizar</p>
+                  </a>
+                </li>
+              </ul>
           </ul>
         </nav>
         <!-- /.sidebar-menu -->
@@ -295,7 +359,7 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
                 <div class="icon">
                   <i class="ion ion-email-unread"></i> 
                 </div>
-                <a href="Visualizar/llamadas.php" class="small-box-footer">Busca <i
+                <a href="#" class="small-box-footer">Busca <i
                     class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
@@ -419,38 +483,26 @@ if ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <script src="dist/js/pages/dashboard.js"></script>
   <script>
-  $(function () {
-    //-------------
-    //- DONUT CHART -
-    //-------------
-    // Get context with jQuery - using jQuery's .get() method.
-    var donutChartCanvas = $('#donutChart').get(0).getContext('2d')
-    var donutData        = {
-      labels: [
-          'Clientes',
-          'Empleados',
-          'Tecnicos',
-      ],
-      datasets: [
-        {
-          data: [1,1,1],
-          backgroundColor : ['#3c8dbc', '#d2d6de', '#f56954'],
-        }
-      ]
-    }
-    var donutOptions     = {
-      maintainAspectRatio : false,
-      responsive : true,
-    }
-    //Create pie or douhnut chart
-    // You can switch between pie and douhnut using the method below.
-    new Chart(donutChartCanvas, {
-      type: 'doughnut',
-      data: donutData,
-      options: donutOptions
-    })
-  })
-</script>
+    $(function () {
+      var donutChartCanvas = $('#donutChart').get(0).getContext('2d');
+      var donutData = {
+        labels: ['Clientes', 'Empleados', 'Técnicos'],
+        datasets: [{
+          data: [<?php echo $cantidad_clientes; ?>, <?php echo $cantidad_empleados; ?>, <?php echo $cantidad_tecnicos; ?>],
+          backgroundColor: ['#3c8dbc', '#d2d6de', '#f56954'],
+        }]
+      };
+      var donutOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+      };
+      new Chart(donutChartCanvas, {
+        type: 'doughnut',
+        data: donutData,
+        options: donutOptions
+      });
+    });
+  </script>
 </body>
 
 </html>

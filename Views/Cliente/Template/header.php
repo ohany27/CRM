@@ -81,6 +81,24 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../Assets/css/index.css" rel="stylesheet">
+    <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../Assets/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="../../../Assets/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="../../../Assets/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="../../../Assets/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="../../../Assets/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="../../../Assets/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="../../../Assets/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="../../../Assets/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../Assets/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../../../Assets/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../Assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="../../../Assets/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../../Assets/favicon/favicon-16x16.png">
+    <link rel="manifest" href="../../../Assets/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
 </head>
 
 <body>
@@ -96,7 +114,7 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                         <div class="row align-items-center">
                             <div class="col-md-3">
                                 <div class="text-center border-end">
-                                    <img src="https://cdn-icons-png.freepik.com/512/2867/2867297.png"
+                                    <img src="https://cdn-icons-png.flaticon.com/512/10316/10316931.png"
                                         class="img-fluid avatar-xxl rounded-circle" alt>
                                     <h4 class="text-primary font-size-20 mt-3 mb-2"><?php echo $_SESSION['usuario']['nombre']; ?></h4>
                                     <h5 class="text-muted font-size-13 mb-0"><?php echo $nombre_tipo_usuario; ?></h5>

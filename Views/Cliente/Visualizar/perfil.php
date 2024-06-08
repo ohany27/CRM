@@ -41,7 +41,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo '<script>window.location="../Visualizar/perfil.php"</script>';
             exit();
         } else {
-            
         }
     } else {
         echo "Error: Todos los campos son obligatorios.";
@@ -119,5 +118,81 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                 <button class="btn btn-primary" type="submit">Actualizar</button>
             </form>
-            
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    var originalNombre = "<?php echo $usuario['nombre']; ?>";
+                    var originalCorreo = "<?php echo $usuario['correo']; ?>";
+                    var originalTelefono = "<?php echo $usuario['telefono']; ?>";
+                    var originalDireccion = "<?php echo $usuario['direccion']; ?>";
+
+                    var nombreInput = document.getElementById("inputUsername");
+                    var telefonoInput = document.getElementById("inputPhone");
+
+                    nombreInput.addEventListener("input", function() {
+                        var nombreRegex = /^[a-zA-Z\s]{3,}$/;
+                        if (!nombreRegex.test(nombreInput.value)) {
+                            nombreInput.setCustomValidity("El nombre debe tener al menos 3 letras y no debe contener signos.");
+                        } else {
+                            nombreInput.setCustomValidity("");
+                        }
+                    });
+
+                    telefonoInput.addEventListener("input", function() {
+                        var telefonoRegex = /^\d{10}$/;
+                        if (!telefonoRegex.test(telefonoInput.value)) {
+                            telefonoInput.setCustomValidity("El teléfono debe tener exactamente 10 números.");
+                        } else {
+                            telefonoInput.setCustomValidity("");
+                        }
+                    });
+
+                    document.getElementById('inputAddress').addEventListener('input', function() {
+                        var direccionValue = this.value;
+
+                        // Verificar si la dirección tiene al menos 3 caracteres (letras o números)
+                        if (/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ\s]{3,}$/.test(direccionValue)) {
+                            this.setCustomValidity('');
+                        } else {
+                            this.setCustomValidity('La dirección debe contener al menos 3 caracteres (letras o números).');
+                        }
+                    });
+
+                    var contrasenaInput = document.getElementById('inputPassword');
+                    contrasenaInput.addEventListener('input', function() {
+                        var contrasenaValue = contrasenaInput.value;
+                        var letraCount = (contrasenaValue.match(/[a-zA-Z]/g) || []).length;
+                        var numeroCount = (contrasenaValue.match(/[0-9]/g) || []).length;
+
+                        if (letraCount < 3 || numeroCount < 2) {
+                            contrasenaInput.setCustomValidity('La contraseña debe tener al menos 3 letras y 2 números.');
+                        } else {
+                            contrasenaInput.setCustomValidity('');
+                        }
+                    });
+
+                    // Función para validar el formulario y verificar cambios
+                    window.validateForm = function() {
+                        // Obtener valores actuales
+                        var currentNombre = document.getElementById("inputUsername").value;
+                        var currentCorreo = document.getElementById("inputEmail").value;
+                        var currentTelefono = document.getElementById("inputPhone").value;
+                        var currentDireccion = document.getElementById("inputAddress").value;
+
+                        // Verificar si hay cambios
+                        if (
+                            originalNombre === currentNombre &&
+                            originalCorreo === currentCorreo &&
+                            originalTelefono === currentTelefono &&
+                            originalDireccion === currentDireccion &&
+                            !document.getElementById("inputPassword").value // Verifica que no se haya ingresado una nueva contraseña
+                        ) {
+                            alert("Realiza algún cambio para editar.");
+                            return false; // Evita el envío del formulario
+                        }
+                        return true; // Permite el envío del formulario
+                    };
+
+
+                });
+            </script>
             <?php include "../Template/footer.php"; ?>
