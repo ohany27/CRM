@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 31-05-2024 a las 17:34:40
+-- Tiempo de generación: 11-06-2024 a las 02:38:37
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -104,9 +104,11 @@ CREATE TABLE `detalle_ticket` (
 --
 
 INSERT INTO `detalle_ticket` (`id_detalle_ticket`, `id_ticket`, `id_estado`, `documento`, `id_riesgo`, `fecha_inicio`, `fecha_final`, `descripcion_detalle`) VALUES
-(132, 'Tk_001', 3, 1104544453, NULL, '2024-05-29 12:15:29', NULL, NULL),
-(133, 'Tk_001', 5, 1104544453, NULL, '2024-05-29 07:33:04', '2024-05-29 07:33:04', 'estaba desconectado la pantalla'),
-(134, 'Tk_002', 3, 1104544453, NULL, '2024-05-29 12:42:04', NULL, NULL);
+(175, 'Tk_001', 3, 1104544453, 3, '2024-06-10 19:06:40', '2024-06-10 19:06:40', NULL),
+(176, 'Tk_001', 4, 110454444, 3, '2024-06-10 19:06:45', NULL, 'adios'),
+(177, 'Tk_001', 5, 110454444, 3, '2024-06-10 19:04:33', '2024-06-11 00:08:59', 'rr'),
+(178, 'Tk_002', 3, 1104544453, 1, '2024-06-10 19:09:43', '2024-06-10 19:09:43', NULL),
+(179, 'Tk_002', 4, 110454444, 1, '2024-06-10 19:09:48', '2024-06-10 19:09:20', 'gg');
 
 -- --------------------------------------------------------
 
@@ -194,8 +196,8 @@ CREATE TABLE `llamadas` (
 --
 
 INSERT INTO `llamadas` (`id_llamada`, `id_ticket`, `documento`, `id_daño`, `id_est`, `fecha`, `descripcion`, `id_empleado`) VALUES
-(35, 'Tk_001', 1104544451, 1, 4, '2024-05-29 07:14:57', 'esa cosa no prende', 1104544453),
-(36, 'Tk_002', 1104544451, 2, 4, '2024-05-29 07:41:37', 'ingrese a paginas inseguras', 1104544453);
+(52, 'Tk_001', 1104544451, 1, 4, '2024-06-10 19:04:33', 'pantalla congelada', 1104544453),
+(53, 'Tk_002', 1104544451, 2, 4, '2024-06-10 19:09:20', 'datos perdidos', 1104544453);
 
 -- --------------------------------------------------------
 
@@ -408,7 +410,9 @@ INSERT INTO `trigger_usuarios` (`documento`, `correo`, `password`, `telefono`, `
 (1127208902, 'yarethohanygarcia@gmail.com', '$2y$10$4.Y/l7fE/xDz19whjznu6utCtupXb3w1OtuKXcH7AMYVEYlDjEyMy', 2147483647, '2024-05-25', 'root@localhost'),
 (1104544454, 'bfsanchez45@misena.edu.co', '$2y$10$cYZMapsx2HZZF842xcfWH.9LWeEvxoyOpnnIGlvhCPhcwGjvqJmVy', 2147483647, '2024-05-31', 'root@localhost'),
 (1104544453, 'ezbrayanp@gmail.com', '$2y$10$46.GDmaksiF3GTxfkM0i3OuYxPHweXgUvyGLW/dEWKWEDUD2jWyUW', 2147483647, '2024-05-31', 'root@localhost'),
-(1104544451, 'tecnelectrics@gmail.com', '$2y$10$b94eh1AsEpIQ91AcdWCaa.Jk4.l/qii3DgakK7fdEAArB7Ts1A0VS', 2147483647, '2024-05-31', 'root@localhost');
+(1104544451, 'tecnelectrics@gmail.com', '$2y$10$b94eh1AsEpIQ91AcdWCaa.Jk4.l/qii3DgakK7fdEAArB7Ts1A0VS', 2147483647, '2024-05-31', 'root@localhost'),
+(1104544454, 'bfsanchez45@misena.edu.co', '$2y$10$WKdEFGChSASdk4cvTNZBZ.YE4gKQxN5exYrm69iAAhPRI2MrFfJvG', 2147483647, '2024-06-01', 'root@localhost'),
+(1104544451, 'tecnelectrics@gmail.com', '$2y$10$kAwEtMRIAqCSNY9rXsBmsOspfF/NGSrauK33UKFgsRrHal8sq5GFe', 2147483647, '2024-06-04', 'root@localhost');
 
 -- --------------------------------------------------------
 
@@ -434,7 +438,10 @@ CREATE TABLE `usuario` (
 --
 
 INSERT INTO `usuario` (`documento`, `nombre`, `correo`, `password`, `pin`, `telefono`, `direccion`, `nitc`, `id_tip_usu`, `id_estado`) VALUES
-(1104544454, 'Brayan', 'bfsanchez45@misena.edu.co', '$2y$10$XssdPIg3vuKVCqChjtKVqe3H4EhQA5l2Z4Ap1XhSbF7gAjnpslsOC', 6336, '3202174961', 'mz casa 14', 1234567, 1, 1);
+(110454444, 'julian', 'arcan3985@gmail.com', '$2y$10$NIEyy3.vltET5.Uk2YNtq.NwnKW.yr7QyNrnwGU7Vmbf0J/AW4wQW', 4135, '3202174964', 'cajamarca', 1234567, 4, 1),
+(1104544451, 'cesar', 'tecnelectrics@gmail.com', '$2y$10$FL6VmJjOLVBrFz81hA76a.WEwEVOn6luTOidxQy8zYq0ZoHQd2W2.', 9233, '3202174962', 'sena', 1234567, 2, 1),
+(1104544453, 'yareht', 'ezbrayanp@gmail.com', '$2y$10$eKFzzFbALMETAd12MTFdu.gHOd0R9ACMlgPRPOAyJRFegH0srD/i.', 5378, '3202174963', 'caracolitos', 1234567, 3, 1),
+(1104544454, 'Brayan', 'bfsanchez45@misena.edu.co', '$2y$10$BJ2tY6CCyjn/RMplZgqSCe3U6e3mUCF..u7vWsLLNq/xIl20VYDFi', 3180, '3202174961', 'mz casa 14', 1234567, 1, 1);
 
 --
 -- Disparadores `usuario`
@@ -466,8 +473,7 @@ ALTER TABLE `detalle_daño`
 -- Indices de la tabla `detalle_ticket`
 --
 ALTER TABLE `detalle_ticket`
-  ADD PRIMARY KEY (`id_detalle_ticket`),
-  ADD KEY `id_riesgo` (`id_riesgo`);
+  ADD PRIMARY KEY (`id_detalle_ticket`);
 
 --
 -- Indices de la tabla `empresa`
@@ -494,8 +500,7 @@ ALTER TABLE `licencia`
 --
 ALTER TABLE `llamadas`
   ADD PRIMARY KEY (`id_llamada`),
-  ADD KEY `id_est` (`id_est`),
-  ADD KEY `id_daño` (`id_daño`);
+  ADD KEY `id_est` (`id_est`);
 
 --
 -- Indices de la tabla `riesgos`
@@ -540,13 +545,13 @@ ALTER TABLE `categoria`
 -- AUTO_INCREMENT de la tabla `detalle_daño`
 --
 ALTER TABLE `detalle_daño`
-  MODIFY `id_detalle_daño` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id_detalle_daño` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT de la tabla `detalle_ticket`
 --
 ALTER TABLE `detalle_ticket`
-  MODIFY `id_detalle_ticket` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=137;
+  MODIFY `id_detalle_ticket` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=187;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
@@ -564,7 +569,7 @@ ALTER TABLE `licencia`
 -- AUTO_INCREMENT de la tabla `llamadas`
 --
 ALTER TABLE `llamadas`
-  MODIFY `id_llamada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id_llamada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
 
 --
 -- AUTO_INCREMENT de la tabla `riesgos`
@@ -582,7 +587,7 @@ ALTER TABLE `roles`
 -- AUTO_INCREMENT de la tabla `tipo_daño`
 --
 ALTER TABLE `tipo_daño`
-  MODIFY `id_daño` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id_daño` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- Restricciones para tablas volcadas
@@ -595,12 +600,6 @@ ALTER TABLE `detalle_daño`
   ADD CONSTRAINT `detalle_daño_ibfk_1` FOREIGN KEY (`id_daño`) REFERENCES `tipo_daño` (`id_daño`);
 
 --
--- Filtros para la tabla `detalle_ticket`
---
-ALTER TABLE `detalle_ticket`
-  ADD CONSTRAINT `detalle_ticket_ibfk_3` FOREIGN KEY (`id_riesgo`) REFERENCES `riesgos` (`id_riesgo`);
-
---
 -- Filtros para la tabla `licencia`
 --
 ALTER TABLE `licencia`
@@ -611,8 +610,7 @@ ALTER TABLE `licencia`
 -- Filtros para la tabla `llamadas`
 --
 ALTER TABLE `llamadas`
-  ADD CONSTRAINT `llamadas_ibfk_3` FOREIGN KEY (`id_est`) REFERENCES `estado` (`id_est`),
-  ADD CONSTRAINT `llamadas_ibfk_4` FOREIGN KEY (`id_daño`) REFERENCES `tipo_daño` (`id_daño`);
+  ADD CONSTRAINT `llamadas_ibfk_3` FOREIGN KEY (`id_est`) REFERENCES `estado` (`id_est`);
 
 --
 -- Filtros para la tabla `tipo_daño`

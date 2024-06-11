@@ -30,7 +30,7 @@ if (isset($_SESSION['usuario']) && isset($_SESSION['usuario']['documento'])) {
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h1 class="m-0">Solicitudes En curso</h1>
+          <h1 class="m-0">Solicitudes Solucionadas</h1>
         </div>
       </div>
     </div>
