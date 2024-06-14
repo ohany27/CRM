@@ -1,6 +1,6 @@
 <?php
 include "../Template/header.php";
-require_once ("../../Config/conexion.php");
+require_once("../../Config/conexion.php");
 
 $Conexion = new Database;
 $con = $Conexion->conectar();
@@ -19,17 +19,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nitc = $_POST["nitc"];
     // No es necesario recuperar $_POST["id_tip_usu"] porque ya está definido como 1
 
-    // Verificar si ya existe un administrador para la empresa
-    if ($id_tip_usu == 1) {
-        $query_verificar_admin = "SELECT * FROM usuario WHERE id_tip_usu = 1 AND nitc = :nitc";
-        $stmt_verificar_admin = $pdo->prepare($query_verificar_admin);
-        $stmt_verificar_admin->execute(array(':nitc' => $nitc));
-        $existe_admin = $stmt_verificar_admin->fetch();
+    // Verificar si ya existe un administrador activo para la empresa
+    $query_verificar_admin = "SELECT * FROM usuario WHERE id_tip_usu = 1 AND id_estado = 1 AND nitc = :nitc";
+    $stmt_verificar_admin = $pdo->prepare($query_verificar_admin);
+    $stmt_verificar_admin->execute(array(':nitc' => $nitc));
+    $existe_admin = $stmt_verificar_admin->fetch();
 
-        if ($existe_admin) {
-            echo "<script>alert('Ya existe un administrador para esta empresa.');window.location='../Visualizar/usuarios.php';</script>";
-            exit();
-        }
+    if ($existe_admin) {
+        echo "<script>alert('Ya existe un administrador activo para esta empresa.');window.location='../Visualizar/usuarios.php';</script>";
+        exit();
     }
 
     // Verificar si el documento, correo o teléfono ya existen en la base de datos
@@ -97,6 +95,7 @@ function generarPinAleatorio($longitud = 4)
 }
 ?>
 
+
 <div class="content-wrapper">
     <div class="content-header">
         <div class="container-fluid">
@@ -122,36 +121,31 @@ function generarPinAleatorio($longitud = 4)
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">Documento</label>
-                                    <input type="number" class="form-control" id="documento" name="documento"
-                                        placeholder="Documento" required>
+                                    <input type="number" class="form-control" id="documento" name="documento" placeholder="Documento" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">Nombre</label>
-                                    <input type="text" class="form-control" id="nombre" name="nombre"
-                                        placeholder="Nombre" required>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Nombre" oninput="mayus(this)" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">Correo</label>
-                                    <input type="email" class="form-control" id="correo" name="correo"
-                                        placeholder="Correo-Electronico" required>
+                                    <input type="email" class="form-control" id="correo" name="correo" placeholder="Correo-electronico" oninput="minus(this)" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">Telefono</label>
-                                    <input type="number" class="form-control" id="telefono" name="telefono"
-                                        placeholder="Telefono" required>
+                                    <input type="number" class="form-control" id="telefono" name="telefono" placeholder="Telefono" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">Direccion</label>
-                                    <input type="text" class="form-control" id="direccion" name="direccion"
-                                        placeholder="Direccion" required>
+                                    <input type="text" class="form-control" id="direccion" name="direccion" placeholder="Direccion" required>
                                 </div>
                             </div>
 
@@ -180,7 +174,7 @@ function generarPinAleatorio($longitud = 4)
                                     </div>
                                 </div>
                             </div>
-                            
+
                         </div>
                         <!-- /.card-body -->
 
@@ -193,18 +187,19 @@ function generarPinAleatorio($longitud = 4)
     </section>
 </div>
 <script>
-    document.getElementById('documento').addEventListener('input', function () {
+    document.getElementById('documento').addEventListener('input', function() {
         var documentoValue = this.value;
 
         // Verificar si el documento tiene entre 7 y 11 números
         if (/^\d{7,11}$/.test(documentoValue)) {
             this.setCustomValidity('');
         } else {
+            this.value = documentoValue.slice(0, 11);
             this.setCustomValidity('El documento debe tener entre 7 y 11 números.');
         }
     });
 
-    document.getElementById('nombre').addEventListener('input', function () {
+    document.getElementById('nombre').addEventListener('input', function() {
         var nombreValue = this.value;
 
         // Verificar si el nombre tiene al menos 3 letras y no contiene puntos
@@ -215,16 +210,26 @@ function generarPinAleatorio($longitud = 4)
         }
     });
 
-    document.getElementById('telefono').addEventListener('input', function () {
+    document.getElementById('telefono').addEventListener('input', function() {
         var telefonoValue = this.value;
 
         // Verificar si el teléfono tiene 10 números
-        if (/^\d{10}$/.test(telefonoValue)) {
+        if (/^\d{0,10}$/.test(telefonoValue)) {
             this.setCustomValidity('');
         } else {
-            this.setCustomValidity('El teléfono debe tener 10 números.');
+            this.value = telefonoValue.slice(0, 10); // Limitar el valor a 10 caracteres
+            this.setCustomValidity('Solo se permiten 10 números en el teléfono.');
         }
     });
+</script>
+<script>
+    // main.js
+    function minus(e) {
+        e.value = e.value.toLowerCase();
+    }
+    function mayus(e) {
+    e.value = e.value.toUpperCase();
+}
 </script>
 
 <?php include "../Template/footer.php"; ?>

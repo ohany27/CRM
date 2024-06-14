@@ -120,14 +120,14 @@ function generarPinAleatorio($longitud = 4)
                                 <div class="form-group">
                                     <label for="">Nombre</label>
                                     <input type="text" class="form-control" id="nombre" name="nombre"
-                                        placeholder="Nombre" required>
+                                        placeholder="Nombre" oninput="mayus(this)" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">Correo</label>
                                     <input type="email" class="form-control" id="correo" name="correo"
-                                        placeholder="Correo-Electronico" required>
+                                        placeholder="Correo-Electronico" oninput="minus(this)" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -192,6 +192,7 @@ function generarPinAleatorio($longitud = 4)
         if (/^\d{7,11}$/.test(documentoValue)) {
             this.setCustomValidity('');
         } else {
+            this.value = documentoValue.slice(0, 11);
             this.setCustomValidity('El documento debe tener entre 7 y 11 números.');
         }
     });
@@ -214,6 +215,7 @@ function generarPinAleatorio($longitud = 4)
         if (/^\d{10}$/.test(telefonoValue)) {
             this.setCustomValidity('');
         } else {
+            this.value = telefonoValue.slice(0, 10);
             this.setCustomValidity('El teléfono debe tener 10 números.');
         }
     });
@@ -228,5 +230,13 @@ function generarPinAleatorio($longitud = 4)
         }
     });
 </script>
-
+<script>
+    // main.js
+    function minus(e) {
+        e.value = e.value.toLowerCase();
+    }
+    function mayus(e) {
+    e.value = e.value.toUpperCase();
+}
+</script>
 <?php include "../Template/footer.php"; ?>

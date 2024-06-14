@@ -1,18 +1,10 @@
 <?php include "../Template/header.php"; ?>
 <?php
 include ('../../Config/conexion.php');
-
 $database = new Database();
 $pdo = $database->conectar();
 
-// Check if delete button is clicked
-if (isset($_GET['delete_nitc'])) {
-    $nitcToDelete = $_GET['delete_nitc'];
 
-    // Prepare and execute the delete query
-    $deleteQuery = $pdo->prepare("DELETE FROM empresa WHERE nitc = ?");
-    $deleteQuery->execute([$nitcToDelete]);
-}
 
 // Fetch and display data
 $selectQuery = $pdo->prepare("SELECT * FROM empresa");
@@ -58,7 +50,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo "<script>alert('Ya existe una empresa con este teléfono.')</script>";
         } else {
             // Insertar datos en la base de datos
-            $sql = "INSERT INTO empresa (nitc, nombre, direccion, telefono) VALUES (:nitc, :nombre, :direccion, :telefono)";
+            $sql = "INSERT INTO empresa (nitc, nombre, direccion, telefono, id_estado) VALUES (:nitc, :nombre, :direccion, :telefono, 1)";
             $stmt = $pdo->prepare($sql);
 
             $params = array(
@@ -104,14 +96,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="nitc" class="form-label">NIT:</label>
-                                    <input type="number" class="form-control" id="nitc" name="nitc" 
+                                    <input type="number" class="form-control" id="nitc" name="nitc"
                                         title="Ingrese solo números" required>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="nombre" class="form-label">Nombre:</label>
-                                    <input type="text" class="form-control" id="nombre" name="nombre" required>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" oninput="mayus(this)" required>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -135,11 +127,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
-                                <th>NITC</th>
+                                <th>NIT</th>
                                 <th>Nombre</th>
                                 <th>Dirección</th>
                                 <th>Teléfono</th>
-                                <th></th>
+                                <th>Estado</th>
+                                <th>Actualizar</th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -149,20 +143,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <td><?php echo $empresa['nombre']; ?></td>
                                     <td><?php echo $empresa['direccion']; ?></td>
                                     <td><?php echo $empresa['telefono']; ?></td>
+                                    <td><?php echo ($empresa['id_estado'] == 1) ? "Activo" : "Inactivo"; ?></td>
                                     <td class="project-actions text-center">
+                                        <!-- Botón de Edición -->
                                         <a href="../Editar/empresa.php?nitc=<?php echo $empresa['nitc']; ?>"
-                                            class="btn btn-info btn-sm" href="#">
-                                            <i class="fas fa-pencil-alt">
-                                            </i>
-                                            Editar
-                                        </a>
-                                        <a href="?delete_nitc=<?php echo $empresa['nitc']; ?>" 
-                                        onclick="return confirm('¿Estás seguro de eliminar esta empresa?')"
-                                            class="btn btn-danger btn-sm" href="#">
-                                            <i class="fas fa-trash">
-                                            </i>
-                                            Eliminar
-                                        </a>
+                                            class="btn btn-primary btn-sm">
+                                            <i class="fas fa-edit"></i> Editar
+                                        </a> 
+                                    </td>
+                                    <td class="project-actions text-center">
+                                        <?php if ($empresa['id_estado'] == 1) { ?>
+                                            <a href="llamada.php?toggle_nitc=<?php echo $empresa['nitc']; ?>"
+                                                class="btn btn-danger btn-sm">
+                                                <i class="fas fa-toggle-off"></i> Desactivar
+                                            </a>
+                                        <?php } elseif ($empresa['id_estado'] == 2) { ?>
+                                            <a href="llamada.php?toggle_nitc=<?php echo $empresa['nitc']; ?>"
+                                                class="btn btn-success btn-sm">
+                                                <i class="fas fa-toggle-on"></i> Activar
+                                            </a>
+                                        <?php } ?>
                                     </td>
                                 </tr>
                             <?php } ?>
@@ -177,17 +177,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     document.getElementById('nitc').addEventListener('input', function () {
         var nitValue = this.value;
         var nitLength = nitValue.length;
-        
+
         // Verificar 
         if (nitLength >= 7 && nitLength <= 10 && /^\d+$/.test(nitValue) && !/[.,]/.test(nitValue)) {
             this.setCustomValidity('');
         } else {
+            this.value = nitValue.slice(0, 10);
             this.setCustomValidity('El NIT debe tener entre 7 y 10 dígitos, no se permite signos de puntuacion.');
         }
     });
     document.getElementById('nombre').addEventListener('input', function () {
         var nombreValue = this.value;
-        
+
         // Verificar 
         if (/^[A-Za-zñÑ\s]{3,}$/.test(nombreValue) && !/[.]/.test(nombreValue)) {
             this.setCustomValidity('');
@@ -197,13 +198,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     });
     document.getElementById('telefono').addEventListener('input', function () {
         var telefonoValue = this.value;
-        
+
         // Verificar 
         if (/^\d{10}$/.test(telefonoValue) && !/[.]/.test(telefonoValue)) {
             this.setCustomValidity('');
         } else {
+            this.value = telefonoValue.slice(0, 10);
             this.setCustomValidity('El teléfono debe contener exactamente 10 dígitos.');
         }
     });
+</script>
+<script>
+    // main.js
+    function minus(e) {
+        e.value = e.value.toLowerCase();
+    }
+    function mayus(e) {
+    e.value = e.value.toUpperCase();
+}
 </script>
 <?php include "../Template/footer.php"; ?>

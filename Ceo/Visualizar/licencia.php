@@ -1,9 +1,10 @@
 <?php
 include "../Template/header.php";
-require_once ("../../Config/conexion.php");
+require_once("../../Config/conexion.php");
 
 // Asegúrate de que la biblioteca de código de barras esté cargada
 require '../vendor/autoload.php';
+
 use Picqer\Barcode\BarcodeGeneratorPNG;
 
 $fecha_actual = date('Y-m-d'); // Defino la fecha actual
@@ -14,6 +15,20 @@ $long = 20;
 $licencia = substr(str_shuffle($caracteres), 0, $long);
 
 $estado = 1; // Establecer el estado en 1
+
+// Actualizar el estado de las licencias vencidas
+$database = new Database();
+$pdo = $database->conectar();
+$query_actualizar = "UPDATE licencia SET estado = 2 WHERE fecha_final <= :fecha_actual";
+$statement_actualizar = $pdo->prepare($query_actualizar);
+$statement_actualizar->execute(array('fecha_actual' => $fecha_actual));
+
+// Verificar si ocurrieron errores durante la ejecución de la consulta
+if ($statement_actualizar->rowCount() > 0) {
+    echo "<script>alert('Se han actualizado las licencias vencidas correctamente.');</script>";
+} else {
+    
+}
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nit = $_POST['nit'] ?? '';
@@ -65,7 +80,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     echo "<script>alert('Ha ocurrido un error al generar y guardar la licencia.');</script>";
                 }
             }
-
         } catch (PDOException $e) {
             $pdo->rollBack();
             echo "<script>alert('Error en la transacción: " . $e->getMessage() . "');</script>";
@@ -109,25 +123,23 @@ $licencias = $statement_licencias->fetchAll(PDO::FETCH_ASSOC);
                                 <select id="nit" name="nit" class="form-control" required>
                                     <option value="" disabled selected>Selecciona un NIT</option>
                                     <?php
-                                    $query_empresas = "SELECT nitc, nombre FROM empresa";
+                                    $query_empresas = "SELECT nitc, nombre FROM empresa WHERE id_estado = 1";
                                     $statement_empresas = $pdo->prepare($query_empresas);
                                     $statement_empresas->execute();
                                     while ($row = $statement_empresas->fetch(PDO::FETCH_ASSOC)) {
                                         echo "<option value='" . $row['nitc'] . "'>" . $row['nombre'] . "</option>";
                                     }
                                     ?>
+
                                 </select><br><br>
                                 <label for="fecha_inicial" class="form-label">Fecha de Creación:</label><br>
-                                <input type="text" id="fecha_inicial" name="fecha_inicial" class="form-control"
-                                    value="<?php echo $fecha_actual; ?>" readonly><br><br>
+                                <input type="text" id="fecha_inicial" name="fecha_inicial" class="form-control" value="<?php echo $fecha_actual; ?>" readonly><br><br>
                             </div>
                             <div class="col-md-6">
                                 <label for="licencia" class="form-label">Licencia Generada:</label><br>
-                                <input type="text" id="licencia" name="licencia" class="form-control"
-                                    value="<?php echo $licencia; ?>" readonly><br><br>
+                                <input type="text" id="licencia" name="licencia" class="form-control" value="<?php echo $licencia; ?>" readonly><br><br>
                                 <label for="fecha_final" class="form-label">Fecha de Vencimiento:</label><br>
-                                <input type="text" id="fecha_final" name="fecha_final" class="form-control"
-                                    value="<?php echo $fecha_vencimiento; ?>" readonly><br><br>
+                                <input type="text" id="fecha_final" name="fecha_final" class="form-control" value="<?php echo $fecha_vencimiento; ?>" readonly><br><br>
                             </div>
                         </div>
                         <input type="submit" class="btn btn-primary" value="Crear Licencia">
@@ -145,11 +157,10 @@ $licencias = $statement_licencias->fetchAll(PDO::FETCH_ASSOC);
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($licencias as $licencia): ?>
+                            <?php foreach ($licencias as $licencia) : ?>
                                 <tr>
                                     <td style="text-align: center;">
-                                        <img src="../dist/img/codigo/<?= $licencia['licencia'] ?>.png"
-                                        style="max-width: 400px;">
+                                        <img src="../dist/img/codigo/<?= $licencia['licencia'] ?>.png" style="max-width: 400px;">
                                     </td>
                                     <td><?php echo $licencia['nombre_empresa']; ?></td>
                                     <td><?php echo $licencia['estado']; ?></td>

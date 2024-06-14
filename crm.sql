@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 11-06-2024 a las 02:38:37
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Tiempo de generación: 13-06-2024 a las 17:51:59
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -107,8 +107,10 @@ INSERT INTO `detalle_ticket` (`id_detalle_ticket`, `id_ticket`, `id_estado`, `do
 (175, 'Tk_001', 3, 1104544453, 3, '2024-06-10 19:06:40', '2024-06-10 19:06:40', NULL),
 (176, 'Tk_001', 4, 110454444, 3, '2024-06-10 19:06:45', NULL, 'adios'),
 (177, 'Tk_001', 5, 110454444, 3, '2024-06-10 19:04:33', '2024-06-11 00:08:59', 'rr'),
-(178, 'Tk_002', 3, 1104544453, 1, '2024-06-10 19:09:43', '2024-06-10 19:09:43', NULL),
-(179, 'Tk_002', 4, 110454444, 1, '2024-06-10 19:09:48', '2024-06-10 19:09:20', 'gg');
+(187, 'Tk_002', 3, 1104544453, 1, '2024-06-13 10:23:01', '2024-06-13 10:23:01', NULL),
+(188, 'Tk_002', 5, 1104544453, 1, '2024-06-13 10:23:10', '2024-06-13 10:23:10', 'facil'),
+(191, 'Tk_003', 3, 1104544453, 1, '2024-06-13 10:35:32', '2024-06-13 10:35:32', NULL),
+(192, 'Tk_003', 4, 110454444, 1, '2024-06-13 10:35:39', NULL, 'no pude');
 
 -- --------------------------------------------------------
 
@@ -120,15 +122,16 @@ CREATE TABLE `empresa` (
   `nitc` int(10) NOT NULL,
   `nombre` varchar(30) NOT NULL,
   `direccion` varchar(30) NOT NULL,
-  `telefono` varchar(12) NOT NULL
+  `telefono` varchar(12) NOT NULL,
+  `id_estado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `empresa`
 --
 
-INSERT INTO `empresa` (`nitc`, `nombre`, `direccion`, `telefono`) VALUES
-(1234567, 'Google', 'EE.UU', '1234567891');
+INSERT INTO `empresa` (`nitc`, `nombre`, `direccion`, `telefono`, `id_estado`) VALUES
+(1234567, 'Google', 'EE.UU', '1234567891', 1);
 
 -- --------------------------------------------------------
 
@@ -197,7 +200,8 @@ CREATE TABLE `llamadas` (
 
 INSERT INTO `llamadas` (`id_llamada`, `id_ticket`, `documento`, `id_daño`, `id_est`, `fecha`, `descripcion`, `id_empleado`) VALUES
 (52, 'Tk_001', 1104544451, 1, 4, '2024-06-10 19:04:33', 'pantalla congelada', 1104544453),
-(53, 'Tk_002', 1104544451, 2, 4, '2024-06-10 19:09:20', 'datos perdidos', 1104544453);
+(54, 'Tk_002', 1104544451, 2, 5, '2024-06-13 10:22:52', 'ff', 1104544453),
+(56, 'Tk_003', 1104544451, 3, 4, '2024-06-13 10:35:10', 'gg', 1104544453);
 
 -- --------------------------------------------------------
 
@@ -281,142 +285,6 @@ INSERT INTO `tipo_daño` (`id_daño`, `nombredano`, `foto`, `precio`, `id_catego
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `trigger_ticket`
---
-
-CREATE TABLE `trigger_ticket` (
-  `id` bigint(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `trigger_ticket`
---
-
-INSERT INTO `trigger_ticket` (`id`) VALUES
-(1),
-(6),
-(7),
-(8),
-(9),
-(10),
-(11),
-(12),
-(13),
-(14),
-(15),
-(16),
-(17),
-(18),
-(19),
-(20),
-(21),
-(22),
-(23),
-(24),
-(25),
-(26),
-(27),
-(28),
-(29),
-(30),
-(31),
-(32),
-(33),
-(34),
-(1),
-(6),
-(7),
-(8),
-(9),
-(10),
-(11),
-(12),
-(13),
-(14),
-(15),
-(16),
-(17),
-(18),
-(19),
-(20),
-(21),
-(22),
-(23),
-(24),
-(25),
-(26),
-(27),
-(28),
-(29),
-(30),
-(31),
-(32),
-(33),
-(34),
-(1),
-(6),
-(7),
-(8),
-(9),
-(10),
-(11),
-(12),
-(13),
-(14),
-(15),
-(16),
-(17),
-(18),
-(19),
-(20),
-(21),
-(22),
-(23),
-(24),
-(25),
-(26),
-(27),
-(28),
-(29),
-(30),
-(31),
-(32),
-(33),
-(34);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `trigger_usuarios`
---
-
-CREATE TABLE `trigger_usuarios` (
-  `documento` int(12) NOT NULL,
-  `correo` varchar(50) NOT NULL,
-  `password` varchar(150) NOT NULL,
-  `telefono` int(11) NOT NULL,
-  `date` date NOT NULL,
-  `user_action` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `trigger_usuarios`
---
-
-INSERT INTO `trigger_usuarios` (`documento`, `correo`, `password`, `telefono`, `date`, `user_action`) VALUES
-(1104544454, 'bfsanchez45@misena.edu.co', '$2y$10$lt6sAKr7ac9WzgxpkBdXX.q1OgT3ewbEYKiCv7ZioETYXTKqqLsr.', 2147483647, '2024-05-25', 'root@localhost'),
-(1105610405, 'juliandavid192004@gmail.com', '$2y$10$KI1ey172.KvhCqWCtrCID.D6x8DpJW3NbJUsUYuXMXh0TVrmvdZkG', 2147483647, '2024-05-25', 'root@localhost'),
-(1127208301, 'yarethohanygarciarangel@gmail.com', '$2y$10$DZ10dubsqeDpfpVZZZEonO3Le148BScDunjkxKeZbQEJQtDFB9sNS', 2147483647, '2024-05-25', 'root@localhost'),
-(1127208902, 'yarethohanygarcia@gmail.com', '$2y$10$4.Y/l7fE/xDz19whjznu6utCtupXb3w1OtuKXcH7AMYVEYlDjEyMy', 2147483647, '2024-05-25', 'root@localhost'),
-(1104544454, 'bfsanchez45@misena.edu.co', '$2y$10$cYZMapsx2HZZF842xcfWH.9LWeEvxoyOpnnIGlvhCPhcwGjvqJmVy', 2147483647, '2024-05-31', 'root@localhost'),
-(1104544453, 'ezbrayanp@gmail.com', '$2y$10$46.GDmaksiF3GTxfkM0i3OuYxPHweXgUvyGLW/dEWKWEDUD2jWyUW', 2147483647, '2024-05-31', 'root@localhost'),
-(1104544451, 'tecnelectrics@gmail.com', '$2y$10$b94eh1AsEpIQ91AcdWCaa.Jk4.l/qii3DgakK7fdEAArB7Ts1A0VS', 2147483647, '2024-05-31', 'root@localhost'),
-(1104544454, 'bfsanchez45@misena.edu.co', '$2y$10$WKdEFGChSASdk4cvTNZBZ.YE4gKQxN5exYrm69iAAhPRI2MrFfJvG', 2147483647, '2024-06-01', 'root@localhost'),
-(1104544451, 'tecnelectrics@gmail.com', '$2y$10$kAwEtMRIAqCSNY9rXsBmsOspfF/NGSrauK33UKFgsRrHal8sq5GFe', 2147483647, '2024-06-04', 'root@localhost');
-
--- --------------------------------------------------------
-
---
 -- Estructura de tabla para la tabla `usuario`
 --
 
@@ -442,15 +310,6 @@ INSERT INTO `usuario` (`documento`, `nombre`, `correo`, `password`, `pin`, `tele
 (1104544451, 'cesar', 'tecnelectrics@gmail.com', '$2y$10$FL6VmJjOLVBrFz81hA76a.WEwEVOn6luTOidxQy8zYq0ZoHQd2W2.', 9233, '3202174962', 'sena', 1234567, 2, 1),
 (1104544453, 'yareht', 'ezbrayanp@gmail.com', '$2y$10$eKFzzFbALMETAd12MTFdu.gHOd0R9ACMlgPRPOAyJRFegH0srD/i.', 5378, '3202174963', 'caracolitos', 1234567, 3, 1),
 (1104544454, 'Brayan', 'bfsanchez45@misena.edu.co', '$2y$10$BJ2tY6CCyjn/RMplZgqSCe3U6e3mUCF..u7vWsLLNq/xIl20VYDFi', 3180, '3202174961', 'mz casa 14', 1234567, 1, 1);
-
---
--- Disparadores `usuario`
---
-DELIMITER $$
-CREATE TRIGGER `Trigger_usuarios` AFTER DELETE ON `usuario` FOR EACH ROW INSERT INTO trigger_usuarios (documento, correo, password, telefono, date, user_action) 
-    VALUES (OLD.documento, OLD.correo, OLD.password, OLD.telefono, CURDATE(), CURRENT_USER())
-$$
-DELIMITER ;
 
 --
 -- Índices para tablas volcadas
@@ -551,7 +410,7 @@ ALTER TABLE `detalle_daño`
 -- AUTO_INCREMENT de la tabla `detalle_ticket`
 --
 ALTER TABLE `detalle_ticket`
-  MODIFY `id_detalle_ticket` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=187;
+  MODIFY `id_detalle_ticket` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=193;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
@@ -563,13 +422,13 @@ ALTER TABLE `estado`
 -- AUTO_INCREMENT de la tabla `licencia`
 --
 ALTER TABLE `licencia`
-  MODIFY `codigo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=922;
+  MODIFY `codigo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=923;
 
 --
 -- AUTO_INCREMENT de la tabla `llamadas`
 --
 ALTER TABLE `llamadas`
-  MODIFY `id_llamada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+  MODIFY `id_llamada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT de la tabla `riesgos`

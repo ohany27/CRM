@@ -76,14 +76,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="form-group">
                         <label for="">Nombre</label>
                         <input type="text" class="form-control" id="nombre" name="nombre" value="<?php echo $usuario["nombre"]; ?>"
-                            placeholder="Nombre" required>
+                            placeholder="Nombre" oninput="mayus(this)" required>
                     </div>
                 </div>
                 <div class="col-sm-6">
                     <div class="form-group">
                         <label for="">Correo</label>
                         <input type="email" class="form-control" id="correo" name="correo" value="<?php echo $usuario["correo"]; ?>"
-                            placeholder="Correo-Electronico" required>
+                            placeholder="Correo-Electronico" oninput="minus(this)" required>
                     </div>
                 </div>
                 <div class="col-sm-6">
@@ -158,8 +158,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (!telefonoRegex.test(telefonoInput.value)) {
                     telefonoInput.setCustomValidity("El teléfono debe tener exactamente 10 números.");
                 } else {
+
                     telefonoInput.setCustomValidity("");
                 }
+                this.value = this.value.slice(0, 10);
             });
         });
 
@@ -204,5 +206,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             return true; // Permite el envío del formulario
         }
     </script>
+    <script>
+    // main.js
+    function minus(e) {
+        e.value = e.value.toLowerCase();
+    }
+    function mayus(e) {
+    e.value = e.value.toUpperCase();
+}
+</script>
 <?php include "../Template/footer.php"; ?>
 

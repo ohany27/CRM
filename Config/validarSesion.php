@@ -18,7 +18,8 @@ if (isset($_SESSION['tiempo_ultimo_acceso']) && (time() - $_SESSION['tiempo_ulti
     // Destruye la sesión y redirige a la página de inicio de sesión
     session_unset();
     session_destroy();
-    header("Location: ../../../../crm/index.php");
+    echo "<script>alert('Sobrepasaste el tiempo de inactividad, por favor inicie sesión nueva mente.'); window.location.href='../../../../crm/index.php';</script>";
+
     exit;
 }
 

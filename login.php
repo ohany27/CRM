@@ -18,41 +18,48 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login_form"])) {
     if ($stmt->rowCount() == 1) {
         $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Verificar si el usuario tiene una licencia activa
-        $query_licencia = "SELECT * FROM licencia WHERE nitc = :nitc AND estado = 1";
-        $stmt_licencia = $pdo->prepare($query_licencia);
-        $stmt_licencia->execute(array(':nitc' => $usuario['nitc']));
+        // Verificar si la cuenta está activa
+        if ($usuario['id_estado'] == 1) {
+            // Verificar si el usuario tiene una licencia activa
+            $query_licencia = "SELECT * FROM licencia WHERE nitc = :nitc AND estado = 1";
+            $stmt_licencia = $pdo->prepare($query_licencia);
+            $stmt_licencia->execute(array(':nitc' => $usuario['nitc']));
 
-        if ($stmt_licencia->rowCount() > 0) {
-            if (password_verify($contraseña, $usuario['password'])) {
-                $_SESSION['usuario'] = $usuario;
+            if ($stmt_licencia->rowCount() > 0) {
+                if (password_verify($contraseña, $usuario['password'])) {
+                    $_SESSION['usuario'] = $usuario;
 
-                // Redireccionar según el tipo de usuario
-                switch ($usuario['id_tip_usu']) {
-                    case 1:
-                        header("Location: Views/Admin/index.php");
-                        exit();
-                    case 2:
-                        header("Location: Views/Cliente/index.php");
-                        exit();
-                    case 3:
-                        header("Location: Views/Empleado/index.php");
-                        exit();
-                    case 4:
-                        header("Location: Views/Tecnico/index.php");
-                        exit();
-                    default:
-                        header("Location: index.php?accion=registro");
-                        exit();
+                    // Redireccionar según el tipo de usuario
+                    switch ($usuario['id_tip_usu']) {
+                        case 1:
+                            header("Location: Views/Admin/index.php");
+                            exit();
+                        case 2:
+                            header("Location: Views/Cliente/index.php");
+                            exit();
+                        case 3:
+                            header("Location: Views/Empleado/index.php");
+                            exit();
+                        case 4:
+                            header("Location: Views/Tecnico/index.php");
+                            exit();
+                        default:
+                            header("Location: index.php?accion=registro");
+                            exit();
+                    }
+                } else {
+                    $_SESSION['error'] = 'Contraseña incorrecta.';
+                    echo "<script>alert('Contraseña incorrecta.'); window.location.href='login.php?accion=registro';</script>";
+                    exit();
                 }
             } else {
-                $_SESSION['error'] = 'Contraseña incorrecta.';
-                echo "<script>alert('Contraseña incorrecta.'); window.location.href='login.php?accion=registro';</script>";
+                // Si no tiene una licencia activa, mostrar una alerta
+                echo "<script>alert('No existe una licencia activa.'); window.location.href='index.php';</script>";
                 exit();
             }
         } else {
-            // Si no tiene una licencia activa, mostrar una alerta
-            echo "<script>alert('No existe una licencia activa.'); window.location.href='index.php';</script>";
+            // Si la cuenta no está activa, mostrar una alerta
+            echo "<script>alert('Su cuenta está desactivada.'); window.location.href='index.php';</script>";
             exit();
         }
     } else {
@@ -61,6 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login_form"])) {
         exit();
     }
 }
+
 ?>
 
 
@@ -121,7 +129,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login_form"])) {
             <div class="toggle">
                 <div class="toggle-panel toggle-left">
                     <h1></h1>
-                    <p>"Le recomendamos encarecidamente revisar su bandeja de entrada corporativa, donde encontrará detalles importantes sobre su cuenta temporal, así como las instrucciones precisas para iniciar sesión."</p>
+                    <p>"Le sugerimos que se ponga en contacto con su empresa para que puedan asociarle una cuenta y proporcionarle detalles importantes sobre su cuenta temporal, así como las instrucciones precisas para iniciar sesión."</p>
                     <button class="hidden" id="login">Iniciar Sesión</button>
                 </div>
                 <div class="toggle-panel toggle-right">

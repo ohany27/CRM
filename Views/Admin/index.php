@@ -26,12 +26,12 @@ if ($resultado) {
   $totalSolicitudes = "Error al ejecutar la consulta.";
 }
 
-// Consulta para obtener la cantidad de llamadas donde el documento coincide con el NITC del usuario en sesión y el id_est es igual a 4 o 5
+// Consulta para obtener la cantidad de llamadas donde el documento coincide con el NITC del usuario en sesión y el id_est es igual a 5
 $query = "SELECT COUNT(l.id_est) AS cantidad_llamadas_est_45
           FROM llamadas l
           INNER JOIN usuario u ON l.documento = u.documento
           WHERE u.nitc = :nitc_usuario
-          AND (l.id_est = 4 OR l.id_est = 5)";
+          AND (l.id_est = 5)";
 
 $statement = $con->prepare($query);
 $statement->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
@@ -50,7 +50,12 @@ $query = "SELECT COUNT(t.id_estado) AS cantidad_tickets_proceso
           FROM detalle_ticket t
           INNER JOIN usuario u ON t.documento = u.documento
           WHERE u.nitc = :nitc_usuario
-          AND t.id_estado = 4";
+          AND t.id_estado = 4
+          AND NOT EXISTS (
+              SELECT 1 FROM detalle_ticket t2
+              WHERE t.id_ticket = t2.id_ticket
+              AND t2.id_estado = 5
+          )";
 
 $statement = $con->prepare($query);
 $statement->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
@@ -63,6 +68,7 @@ if ($resultado) {
   // Manejo de errores si la consulta no devuelve resultados
   $totalTicketProceso = "Error al ejecutar la consulta.";
 }
+
 
 $query = "SELECT COUNT(t.id_estado) AS cantidad_tickets_finalizados
           FROM detalle_ticket t
@@ -110,7 +116,8 @@ $query = "SELECT t.id_ticket, COUNT(DISTINCT t.id_estado) AS estados
           WHERE u.nitc = :nitc_usuario
           AND t.id_estado IN (3, 4, 5)
           GROUP BY t.id_ticket
-          HAVING estados IN (2, 3)";
+          HAVING estados IN (2, 3)
+          AND SUM(CASE WHEN t.id_estado = 5 THEN 1 ELSE 0 END) >= 1"; // Agregamos esta condición
 
 $statement = $con->prepare($query);
 $statement->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
@@ -121,12 +128,14 @@ $empleados = 0;
 $tecnicos = 0;
 
 foreach ($resultado as $row) {
-    if ($row['estados'] == 2) {
+    $estados = $row['estados'];
+    if ($estados == 2) {
         $empleados++;
-    } elseif ($row['estados'] == 3) {
+    } elseif ($estados == 3) {
         $tecnicos++;
     }
 }
+
 ?>
 
 
@@ -349,6 +358,24 @@ foreach ($resultado as $row) {
                   </a>
                 </li>
               </ul>
+              </li>
+              <li class="nav-item">
+              <a href="#" class="nav-link">
+                <i class="nav-icon fas  fa-memory"></i>
+                <p>
+                Trazabilidad
+                  <i class="fas fa-angle-left right"></i>
+                </p>
+              </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="Visualizar/trazabilidad.php" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Visualizar</p>
+                  </a>
+                </li>
+              </ul>
+              </li>
           </ul>
         </nav>
         <!-- /.sidebar-menu -->

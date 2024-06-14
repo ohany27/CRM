@@ -51,20 +51,44 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
           <table class="table table-bordered">
             <thead>
               <tr>
-                <th style="width: 10px">Progreso</th>
+                <th style="width: 10px">Estado</th>
                 <th>Daño</th>
+                <th>Progreso</th>
                 <th style="width: 40px">Detalle</th>
               </tr>
             </thead>
             <tbody>
               <?php
               while ($fila = $resultado->fetch(PDO::FETCH_ASSOC)) {
-                $progreso = ($fila['id_est'] == 3) ? 50 : 100;
-                $progreso_clase = ($fila['id_est'] == 3) ? "bg-warning" : "bg-success";
+                $progreso = 0;
+                $progreso_clase = '';
+
+                switch ($fila['id_est']) {
+                  case 3:
+                    $progreso = 25;
+                    $progreso_clase = "bg-danger";
+                    break;
+                  case 4:
+                    $progreso = 55;
+                    $progreso_clase = "bg-warning";
+                    break;
+                  case 5:
+                    $progreso = 100;
+                    $progreso_clase = "bg-success";
+                    break;
+                  default:
+                  // Manejar otros casos según sea necesario
+                }
                 ?>
                 <tr>
                   <td><span class="badge <?php echo $progreso_clase; ?>"><?php echo $progreso; ?>%</span></td>
                   <td><?php echo $fila['nombredano']; ?></td>
+                  <td>
+                    <div class="progress progress-xs">
+                      <div class="progress-bar <?php echo $progreso_clase; ?>" style="width: <?php echo $progreso; ?>%">
+                      </div>
+                    </div>
+                  </td>
                   <td>
                     <button class="btn btn-primary btn-sm ver-detalles"
                       data-id="<?php echo $fila['id_llamada']; ?>">Ver</button>
@@ -75,6 +99,7 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
               ?>
             </tbody>
           </table>
+
         </div>
         <!-- /.card-body -->
         <div class="card-footer clearfix">
@@ -121,30 +146,45 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
                     <?php
                     // Consulta SQL para obtener los registros según los criterios dados
                     $consulta = "SELECT dt.id_ticket, e.tip_est as estado, r.tip_riesgo as riesgo, dt.documento, dt.fecha_inicio
-                    FROM detalle_ticket dt
-                    INNER JOIN estado e ON dt.id_estado = e.id_est
-                    LEFT JOIN riesgos r ON dt.id_riesgo = r.id_riesgo
-                    WHERE dt.id_estado = 3
-                    AND NOT EXISTS (
-                        SELECT 1
-                        FROM detalle_ticket dt2
-                        WHERE dt2.id_ticket = dt.id_ticket
-                        AND dt2.id_estado > 3
-                    )";
+            FROM detalle_ticket dt
+            INNER JOIN estado e ON dt.id_estado = e.id_est
+            LEFT JOIN riesgos r ON dt.id_riesgo = r.id_riesgo
+            WHERE dt.id_estado = 3
+            AND NOT EXISTS (
+                SELECT 1
+                FROM detalle_ticket dt2
+                WHERE dt2.id_ticket = dt.id_ticket
+                AND dt2.id_estado > 3
+            )";
 
                     // Ejecutar la consulta y mostrar los resultados en la tabla
                     $resultado = $con->query($consulta);
+
                     while ($fila = $resultado->fetch()) {
+                      // Retrieve user's name based on documento
+                      $documento = $fila["documento"];
+                      $consulta_usuario = "SELECT nombre FROM usuario WHERE documento = '$documento'";
+                      $resultado_usuario = $con->query($consulta_usuario);
+
+                      // Check if there is a matching user
+                      if ($resultado_usuario->rowCount() > 0) {
+                        $usuario = $resultado_usuario->fetch()["nombre"];
+                      } else {
+                        $usuario = "Usuario no encontrado"; // Handle case where user is not found
+                      }
+
+                      // Output table row with ticket details and user name
                       echo '
-                <tr>
-                    <td>' . $fila["id_ticket"] . '</td>
-                    <td>' . $fila["estado"] . '</td>
-                    <td>' . $fila["riesgo"] . '</td>
-                    <td>' . $fila["documento"] . '</td>
-                    <td>' . $fila["fecha_inicio"] . '</td>
-                </tr>';
+    <tr>
+        <td>' . $fila["id_ticket"] . '</td>
+        <td>' . $fila["estado"] . '</td>
+        <td>' . $fila["riesgo"] . '</td>
+        <td>' . $fila["documento"] . '-' . $usuario . '</td>
+        <td>' . $fila["fecha_inicio"] . '</td>
+    </tr>';
                     }
                     ?>
+
                   </tbody>
                 </table>
               </div>
@@ -166,30 +206,45 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
                   <tbody>
                     <?php
                     $consulta = "SELECT dt.id_ticket, e.tip_est as estado, r.tip_riesgo as riesgo, dt.documento, dt.fecha_inicio, dt.descripcion_detalle
-                  FROM detalle_ticket dt
-                  INNER JOIN estado e ON dt.id_estado = e.id_est
-                  LEFT JOIN riesgos r ON dt.id_riesgo = r.id_riesgo
-                  WHERE dt.id_estado = 4
-                  AND NOT EXISTS (
-                      SELECT 1
-                      FROM detalle_ticket dt2
-                      WHERE dt2.id_ticket = dt.id_ticket
-                      AND dt2.id_estado > 4
-                  )";
+              FROM detalle_ticket dt
+              INNER JOIN estado e ON dt.id_estado = e.id_est
+              LEFT JOIN riesgos r ON dt.id_riesgo = r.id_riesgo
+              WHERE dt.id_estado = 4
+              AND NOT EXISTS (
+                  SELECT 1
+                  FROM detalle_ticket dt2
+                  WHERE dt2.id_ticket = dt.id_ticket
+                  AND dt2.id_estado > 4
+              )";
 
                     $resultado = $con->query($consulta);
+
                     while ($fila = $resultado->fetch()) {
+                      // Retrieve user's name based on documento
+                      $documento = $fila["documento"];
+                      $consulta_usuario = "SELECT nombre FROM usuario WHERE documento = '$documento'";
+                      $resultado_usuario = $con->query($consulta_usuario);
+
+                      // Check if there is a matching user
+                      if ($resultado_usuario->rowCount() > 0) {
+                        $usuario = $resultado_usuario->fetch()["nombre"];
+                      } else {
+                        $usuario = "Usuario no encontrado"; // Handle case where user is not found
+                      }
+
+                      // Output table row with ticket details and user name
                       echo '
-        <tr>
-            <td>' . $fila["id_ticket"] . '</td>
-            <td>' . $fila["estado"] . '</td>
-            <td>' . $fila["riesgo"] . '</td>
-            <td>' . $fila["documento"] . '</td>
-            <td>' . $fila["descripcion_detalle"] . '</td>
-            <td>' . $fila["fecha_inicio"] . '</td>
-        </tr>';
+    <tr>
+        <td>' . $fila["id_ticket"] . '</td>
+        <td>' . $fila["estado"] . '</td>
+        <td>' . $fila["riesgo"] . '</td>
+        <td>' . $fila["documento"] . '-' . $usuario . '</td>
+        <td>' . $fila["descripcion_detalle"] . '</td>
+        <td>' . $fila["fecha_inicio"] . '</td>
+    </tr>';
                     }
                     ?>
+
                   </tbody>
                 </table>
               </div>
@@ -212,22 +267,33 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
                   <tbody>
                     <?php
                     $consulta = "SELECT dt.id_ticket, e.tip_est as estado, r.tip_riesgo as riesgo, dt.documento, dt.fecha_inicio, dt.descripcion_detalle
-                  FROM detalle_ticket dt
-                  INNER JOIN estado e ON dt.id_estado = e.id_est
-                  LEFT JOIN riesgos r ON dt.id_riesgo = r.id_riesgo
-                  WHERE dt.id_estado = 5";
+              FROM detalle_ticket dt
+              INNER JOIN estado e ON dt.id_estado = e.id_est
+              LEFT JOIN riesgos r ON dt.id_riesgo = r.id_riesgo
+              WHERE dt.id_estado = 5";
 
                     $resultado = $con->query($consulta);
+
                     while ($fila = $resultado->fetch()) {
+                      $documento = $fila["documento"];
+                      $consulta_usuario = "SELECT nombre FROM usuario WHERE documento = '$documento'";
+                      $resultado_usuario = $con->query($consulta_usuario);
+
+                      if ($resultado_usuario->rowCount() > 0) {
+                        $usuario = $resultado_usuario->fetch()["nombre"];
+                      } else {
+                        $usuario = "Usuario no encontrado";
+                      }
+
                       echo '
-        <tr>
-            <td>' . $fila["id_ticket"] . '</td>
-            <td>' . $fila["estado"] . '</td>
-            <td>' . $fila["riesgo"] . '</td>
-            <td>' . $fila["documento"] . '</td>
-            <td>' . $fila["descripcion_detalle"] . '</td>
-            <td>' . $fila["fecha_inicio"] . '</td>
-        </tr>';
+    <tr>
+        <td>' . $fila["id_ticket"] . '</td>
+        <td>' . $fila["estado"] . '</td>
+        <td>' . $fila["riesgo"] . '</td>
+        <td>' . $fila["documento"] . '-' . $usuario . '</td>
+        <td>' . $fila["descripcion_detalle"] . '</td>
+        <td>' . $fila["fecha_inicio"] . '</td>
+    </tr>';
                     }
                     ?>
                   </tbody>
@@ -281,31 +347,48 @@ $total_paginas = ceil($total_registros / $registros_por_pagina);
           .then(data => {
             var detallesHtml = `
                         <tr><th>ID Ticket</th><td>${data.id_ticket}</td></tr>
-                        <tr><th>ID Cliente</th><td>${data.documento}</td></tr>
+                        <tr><th>ID Cliente</th><td>${data.documento} - ${data.nombre_usuario}</td></tr>
                         <tr><th>Fecha</th><td>${data.fecha}</td></tr>
                         <tr><th>Descripción</th><td>${data.descripcion}</td></tr>
-                        <tr><th>ID Empleado</th><td>${data.id_empleado}</td></tr>
+                        <tr><th>ID Empleado</th><td>${data.id_empleado}  - ${data.nombre_empleado}</td></tr> 
+                        
                     `;
             document.getElementById("detallesLlamada").innerHTML = detallesHtml;
             $("#detallesModal").modal("show");
+          })
+          .catch(error => {
+            console.error('Error al obtener los detalles:', error);
+            // Manejar el error aquí si es necesario
           });
       });
     });
   });
 
+
   function imprimirDetalles() {
+    // Obtener el contenido HTML de los detalles de la llamada
     var contenido = document.getElementById("detallesLlamada").innerHTML;
+
+    // Abrir una nueva ventana para la impresión
     var ventana = window.open('', 'PRINT', 'height=400,width=600');
+
+    // Construir el contenido HTML para la ventana de impresión
     ventana.document.write('<html><head><title>Detalles de la Llamada</title>');
+    ventana.document.write('<style>table { width: 100%; border-collapse: collapse; } th, td { border: 1px solid black; padding: 8px; }</style>');
     ventana.document.write('</head><body>');
-    ventana.document.write('<h1>Detalles de la Llamada</h1>');
-    ventana.document.write(contenido);
+    ventana.document.write('<h1 style="text-align:center;">Detalles de la Llamada</h1>');
+    ventana.document.write('<table>');
+    ventana.document.write(contenido); // Insertar el contenido de la tabla
+    ventana.document.write('</table>');
     ventana.document.write('</body></html>');
-    ventana.document.close();
-    ventana.focus();
-    ventana.print();
-    ventana.close();
+
+    ventana.document.close(); // Finalizar la escritura del documento
+
+    ventana.focus(); // Enfocar la ventana para la impresión
+    ventana.print(); // Imprimir el documento
+    ventana.close(); // Cerrar la ventana después de imprimir
   }
+
 </script>
 
 <?php include "../Template/footer.php"; ?>

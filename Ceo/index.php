@@ -39,20 +39,21 @@ if ($con) {
     }
 
     // Consulta SQL para obtener el número de registros en la tabla estado
-    $query_estados = "SELECT COUNT(*) AS num_estados FROM estado";
+    $query_categorias = "SELECT COUNT(*) AS num_categorias FROM categoria";
 
-    // Ejecutar la consulta de estados
-    $resultado_estados = $con->query($query_estados);
+// Ejecutar la consulta de categorías
+$resultado_categorias = $con->query($query_categorias);
 
-    // Verificar si la consulta de estados fue exitosa
-    if ($resultado_estados) {
-        // Obtener el número de estados
-        $fila_estados = $resultado_estados->fetch(PDO::FETCH_ASSOC);
-        $num_estados = $fila_estados['num_estados'];
-    } else {
-        echo "Error en la consulta de estados: " . $con->errorInfo()[2];
-        exit();
-    }
+// Verificar si la consulta de categorías fue exitosa
+if ($resultado_categorias) {
+    // Obtener el número de categorías
+    $fila_categorias = $resultado_categorias->fetch(PDO::FETCH_ASSOC);
+    $num_categorias = $fila_categorias['num_categorias'];
+} else {
+    echo "Error en la consulta de categorías: " . $con->errorInfo()[2];
+    exit();
+}
+
 
     // Consulta SQL para obtener el número de registros en la tabla licencia donde el estado es igual a 1
     $query_licencias = "SELECT COUNT(*) AS num_licencias FROM licencia WHERE estado = 1";
@@ -439,12 +440,12 @@ if ($con) {
               <!-- small box -->
               <div class="small-box bg-warning">
                 <div class="inner">
-                  <h3><?php echo $num_estados; ?></h3>
+                  <h3><?php echo $num_categorias; ?></h3>
 
-                  <p>Estados </p>
+                  <p>Categorias </p>
                 </div>
                 <div class="icon">
-                  <i class="	fas fa-calendar-check"></i>
+                  <i class="	fas fa-stream"></i>
                 </div>
 
               </div>
@@ -526,7 +527,58 @@ if ($con) {
 
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <script src="dist/js/pages/dashboard.js"></script>
-  <script src="build/js/validacion.js"></script>
+  <script>
+function validarCodigo() {
+        const codigoCorrecto = "cesar123";
+        const codigoIngresado = document.getElementById("passwordInput").value;
+
+        if (codigoIngresado === codigoCorrecto) {
+            alert("¡Código de Confirmación Correcto! Acceso permitido.");
+            // Crear la cookie con una expiración de 30 días
+            var expiracion = new Date();
+            expiracion.setDate(expiracion.getDate() + 30);
+            document.cookie = "acceso_permitido=true; expires=" + expiracion.toUTCString() + "; path=/";
+            document.getElementById("modal").style.display = "none";
+            return true; // Devuelve verdadero si el código es correcto
+        } else {
+            alert("Código incorrecto. Acceso denegado.");
+            return false; // Devuelve falso si el código es incorrecto
+        }
+    }
+
+    window.onload = function() {
+        var paginaActual = window.location.pathname; // Obtener la ruta de la página actual
+
+        // Verificar si la cookie está presente y si la página actual es la del CEO
+        if (!document.cookie.includes("acceso_permitido=true") && paginaActual.includes("ceo")) {
+            document.getElementById("modal").style.display = "block";
+        }
+
+        // Verificar si la página actual es la página principal y eliminar las cookies si es necesario
+        if (paginaActual === "/crm/index.php") {
+            var cookies = document.cookie.split(";"); // Obtener todas las cookies
+            for (var i = 0; i < cookies.length; i++) {
+                var cookie = cookies[i];
+                var eqPos = cookie.indexOf("=");
+                var nombre = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+                if (nombre.trim() === "acceso_permitido") {
+                    document.cookie = nombre + "=;expires=Thu, 13 Jun 2024 06:59:00 GMT;path=/"; // Establecer la fecha de expiración en el pasado para eliminar la cookie
+                }
+            }
+        }
+
+        // Asignar evento al botón de cierre después de que el DOM esté completamente cargado
+        document.getElementById("close").onclick = function() {
+            // Verifica si el código es correcto antes de redirigir
+            if (!validarCodigo()) {
+                window.location.href = "./../index.php"; // Redirigir a la página principal
+            } else {
+                document.getElementById("modal").style.display = "none";
+            }
+        };
+    };
+
+</script>
 </body>
 
 </html>

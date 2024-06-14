@@ -161,7 +161,7 @@ $clase_icono_tecnicos = ($total_tecnicos <= 0) ? "mdi mdi-circle-medium text-dan
                                         <li class="nav-item" role="presentation">
                                             <a class="nav-link px-4" href="Visualizar/llamadas.php">
                                                 <span class="d-block d-sm-none"><i class="mdi mdi-menu-open"></i></span>
-                                                <span class="d-none d-sm-block">Mis Llamadas </span>
+                                                <span class="d-none d-sm-block">Mis Solicitudes </span>
                                             </a>
                                         </li>
                                         <li class="nav-item" role="presentation">

@@ -76,7 +76,7 @@ if (isset($_GET['nitc'])) {
                                 <div class="form-group">
                                     <label for="nombre">Nombre:</label>
                                     <input type="text" class="form-control" name="nombre"
-                                        value="<?php echo $empresa['nombre']; ?>" required>
+                                        value="<?php echo $empresa['nombre']; ?>" oninput="mayus(this)" required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -122,8 +122,18 @@ if (isset($_GET['nitc'])) {
         if (/^\d{10}$/.test(telefonoValue) && !/[.]/.test(telefonoValue)) {
             this.setCustomValidity('');
         } else {
+            this.value = telefonoValue.slice(0, 10);
             this.setCustomValidity('El teléfono debe contener exactamente 10 dígitos y no permitir puntos.');
         }
     });
+</script>
+<script>
+    // main.js
+    function minus(e) {
+        e.value = e.value.toLowerCase();
+    }
+    function mayus(e) {
+    e.value = e.value.toUpperCase();
+}
 </script>
 <?php include "../Template/footer.php"; ?>

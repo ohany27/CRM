@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <li class="nav-item" role="presentation">
         <a class="nav-link px-4" href="../Visualizar/llamadas.php">
             <span class="d-block d-sm-none"><i class="mdi mdi-menu-open"></i></span>
-            <span class="d-none d-sm-block">Mis Llamadas </span>
+            <span class="d-none d-sm-block">Mis Solicitudes </span>
         </a>
     </li>
     <li class="nav-item" role="presentation">
@@ -85,7 +85,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <div class="row gx-3 mb-3">
                     <div class="col-md-6">
                         <label class="small mb-1" for="inputUsername">Nombre</label>
-                        <input class="form-control" id="inputUsername" type="text" name="nombre" value="<?php echo $usuario['nombre']; ?>" placeholder="Nombre">
+                        <input class="form-control" id="inputUsername" type="text" name="nombre" value="<?php echo $usuario['nombre']; ?>" oninput="mayus(this)" placeholder="Nombre">
                     </div>
                     <div class="col-md-6">
                         <label class="small mb-1" for="inputOrgName">Documento</label>
@@ -99,7 +99,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     </div>
                     <div class="col-md-6">
                         <label class="small mb-1" for="inputEmail">Correo - Electronico</label>
-                        <input class="form-control" id="inputEmail" type="email" name="correo" value="<?php echo $usuario['correo']; ?>" placeholder="@gmail.com">
+                        <input class="form-control" id="inputEmail" type="email" name="correo" value="<?php echo $usuario['correo']; ?>" oninput="minus(this)" placeholder="@gmail.com">
                     </div>
                 </div>
                 <div class="mb-3">
@@ -144,6 +144,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         } else {
                             telefonoInput.setCustomValidity("");
                         }
+                        this.value = this.value.slice(0, 10);
                     });
 
                     document.getElementById('inputAddress').addEventListener('input', function() {
@@ -195,4 +196,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
                 });
             </script>
+            <script>
+    // main.js
+    function minus(e) {
+        e.value = e.value.toLowerCase();
+    }
+    function mayus(e) {
+    e.value = e.value.toUpperCase();
+}
+</script>
             <?php include "../Template/footer.php"; ?>

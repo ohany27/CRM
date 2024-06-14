@@ -13,7 +13,7 @@ include "../Template/header.php";
     <li class="nav-item" role="presentation">
         <a class="nav-link px-4 active" href="../Visualizar/llamadas.php">
             <span class="d-block d-sm-none"><i class="mdi mdi-menu-open"></i></span>
-            <span class="d-none d-sm-block">Mis Llamadas </span>
+            <span class="d-none d-sm-block">Mis Solicitudes </span>
         </a>
     </li>
     <li class="nav-item" role="presentation">
@@ -37,7 +37,7 @@ include "../Template/header.php";
                 </div>
             </div>
             <div class="row" id="all-projects">
-                <?php
+            <?php
                 // Verificar si el usuario ha iniciado sesión y obtener su documento
                 if (isset($_SESSION['usuario']['documento'])) {
                     $documento = $_SESSION['usuario']['documento'];
@@ -65,20 +65,27 @@ include "../Template/header.php";
                         $nombre_daño = $stmt_nombre->fetchColumn();
 
                         // Definir el nombre del estado
-                        if ($id_estado == 4 || $id_estado == 5) {
-                            $tip_estado = "Aceptada";
-                        } else {
-                            $query_tip_est = "SELECT tip_est FROM estado WHERE id_est = ?";
-                            $stmt_tip_est = $con->prepare($query_tip_est);
-                            $stmt_tip_est->bindParam(1, $id_estado, PDO::PARAM_INT);
-                            $stmt_tip_est->execute();
-                            $tip_estado = $stmt_tip_est->fetchColumn();
+                        switch ($id_estado) {
+                            case 4:
+                                $tip_estado = "En Llamada";
+                                $clase_estado = "badge-soft-warning"; // Estado 4: Warning
+                                $clase_icono = "mdi mdi-circle-medium text-warning";
+                                break;
+                            case 5:
+                                $tip_estado = "Finalizada";
+                                $clase_estado = "badge-soft-success"; // Estado 5: Success
+                                $clase_icono = "mdi mdi-circle-medium text-success";
+                                break;
+                            default:
+                                $query_tip_est = "SELECT tip_est FROM estado WHERE id_est = ?";
+                                $stmt_tip_est = $con->prepare($query_tip_est);
+                                $stmt_tip_est->bindParam(1, $id_estado, PDO::PARAM_INT);
+                                $stmt_tip_est->execute();
+                                $tip_estado = $stmt_tip_est->fetchColumn();
+                                $clase_estado = "badge-soft-danger"; // Por defecto: Danger
+                                $clase_icono = "mdi mdi-circle-medium text-danger";
+                                break;
                         }
-
-                        // Verificar el estado y asignar la clase adecuada
-                        $clase_estado = ($id_estado == 4 || $id_estado == 5) ? "badge-soft-success" : "badge-soft-danger";
-                        $clase_icono = ($id_estado == 4 || $id_estado == 5) ? "mdi mdi-circle-medium text-success" : "mdi mdi-circle-medium text-danger";
-
                         ?>
                         <div class="col-md-6" id="project-items-1">
                             <div class="card">
@@ -99,7 +106,7 @@ include "../Template/header.php";
                                             </a>
                                             <div class="dropdown-menu dropdown-menu-end">
                                                 <a class="dropdown-item" href="javascript:void(0);"
-                                                    onclick="showDetails('<?php echo $descripcion; ?>', '<?php echo $id_empleado; ?>')">Descripcion</a>
+                                                    onclick="showDetails('<?php echo $descripcion; ?>', '<?php echo $id_empleado; ?>')">Descripción</a>
                                             </div>
                                         </div>
                                     </div>
@@ -109,8 +116,7 @@ include "../Template/header.php";
                                     </div>
                                     <div class="d-flex">
                                         <div class="align-self-end">
-                                            <span
-                                                class="badge <?php echo $clase_estado; ?> p-2 team-status"><?php echo $tip_estado; ?></span>
+                                            <span class="badge <?php echo $clase_estado; ?> p-2 team-status"><?php echo $tip_estado; ?></span>
                                         </div>
                                     </div>
                                 </div>

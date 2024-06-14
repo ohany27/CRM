@@ -5,7 +5,7 @@ require_once ("../../../Config/conexion.php");
 $DataBase = new Database;
 $con = $DataBase->conectar();
 
-// Get the NITC of the logged-in user from the session
+
 $nitc_usuario = $_SESSION['usuario']['nitc'];
 
 // Prepare the SQL query with a WHERE clause to filter based on NITC
@@ -43,7 +43,7 @@ $resultado = $con->query($consulta);
                                 <th>Correo</th>
                                 <th>Teléfono</th>
                                 <th>Dirección</th>
-                                <th>NITC</th>
+                                <th>NIT</th>
                                 <th>Tipo Usuario</th>
                                 <th></th>
                             </tr>
@@ -68,13 +68,24 @@ $resultado = $con->query($consulta);
                     <td>' . ($fila["nombre_empresa"] ? $fila["nombre_empresa"] : $fila["nombre"]) . '</td>
                     <td>' . $fila["tip_usu"] . '</td>
                     <td class="project-actions text-center">
-                                        <a href="../Editar/usuarios.php?id=' . $fila['documento'] . '" class="btn btn-info btn-sm" href="#">
-                                            <i class="fas fa-pencil-alt"></i> Editar
-                                        </a>
-                                        <a href="../Eliminar/usuarios.php?id=' . $fila['documento'] . '" class="btn btn-danger btn-sm" href="#">
-                                            <i class="fas fa-trash"></i> Eliminar
-                                        </a>
-                                    </td>
+                        <a href="../Editar/usuarios.php?id=' . $fila['documento'] . '" class="btn btn-info btn-sm" href="#">
+                            <i class="fas fa-pencil-alt"></i> Editar
+                        </a>';
+
+                        if ($fila["id_estado"] == 1) {
+                            echo '<a href="../Eliminar/desactivar.php?id=' . $fila['documento'] . '" class="btn btn-danger btn-sm" href="#">
+                                <i class="fas fa-toggle-off"></i>
+                                Desactivar
+                            </a>';
+                        } else {
+                            echo '<a href="../Eliminar/activar.php?id=' . $fila['documento'] . '" class="btn btn-success btn-sm" href="#">
+                                <i class="fas fa-toggle-on"></i>
+                                Activar
+                            </a>';
+                        }
+
+                        echo '
+                    </td>
                 </tr>';
                             }
                             ?>
