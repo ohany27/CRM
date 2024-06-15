@@ -67,6 +67,64 @@ if (!empty($fecha_inicio) && !empty($fecha_fin) && $fecha_fin < $fecha_inicio) {
 
     <section class="content">
         <div class="container-fluid">
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Fechas</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="fecha_inicio">Fecha de Inicio:</label>
+                                    <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio"
+                                        value="<?php echo $fecha_inicio; ?>">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="fecha_fin">Fecha Fin:</label>
+                                    <input type="date" class="form-control" id="fecha_fin" name="fecha_fin"
+                                        value="<?php echo $fecha_fin; ?>">
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Filtrar</button>
+                        <br><br>
+                    </form>
+                    <?php if (!empty($fecha_detalle_tickets)): ?>
+                        <table id="example1" class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Ticket</th>
+                                    <th>Estado</th>
+                                    <th>Documento</th>
+                                    <th>ID Riesgo</th>
+                                    <th>Fecha Inicio</th>
+                                    <th>Fecha Final</th>
+                                    <th>Descripción Detalle</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($fecha_detalle_tickets as $ticket): ?>
+                                    <tr>
+                                        <td><?php echo $ticket['id_ticket']; ?></td>
+                                        <td><?php echo $ticket['id_estado']; ?></td>
+                                        <td><?php echo $ticket['documento']; ?></td>
+                                        <td><?php echo $ticket['id_riesgo']; ?></td>
+                                        <td><?php echo $ticket['fecha_inicio']; ?></td>
+                                        <td><?php echo $ticket['fecha_final']; ?></td>
+                                        <td><?php echo $ticket['descripcion_detalle']; ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    <?php else: ?>
+                        <p>No se encontraron tickets para el rango de fechas seleccionado.</p>
+                    <?php endif; ?>
+                </div>
+            </div>
             <?php if (!empty($detalle_tickets)): ?>
                 <div class="card">
                     <div class="card-header">
@@ -83,107 +141,60 @@ if (!empty($fecha_inicio) && !empty($fecha_fin) && $fecha_fin < $fecha_inicio) {
                                         // Cerrar la fila anterior si hay una abierta
                                         if ($current_ticket_id !== null):
                                             ?>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                <?php endif; ?>
-                                <tr data-widget="expandable-table" aria-expanded="false">
-                                    <td>
-                                        <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                        Ticket <?php echo $detalle_ticket['id_ticket']; ?>
-                                    </td>
-                                </tr>
-                                <tr class="expandable-body">
-                                    <td>
-                                        <div class="p-0">
-                                            <table class="table table-hover">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Estado</th>
-                                                        <th>Documento</th>
-                                                        <th>ID Riesgo</th>
-                                                        <th>Fecha Inicio</th>
-                                                        <th>Fecha Final</th>
-                                                        <th>Descripción Detalle</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                        <?php
-                                        // Actualizar el id_ticket actual
-                                        $current_ticket_id = $detalle_ticket['id_ticket'];
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <?php endif; ?>
+                            <tr data-widget="expandable-table" aria-expanded="false">
+                                <td>
+                                    <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                    Ticket <?php echo $detalle_ticket['id_ticket']; ?>
+                                </td>
+                            </tr>
+                            <tr class="expandable-body">
+                                <td>
+                                    <div class="p-0">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Estado</th>
+                                                    <th>Documento</th>
+                                                    <th>ID Riesgo</th>
+                                                    <th>Fecha Inicio</th>
+                                                    <th>Fecha Final</th>
+                                                    <th>Descripción Detalle</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php
+                                                // Actualizar el id_ticket actual
+                                                $current_ticket_id = $detalle_ticket['id_ticket'];
                                     endif;
                                     ?>
-                                    <tr>
-                                        <td><?php echo $detalle_ticket['id_estado']; ?></td>
-                                        <td><?php echo $detalle_ticket['documento']; ?></td>
-                                        <td><?php echo $detalle_ticket['id_riesgo']; ?></td>
-                                        <td><?php echo $detalle_ticket['fecha_inicio']; ?></td>
-                                        <td><?php echo $detalle_ticket['fecha_final']; ?></td>
-                                        <td><?php echo $detalle_ticket['descripcion_detalle']; ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                                </tbody>
-                            </table>
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-    <!-- /.card -->
-<?php else: ?>
-    <p>No se encontraron tickets para mostrar.</p>
-<?php endif; ?>
-</div>
-
-<div class="card">
-    <div class="card-header">
-        <h3 class="card-title">Fechas</h3>
-    </div>
-    <div class="card-body">
-        <form method="post">
-            <div class="form-group">
-                <label for="fecha_inicio">Fecha de Inicio:</label>
-                <input type="date" class="form-control" id="fecha_inicio" name="fecha_inicio" value="<?php echo $fecha_inicio; ?>">
-            </div>
-            <div class="form-group">
-                <label for="fecha_fin">Fecha Fin:</label>
-                <input type="date" class="form-control" id="fecha_fin" name="fecha_fin" value="<?php echo $fecha_fin; ?>">
-            </div>
-            <button type="submit" class="btn btn-primary">Filtrar</button>
-        </form>
-        <?php if (!empty($fecha_detalle_tickets)): ?>
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th>Ticket</th>
-                        <th>Estado</th>
-                        <th>Documento</th>
-                        <th>ID Riesgo</th>
-                        <th>Fecha Inicio</th>
-                        <th>Fecha Final</th>
-                        <th>Descripción Detalle</th>
+                                            <tr>
+                                                <td><?php echo $detalle_ticket['id_estado']; ?></td>
+                                                <td><?php echo $detalle_ticket['documento']; ?></td>
+                                                <td><?php echo $detalle_ticket['id_riesgo']; ?></td>
+                                                <td><?php echo $detalle_ticket['fecha_inicio']; ?></td>
+                                                <td><?php echo $detalle_ticket['fecha_final']; ?></td>
+                                                <td><?php echo $detalle_ticket['descripcion_detalle']; ?></td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
                     </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($fecha_detalle_tickets as $ticket): ?>
-                        <tr>
-                            <td><?php echo $ticket['id_ticket']; ?></td>
-                            <td><?php echo $ticket['id_estado']; ?></td>
-                            <td><?php echo $ticket['documento']; ?></td>
-                            <td><?php echo $ticket['id_riesgo']; ?></td>
-                            <td><?php echo $ticket['fecha_inicio']; ?></td>
-                            <td><?php echo $ticket['fecha_final']; ?></td>
-                            <td><?php echo $ticket['descripcion_detalle']; ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        <?php else: ?>
-            <p>No se encontraron tickets para el rango de fechas seleccionado.</p>
-        <?php endif; ?>
-    </div>
-</div>
+                    </tbody>
+                    </table>
+                </div>
+                <!-- /.card -->
+            <?php else: ?>
+                <p>No se encontraron tickets para mostrar.</p>
+            <?php endif; ?>
+        </div>
+
+
 
 </div>
 </section>
