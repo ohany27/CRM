@@ -125,79 +125,112 @@ if (!empty($fecha_inicio) && !empty($fecha_fin) && $fecha_fin < $fecha_inicio) {
                     <?php endif; ?>
                 </div>
             </div>
-            <?php if (!empty($detalle_tickets)): ?>
-                <div class="card">
-                    <div class="card-header">
-                        <h3 class="card-title">Detalle Tickets</h3>
-                    </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Detalle Tickets</h3>
+                    <button class="btn btn-primary float-right" onclick="window.print()">Imprimir</button>
+                </div>
+                <?php
+                // Agrupar detalle_tickets por id_ticket
+                $grouped_tickets = [];
+                foreach ($detalle_tickets as $detalle_ticket) {
+                    $grouped_tickets[$detalle_ticket['id_ticket']][] = $detalle_ticket;
+                }
+
+                // Parámetros de paginación
+                $items_per_page = 4; // Dos id_ticket por página
+                $total_items = count($grouped_tickets); // Total de grupos
+                $total_pages = ceil($total_items / $items_per_page); // Total de páginas
+                
+                // Obtener la página actual de la URL, por defecto es la primera página
+                $current_page = isset($_GET['pagina']) ? (int) $_GET['pagina'] : 1;
+                $current_page = max(1, min($current_page, $total_pages)); // Asegurarse de que la página actual esté dentro del rango
+                
+                // Calcular el índice inicial y final de los elementos en la página actual
+                $start_index = ($current_page - 1) * $items_per_page;
+                $end_index = min($start_index + $items_per_page - 1, $total_items - 1);
+
+                // Obtener los elementos para la página actual
+                $current_items = array_slice($grouped_tickets, $start_index, $items_per_page, true);
+                ?>
+
+                <?php if (!empty($current_items)): ?>
                     <div class="card-body p-0">
                         <table class="table table-hover">
                             <tbody>
-                                <?php
-                                $current_ticket_id = null;
-                                foreach ($detalle_tickets as $detalle_ticket):
-                                    // Verificar si hay un cambio en el id_ticket
-                                    if ($detalle_ticket['id_ticket'] !== $current_ticket_id):
-                                        // Cerrar la fila anterior si hay una abierta
-                                        if ($current_ticket_id !== null):
-                                            ?>
-                                        </tbody>
-                                    </table>
-                                </div>
+                                <?php foreach ($current_items as $id_ticket => $detalles): ?>
+                                    <tr data-widget="expandable-table" aria-expanded="false">
+                                        <td>
+                                            <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                            Ticket <?php echo $id_ticket; ?>
+                                        </td>
+                                    </tr>
+                                    <tr class="expandable-body">
+                                        <td>
+                                            <div class="p-0">
+                                                <table class="table table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Estado</th>
+                                                            <th>Documento</th>
+                                                            <th>ID Riesgo</th>
+                                                            <th>Fecha Inicio</th>
+                                                            <th>Fecha Final</th>
+                                                            <th>Descripción Detalle</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?php foreach ($detalles as $detalle_ticket): ?>
+                                                            <tr>
+                                                                <td><?php echo $detalle_ticket['id_estado']; ?></td>
+                                                                <td><?php echo $detalle_ticket['documento']; ?></td>
+                                                                <td><?php echo $detalle_ticket['id_riesgo']; ?></td>
+                                                                <td><?php echo $detalle_ticket['fecha_inicio']; ?></td>
+                                                                <td><?php echo $detalle_ticket['fecha_final']; ?></td>
+                                                                <td><?php echo $detalle_ticket['descripcion_detalle']; ?></td>
+                                                            </tr>
+                                                        <?php endforeach; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card -->
+
+                    <!-- Paginación -->
+                    <div class="card-footer clearfix">
+                        <ul class="pagination pagination-sm m-0 float-right">
+                            <?php if ($current_page > 1): ?>
+                                <li class="page-item"><a class="page-link"
+                                        href="?pagina=<?php echo $current_page - 1; ?>">&laquo;</a></li>
                             <?php endif; ?>
-                            <tr data-widget="expandable-table" aria-expanded="false">
-                                <td>
-                                    <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                    Ticket <?php echo $detalle_ticket['id_ticket']; ?>
-                                </td>
-                            </tr>
-                            <tr class="expandable-body">
-                                <td>
-                                    <div class="p-0">
-                                        <table class="table table-hover">
-                                            <thead>
-                                                <tr>
-                                                    <th>Estado</th>
-                                                    <th>Documento</th>
-                                                    <th>ID Riesgo</th>
-                                                    <th>Fecha Inicio</th>
-                                                    <th>Fecha Final</th>
-                                                    <th>Descripción Detalle</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <?php
-                                                // Actualizar el id_ticket actual
-                                                $current_ticket_id = $detalle_ticket['id_ticket'];
-                                    endif;
-                                    ?>
-                                            <tr>
-                                                <td><?php echo $detalle_ticket['id_estado']; ?></td>
-                                                <td><?php echo $detalle_ticket['documento']; ?></td>
-                                                <td><?php echo $detalle_ticket['id_riesgo']; ?></td>
-                                                <td><?php echo $detalle_ticket['fecha_inicio']; ?></td>
-                                                <td><?php echo $detalle_ticket['fecha_final']; ?></td>
-                                                <td><?php echo $detalle_ticket['descripcion_detalle']; ?></td>
-                                            </tr>
-                                        <?php endforeach; ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </td>
-                    </tr>
-                    </tbody>
-                    </table>
-                </div>
-                <!-- /.card -->
-            <?php else: ?>
-                <p>No se encontraron tickets para mostrar.</p>
-            <?php endif; ?>
+                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                <li class="page-item <?php echo ($i == $current_page) ? 'active' : ''; ?>">
+                                    <a class="page-link" href="?pagina=<?php echo $i; ?>"><?php echo $i; ?></a>
+                                </li>
+                            <?php endfor; ?>
+                            <?php if ($current_page < $total_pages): ?>
+                                <li class="page-item"><a class="page-link"
+                                        href="?pagina=<?php echo $current_page + 1; ?>">&raquo;</a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                <?php else: ?>
+                    <p>No se encontraron tickets para mostrar.</p>
+                <?php endif; ?>
+
+
+            </div>
+
+
+
         </div>
-
-
-
-</div>
-</section>
+    </section>
 </div>
 
 <?php include "../Template/footer.php"; ?>
