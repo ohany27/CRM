@@ -1,0 +1,38 @@
+.recent-posts li {
+    list-style-type: none; 
+    margin-bottom: 10px; 
+    padding-bottom: 10px; 
+    border-bottom: 1px solid #ccc; 
+}
+
+.recent-posts li a {
+    text-decoration: none; 
+    color: #333; 
+}
+
+.recent-posts li button a {
+    text-decoration: none; 
+    color: #ffffff; 
+}
+
+
+.user-info span {
+    font-weight: bold; 
+}
+
+.article-post p {
+    color: #007bff; 
+}
+
+#alto{
+    color: rgb(192, 27, 27);
+}
+
+#medio{
+    color: rgb(184, 184, 47);
+}
+
+#bajo{
+    color: green;
+    
+}

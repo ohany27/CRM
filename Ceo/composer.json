@@ -1,0 +1,17 @@
+{
+    "name": "vendor/codbar",
+    "description": "codigo de barras",
+    "autoload": {
+        "psr-4": {
+            "Vendor\\Codbar\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "brayan sanchez"
+        }
+    ],
+    "require": {
+        "picqer/php-barcode-generator": "^2.4"
+    }
+}

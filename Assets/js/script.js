@@ -1,15 +1,11 @@
-const btnSignIn = document.getElementById("sign-in"),
-      btnSignUp = document.getElementById("sign-up"),
-      formRegister = document.querySelector(".register"),
-      formLogin = document.querySelector(".login");
+const container = document.getElementById('container');
+const registerBtn = document.getElementById('register');
+const loginBtn = document.getElementById('login');
 
-btnSignIn.addEventListener("click", e => {
-    formRegister.classList.add("hide");
-    formLogin.classList.remove("hide")
-})
+registerBtn.addEventListener('click', () => {
+    container.classList.add("active");
+});
 
-
-btnSignUp.addEventListener("click", e => {
-    formLogin.classList.add("hide");
-    formRegister.classList.remove("hide")
-})
+loginBtn.addEventListener('click', () => {
+    container.classList.remove("active");
+});

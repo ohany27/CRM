@@ -1,0 +1,19 @@
+.recent-posts li {
+    list-style-type: none; 
+    margin-bottom: 10px; 
+    padding-bottom: 10px; 
+    border-bottom: 1px solid #ccc; 
+}
+
+.recent-posts li a {
+    text-decoration: none; 
+    color: #333; 
+}
+
+.user-info span {
+    font-weight: bold; 
+}
+
+.article-post p {
+    color: #007bff; 
+}
