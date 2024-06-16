@@ -52,7 +52,7 @@ foreach ($resultado_llamadas as $fila) {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Título de la página</title>
+
   <link rel="stylesheet" href="../dist/css/sol_proceso.css"> 
 </head>
 <body>
@@ -162,9 +162,8 @@ foreach ($resultado_llamadas as $fila) {
   </section>
 </div>
 
-<?php include "../Template/footer.php"; ?>
+
 
 <script src="../js/sol_curso.js"></script>
 
-</body>
-</html>
+<?php include "../Template/footer.php"; ?>

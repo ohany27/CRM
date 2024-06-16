@@ -1,7 +1,62 @@
 <?php
-include ("../../Config/validarSesion.php");
+include("../../Config/validarSesion.php");
 require_once ("../../Config/conexion.php");
+
+// Crear una instancia de la clase Database para la conexión
+$DataBase = new Database;
+$con = $DataBase->conectar();
+
+// Obtener el documento del empleado desde la sesión
+$documento_empleado = $_SESSION['usuario']['documento'];
+
+// Consulta SQL para contar los tickets en espera del empleado 
+$sql = "SELECT COUNT(*) AS total_tickets_espera
+        FROM detalle_ticket
+        WHERE id_estado = 4
+          AND id_ticket NOT IN (
+              SELECT id_ticket
+              FROM detalle_ticket
+              WHERE id_estado = 5
+          )
+          AND documento = ?";
+$stmt = $con->prepare($sql);
+$stmt->execute([$documento_empleado]);
+$fila = $stmt->fetch(PDO::FETCH_ASSOC);
+$total_tickets_espera = $fila['total_tickets_espera'];
+
+
+$sql_finalizados = "SELECT COUNT(*) AS total_tickets_finalizados
+                    FROM detalle_ticket
+                    WHERE id_estado = 5
+                      AND documento = ?";
+$stmt_finalizados = $con->prepare($sql_finalizados);
+$stmt_finalizados->execute([$documento_empleado]);
+$fila_finalizados = $stmt_finalizados->fetch(PDO::FETCH_ASSOC);
+$total_tickets_finalizados = $fila_finalizados['total_tickets_finalizados'];
+
+// Consulta SQL para obtener los tickets vencidos según la fecha de vencimiento
+$sql_vencidos = "SELECT
+                    detalle_ticket.id_ticket,
+                    detalle_ticket.fecha_inicio,
+                    CASE
+                        WHEN detalle_ticket.id_riesgo = 1 THEN DATE_ADD(detalle_ticket.fecha_inicio, INTERVAL 4 DAY)
+                        WHEN detalle_ticket.id_riesgo = 2 THEN DATE_ADD(detalle_ticket.fecha_inicio, INTERVAL 7 DAY)
+                        WHEN detalle_ticket.id_riesgo = 3 THEN DATE_ADD(detalle_ticket.fecha_inicio, INTERVAL 10 DAY)
+                    END AS fecha_vencimiento
+                FROM detalle_ticket
+                WHERE id_estado = 4
+                  AND id_ticket NOT IN (
+                      SELECT id_ticket
+                      FROM detalle_ticket
+                      WHERE id_estado = 5
+                  )
+                  AND documento = ?";
+$stmt_vencidos = $con->prepare($sql_vencidos);
+$stmt_vencidos->execute([$documento_empleado]);
+// Ejemplo de cómo contar el total de tickets devueltos por la consulta de tickets vencidos
+$total_tickets_vencidos = $stmt_vencidos->rowCount();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -31,8 +86,8 @@ require_once ("../../Config/conexion.php");
   <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
-<!-- Favicon -->
-<link rel="apple-touch-icon" sizes="57x57" href="../../Assets/favicon/apple-icon-57x57.png">
+  <!-- Favicon -->
+  <link rel="apple-touch-icon" sizes="57x57" href="../../Assets/favicon/apple-icon-57x57.png">
   <link rel="apple-touch-icon" sizes="60x60" href="../../Assets/favicon/apple-icon-60x60.png">
   <link rel="apple-touch-icon" sizes="72x72" href="../../Assets/favicon/apple-icon-72x72.png">
   <link rel="apple-touch-icon" sizes="76x76" href="../../Assets/favicon/apple-icon-76x76.png">
@@ -71,7 +126,7 @@ require_once ("../../Config/conexion.php");
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
         <!-- Navbar Search -->
-        
+
         <li class="nav-item">
           <a class="nav-link" data-widget="fullscreen" href="#" role="button">
             <i class="fas fa-expand-arrows-alt"></i>
@@ -79,24 +134,24 @@ require_once ("../../Config/conexion.php");
         </li>
         <!-- Notifications Dropdown Menu -->
         <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="fas fa-cogs"></i>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">Opciones</span>
-          <div class="dropdown-divider"></div>
-          <a href="Visualizar/perfil.php" class="dropdown-item">
-            <i class="fas fa-user mr-2"></i> Perfil
-            <span class="float-right text-muted text-sm">visitar</span>
+          <a class="nav-link" data-toggle="dropdown" href="#">
+            <i class="fas fa-cogs"></i>
           </a>
-          <div class="dropdown-divider"></div>
-          <a href="../../Config/validarSesion.php?logout=true" class="dropdown-item">
-            <i class="fas fa-sign-out-alt mr-2"></i> Salir
-            <span class="float-right text-muted text-sm">accion</span>
-          </a>
-        </div>
-      </li>
-        
+          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <span class="dropdown-item dropdown-header">Opciones</span>
+            <div class="dropdown-divider"></div>
+            <a href="Visualizar/perfil.php" class="dropdown-item">
+              <i class="fas fa-user mr-2"></i> Perfil
+              <span class="float-right text-muted text-sm">visitar</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="../../Config/validarSesion.php?logout=true" class="dropdown-item">
+              <i class="fas fa-sign-out-alt mr-2"></i> Salir
+              <span class="float-right text-muted text-sm">accion</span>
+            </a>
+          </div>
+        </li>
+
       </ul>
     </nav>
     <!-- /.navbar -->
@@ -138,7 +193,7 @@ require_once ("../../Config/conexion.php");
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-users"></i>
                 <p>
-                Solicitudes Tecnico
+                  Solicitudes Tecnico
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
@@ -197,29 +252,31 @@ require_once ("../../Config/conexion.php");
             <!-- ./col -->
             <div class="col-lg-3 col-6">
               <!-- small box -->
-              <div class="small-box bg-success">
+              <div class="small-box bg-warning">
                 <div class="inner">
-                  <h3>0</h3>
-                  <p>tickets en espera</p>
+                  <h3><?php echo $total_tickets_espera; ?></h3>
+                  <p>Tickets en espera</p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-stats-bars"></i>
+                  <i class="ion ion-android-add-circle"></i>
                 </div>
-                <a href="Visualizar/sol_curso.php" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="Visualizar/sol_curso.php" class="small-box-footer">Buscar <i
+                    class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->
             <div class="col-lg-3 col-6">
               <!-- small box -->
-              <div class="small-box bg-warning">
+              <div class="small-box bg-success">
                 <div class="inner">
-                  <h3>0</h3>
+                  <h3><?php echo $total_tickets_finalizados; ?></h3>
                   <p>Tickets Solucionados</p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-person-add"></i>
+                  <i class="ion ion-android-checkmark-circle"></i>
                 </div>
-                <a href="Visualizar/sol_solucionadas.php" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="Visualizar/sol_solucionadas.php" class="small-box-footer">Busca <i
+                    class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->
@@ -227,14 +284,14 @@ require_once ("../../Config/conexion.php");
               <!-- small box -->
               <div class="small-box bg-danger">
                 <div class="inner">
-                  <h3>0</h3>
+                  <h3><?php echo $total_tickets_vencidos; ?></h3>
 
                   <p>Tickets en Vencidos</p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-pie-graph"></i>
+                  <i class="ion ion-alert-circled"></i>
                 </div>
-                <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+                <a href="Visualizar/sol_curso.php" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
               </div>
             </div>
             <!-- ./col -->

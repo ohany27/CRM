@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-06-2024 a las 17:51:59
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Tiempo de generación: 16-06-2024 a las 03:05:12
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -99,19 +99,6 @@ CREATE TABLE `detalle_ticket` (
   `descripcion_detalle` varchar(150) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Volcado de datos para la tabla `detalle_ticket`
---
-
-INSERT INTO `detalle_ticket` (`id_detalle_ticket`, `id_ticket`, `id_estado`, `documento`, `id_riesgo`, `fecha_inicio`, `fecha_final`, `descripcion_detalle`) VALUES
-(175, 'Tk_001', 3, 1104544453, 3, '2024-06-10 19:06:40', '2024-06-10 19:06:40', NULL),
-(176, 'Tk_001', 4, 110454444, 3, '2024-06-10 19:06:45', NULL, 'adios'),
-(177, 'Tk_001', 5, 110454444, 3, '2024-06-10 19:04:33', '2024-06-11 00:08:59', 'rr'),
-(187, 'Tk_002', 3, 1104544453, 1, '2024-06-13 10:23:01', '2024-06-13 10:23:01', NULL),
-(188, 'Tk_002', 5, 1104544453, 1, '2024-06-13 10:23:10', '2024-06-13 10:23:10', 'facil'),
-(191, 'Tk_003', 3, 1104544453, 1, '2024-06-13 10:35:32', '2024-06-13 10:35:32', NULL),
-(192, 'Tk_003', 4, 110454444, 1, '2024-06-13 10:35:39', NULL, 'no pude');
-
 -- --------------------------------------------------------
 
 --
@@ -131,7 +118,7 @@ CREATE TABLE `empresa` (
 --
 
 INSERT INTO `empresa` (`nitc`, `nombre`, `direccion`, `telefono`, `id_estado`) VALUES
-(1234567, 'Google', 'EE.UU', '1234567891', 1);
+(1234567, 'GOOGLE', 'EE.UU', '3202174961', 1);
 
 -- --------------------------------------------------------
 
@@ -193,15 +180,6 @@ CREATE TABLE `llamadas` (
   `descripcion` varchar(150) NOT NULL,
   `id_empleado` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `llamadas`
---
-
-INSERT INTO `llamadas` (`id_llamada`, `id_ticket`, `documento`, `id_daño`, `id_est`, `fecha`, `descripcion`, `id_empleado`) VALUES
-(52, 'Tk_001', 1104544451, 1, 4, '2024-06-10 19:04:33', 'pantalla congelada', 1104544453),
-(54, 'Tk_002', 1104544451, 2, 5, '2024-06-13 10:22:52', 'ff', 1104544453),
-(56, 'Tk_003', 1104544451, 3, 4, '2024-06-13 10:35:10', 'gg', 1104544453);
 
 -- --------------------------------------------------------
 
@@ -307,7 +285,7 @@ CREATE TABLE `usuario` (
 
 INSERT INTO `usuario` (`documento`, `nombre`, `correo`, `password`, `pin`, `telefono`, `direccion`, `nitc`, `id_tip_usu`, `id_estado`) VALUES
 (110454444, 'julian', 'arcan3985@gmail.com', '$2y$10$NIEyy3.vltET5.Uk2YNtq.NwnKW.yr7QyNrnwGU7Vmbf0J/AW4wQW', 4135, '3202174964', 'cajamarca', 1234567, 4, 1),
-(1104544451, 'cesar', 'tecnelectrics@gmail.com', '$2y$10$FL6VmJjOLVBrFz81hA76a.WEwEVOn6luTOidxQy8zYq0ZoHQd2W2.', 9233, '3202174962', 'sena', 1234567, 2, 1),
+(1104544451, 'CESAR', 'tecnelectrics@gmail.com', '$2y$10$FL6VmJjOLVBrFz81hA76a.WEwEVOn6luTOidxQy8zYq0ZoHQd2W2.', 9233, '3202174962', 'sena', 1234567, 2, 1),
 (1104544453, 'yareht', 'ezbrayanp@gmail.com', '$2y$10$eKFzzFbALMETAd12MTFdu.gHOd0R9ACMlgPRPOAyJRFegH0srD/i.', 5378, '3202174963', 'caracolitos', 1234567, 3, 1),
 (1104544454, 'Brayan', 'bfsanchez45@misena.edu.co', '$2y$10$BJ2tY6CCyjn/RMplZgqSCe3U6e3mUCF..u7vWsLLNq/xIl20VYDFi', 3180, '3202174961', 'mz casa 14', 1234567, 1, 1);
 
@@ -410,7 +388,7 @@ ALTER TABLE `detalle_daño`
 -- AUTO_INCREMENT de la tabla `detalle_ticket`
 --
 ALTER TABLE `detalle_ticket`
-  MODIFY `id_detalle_ticket` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=193;
+  MODIFY `id_detalle_ticket` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=222;
 
 --
 -- AUTO_INCREMENT de la tabla `estado`
@@ -428,7 +406,7 @@ ALTER TABLE `licencia`
 -- AUTO_INCREMENT de la tabla `llamadas`
 --
 ALTER TABLE `llamadas`
-  MODIFY `id_llamada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  MODIFY `id_llamada` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT de la tabla `riesgos`

@@ -248,7 +248,7 @@ $num_solicitudes_solucionadas = $fila['num_solicitudes'];
                   <p>Solicitudes en curso</p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-stats-bars"></i>
+                  <i class="ion ion-battery-low"></i>
                 </div>
                 <a href="Visualizar/sol_curso.php" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
               </div>
@@ -262,7 +262,7 @@ $num_solicitudes_solucionadas = $fila['num_solicitudes'];
                   <p>Solicitudes en Proceso</p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-person-add"></i>
+                  <i class="ion ion-battery-half"></i>
                 </div>
                 <a href="Visualizar/tickets_proceso.php" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
               </div>
@@ -276,7 +276,7 @@ $num_solicitudes_solucionadas = $fila['num_solicitudes'];
                   <p>Solicitudes Solucionadas</p>
                 </div>
                 <div class="icon">
-                  <i class="ion ion-pie-graph"></i>
+                  <i class="ion ion ion-battery-full"></i>
                 </div>
                 <a href="Visualizar/sol_solucionadas.php" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
               </div>
