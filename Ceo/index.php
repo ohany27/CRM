@@ -1,78 +1,78 @@
 <?php
 // Establecer la conexión a la base de datos
-require_once("../Config/conexion.php");
+require_once ("../Config/conexion.php");
 $DataBase = new Database;
 $con = $DataBase->conectar();
 
 // Verificar si la conexión fue exitosa
 if ($con) {
-    // Consulta SQL para obtener el número de empresas
-    $query_empresas = "SELECT COUNT(*) AS num_empresas FROM empresa";
+  // Consulta SQL para obtener el número de empresas
+  $query_empresas = "SELECT COUNT(*) AS num_empresas FROM empresa";
 
-    // Ejecutar la consulta de empresas
-    $resultado_empresas = $con->query($query_empresas);
+  // Ejecutar la consulta de empresas
+  $resultado_empresas = $con->query($query_empresas);
 
-    // Verificar si la consulta de empresas fue exitosa
-    if ($resultado_empresas) {
-        // Obtener el número de empresas
-        $fila_empresas = $resultado_empresas->fetch(PDO::FETCH_ASSOC);
-        $num_empresas = $fila_empresas['num_empresas'];
-    } else {
-        echo "Error en la consulta de empresas: " . $con->errorInfo()[2];
-        exit();
-    }
+  // Verificar si la consulta de empresas fue exitosa
+  if ($resultado_empresas) {
+    // Obtener el número de empresas
+    $fila_empresas = $resultado_empresas->fetch(PDO::FETCH_ASSOC);
+    $num_empresas = $fila_empresas['num_empresas'];
+  } else {
+    echo "Error en la consulta de empresas: " . $con->errorInfo()[2];
+    exit();
+  }
 
-    // Consulta SQL para obtener el número de usuarios con id_tip_usu igual a 1
-    $query_usuarios = "SELECT COUNT(*) AS num_usuarios FROM usuario WHERE id_tip_usu = 1";
+  // Consulta SQL para obtener el número de usuarios con id_tip_usu igual a 1
+  $query_usuarios = "SELECT COUNT(*) AS num_usuarios FROM usuario WHERE id_tip_usu = 1";
 
-    // Ejecutar la consulta de usuarios
-    $resultado_usuarios = $con->query($query_usuarios);
+  // Ejecutar la consulta de usuarios
+  $resultado_usuarios = $con->query($query_usuarios);
 
-    // Verificar si la consulta de usuarios fue exitosa
-    if ($resultado_usuarios) {
-        // Obtener el número de usuarios
-        $fila_usuarios = $resultado_usuarios->fetch(PDO::FETCH_ASSOC);
-        $num_usuarios = $fila_usuarios['num_usuarios'];
-    } else {
-        echo "Error en la consulta de usuarios: " . $con->errorInfo()[2];
-        exit();
-    }
+  // Verificar si la consulta de usuarios fue exitosa
+  if ($resultado_usuarios) {
+    // Obtener el número de usuarios
+    $fila_usuarios = $resultado_usuarios->fetch(PDO::FETCH_ASSOC);
+    $num_usuarios = $fila_usuarios['num_usuarios'];
+  } else {
+    echo "Error en la consulta de usuarios: " . $con->errorInfo()[2];
+    exit();
+  }
 
-    // Consulta SQL para obtener el número de registros en la tabla estado
-    $query_categorias = "SELECT COUNT(*) AS num_categorias FROM categoria";
+  // Consulta SQL para obtener el número de registros en la tabla estado
+  $query_categorias = "SELECT COUNT(*) AS num_categorias FROM categoria";
 
-// Ejecutar la consulta de categorías
-$resultado_categorias = $con->query($query_categorias);
+  // Ejecutar la consulta de categorías
+  $resultado_categorias = $con->query($query_categorias);
 
-// Verificar si la consulta de categorías fue exitosa
-if ($resultado_categorias) {
+  // Verificar si la consulta de categorías fue exitosa
+  if ($resultado_categorias) {
     // Obtener el número de categorías
     $fila_categorias = $resultado_categorias->fetch(PDO::FETCH_ASSOC);
     $num_categorias = $fila_categorias['num_categorias'];
-} else {
+  } else {
     echo "Error en la consulta de categorías: " . $con->errorInfo()[2];
     exit();
-}
+  }
 
 
-    // Consulta SQL para obtener el número de registros en la tabla licencia donde el estado es igual a 1
-    $query_licencias = "SELECT COUNT(*) AS num_licencias FROM licencia WHERE estado = 1";
+  // Consulta SQL para obtener el número de registros en la tabla licencia donde el estado es igual a 1
+  $query_licencias = "SELECT COUNT(*) AS num_licencias FROM licencia WHERE estado = 1";
 
-    // Ejecutar la consulta de licencias
-    $resultado_licencias = $con->query($query_licencias);
+  // Ejecutar la consulta de licencias
+  $resultado_licencias = $con->query($query_licencias);
 
-    // Verificar si la consulta de licencias fue exitosa
-    if ($resultado_licencias) {
-        // Obtener el número de licencias
-        $fila_licencias = $resultado_licencias->fetch(PDO::FETCH_ASSOC);
-        $num_licencias = $fila_licencias['num_licencias'];
-    } else {
-        echo "Error en la consulta de licencias: " . $con->errorInfo()[2];
-        exit();
-    }
+  // Verificar si la consulta de licencias fue exitosa
+  if ($resultado_licencias) {
+    // Obtener el número de licencias
+    $fila_licencias = $resultado_licencias->fetch(PDO::FETCH_ASSOC);
+    $num_licencias = $fila_licencias['num_licencias'];
+  } else {
+    echo "Error en la consulta de licencias: " . $con->errorInfo()[2];
+    exit();
+  }
 } else {
-    // Mostrar un mensaje de error si la conexión falla
-    echo "Error al conectar a la base de datos.";
+  // Mostrar un mensaje de error si la conexión falla
+  echo "Error al conectar a la base de datos.";
 }
 ?>
 
@@ -112,22 +112,22 @@ if ($resultado_categorias) {
   <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
   <!-- Favicon -->
   <link rel="apple-touch-icon" sizes="57x57" href="../Assets/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="../Assets/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="../Assets/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="../Assets/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="../Assets/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="../Assets/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="../Assets/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="../Assets/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="../Assets/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="../Assets/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="../Assets/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="../Assets/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../Assets/favicon/favicon-16x16.png">
-    <link rel="manifest" href="../Assets/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+  <link rel="apple-touch-icon" sizes="60x60" href="../Assets/favicon/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../Assets/favicon/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../Assets/favicon/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../Assets/favicon/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../Assets/favicon/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../Assets/favicon/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../Assets/favicon/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../Assets/favicon/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="../Assets/favicon/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../Assets/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="../Assets/favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../Assets/favicon/favicon-16x16.png">
+  <link rel="manifest" href="../Assets/favicon/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
   <style>
     .modal-content {
       position: fixed;
@@ -180,15 +180,18 @@ if ($resultado_categorias) {
 
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto">
-        <!-- Navbar Search -->
 
+        <!-- Navbar Search -->
         <li class="nav-item">
           <a class="nav-link" data-widget="fullscreen" href="#" role="button">
             <i class="fas fa-expand-arrows-alt"></i>
           </a>
         </li>
-
-
+        <li class="nav-item">
+          <a class="nav-link" href="#" onclick="cerrarSesion()" role="button">
+            <i class="fas fa-sign-out-alt"></i>
+          </a>
+        </li>
       </ul>
     </nav>
     <!-- /.navbar -->
@@ -295,8 +298,8 @@ if ($resultado_categorias) {
                   </a>
                 </li>
               </ul>
-              </li>
-              <li class="nav-item">
+            </li>
+            <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-folder-open"></i>
                 <p>
@@ -317,9 +320,9 @@ if ($resultado_categorias) {
                     <p>Crear</p>
                   </a>
                 </li>
-                
+
               </ul>
-              <li class="nav-item">
+            <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas fa-fire"></i>
                 <p>
@@ -528,57 +531,51 @@ if ($resultado_categorias) {
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
   <script src="dist/js/pages/dashboard.js"></script>
   <script>
-function validarCodigo() {
-        const codigoCorrecto = "cesar123";
-        const codigoIngresado = document.getElementById("passwordInput").value;
+    function cerrarSesion() {
+      // Eliminar la cookie
+      document.cookie = "acceso_permitido=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/";
 
-        if (codigoIngresado === codigoCorrecto) {
-            alert("¡Código de Confirmación Correcto! Acceso permitido.");
-            // Crear la cookie con una expiración de 30 días
-            var expiracion = new Date();
-            expiracion.setDate(expiracion.getDate() + 30);
-            document.cookie = "acceso_permitido=true; expires=" + expiracion.toUTCString() + "; path=/";
-            document.getElementById("modal").style.display = "none";
-            return true; // Devuelve verdadero si el código es correcto
-        } else {
-            alert("Código incorrecto. Acceso denegado.");
-            return false; // Devuelve falso si el código es incorrecto
-        }
+      // Redirigir al usuario a la página de inicio de sesión (puedes cambiar la URL según sea necesario)
+      window.location.href = "../index.php";
     }
 
-    window.onload = function() {
-        var paginaActual = window.location.pathname; // Obtener la ruta de la página actual
+    function validarCodigo() {
+      const codigoCorrecto = "cesar123";
+      const codigoIngresado = document.getElementById("passwordInput").value;
 
-        // Verificar si la cookie está presente y si la página actual es la del CEO
-        if (!document.cookie.includes("acceso_permitido=true") && paginaActual.includes("ceo")) {
-            document.getElementById("modal").style.display = "block";
+      if (codigoIngresado === codigoCorrecto) {
+        alert("¡Código de Confirmación Correcto! Acceso permitido.");
+        var expiracion = new Date();
+        expiracion.setDate(expiracion.getDate() + 30);
+        document.cookie = "acceso_permitido=true; expires=" + expiracion.toUTCString() + "; path=/";
+        document.getElementById("modal").style.display = "none";
+        return true;
+      } else {
+        alert("Código incorrecto. Acceso denegado.");
+        return false;
+      }
+    }
+
+    window.onload = function () {
+      var paginaActual = window.location.pathname;
+
+      if (!document.cookie.includes("acceso_permitido=true") && paginaActual.includes("ceo")) {
+        document.getElementById("modal").style.display = "block";
+      }
+
+      if (paginaActual === "/crm/index.php") {
+        var cookies = document.cookie.split(";");
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i];
+          var eqPos = cookie.indexOf("=");
+          var nombre = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
+          if (nombre.trim() === "acceso_permitido") {
+            document.cookie = nombre + "=;expires=Thu, 13 Jun 2024 06:59:00 GMT;path=/";
+          }
         }
-
-        // Verificar si la página actual es la página principal y eliminar las cookies si es necesario
-        if (paginaActual === "/crm/index.php") {
-            var cookies = document.cookie.split(";"); // Obtener todas las cookies
-            for (var i = 0; i < cookies.length; i++) {
-                var cookie = cookies[i];
-                var eqPos = cookie.indexOf("=");
-                var nombre = eqPos > -1 ? cookie.substr(0, eqPos) : cookie;
-                if (nombre.trim() === "acceso_permitido") {
-                    document.cookie = nombre + "=;expires=Thu, 13 Jun 2024 06:59:00 GMT;path=/"; // Establecer la fecha de expiración en el pasado para eliminar la cookie
-                }
-            }
-        }
-
-        // Asignar evento al botón de cierre después de que el DOM esté completamente cargado
-        document.getElementById("close").onclick = function() {
-            // Verifica si el código es correcto antes de redirigir
-            if (!validarCodigo()) {
-                window.location.href = "./../index.php"; // Redirigir a la página principal
-            } else {
-                document.getElementById("modal").style.display = "none";
-            }
-        };
-    };
-
-</script>
+      }
+    }
+  </script>
 </body>
 
 </html>
