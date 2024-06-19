@@ -14,7 +14,7 @@ Explora nuestras funciones, siguiendo las rutas para tener la mejor experiencia 
 
 Nombres<!-- ========== Start Section ========== -->
 La carpeta debe ser renombrada como crm para que no interfieran las rutas,
-lo mismo sucede con la base de datos (crm)
+creamos primero una base de datos llamada(crm)
 <!-- ========== End Section ========== -->
 
 Ruta-Ceo<!-- ========== Start Section ========== -->
