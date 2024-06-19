@@ -34,27 +34,36 @@ $stmt_finalizados->execute([$documento_empleado]);
 $fila_finalizados = $stmt_finalizados->fetch(PDO::FETCH_ASSOC);
 $total_tickets_finalizados = $fila_finalizados['total_tickets_finalizados'];
 
-// Consulta SQL para obtener los tickets vencidos según la fecha de vencimiento
+// Consulta SQL para obtener los tickets vencidos según la fecha de inicio
 $sql_vencidos = "SELECT
                     detalle_ticket.id_ticket,
                     detalle_ticket.fecha_inicio,
-                    CASE
-                        WHEN detalle_ticket.id_riesgo = 1 THEN DATE_ADD(detalle_ticket.fecha_inicio, INTERVAL 4 DAY)
-                        WHEN detalle_ticket.id_riesgo = 2 THEN DATE_ADD(detalle_ticket.fecha_inicio, INTERVAL 7 DAY)
-                        WHEN detalle_ticket.id_riesgo = 3 THEN DATE_ADD(detalle_ticket.fecha_inicio, INTERVAL 10 DAY)
-                    END AS fecha_vencimiento
+                    CASE detalle_ticket.id_riesgo
+                        WHEN 1 THEN DATE_ADD(detalle_ticket.fecha_inicio, INTERVAL 4 DAY)
+                        WHEN 2 THEN DATE_ADD(detalle_ticket.fecha_inicio, INTERVAL 7 DAY)
+                        WHEN 3 THEN DATE_ADD(detalle_ticket.fecha_inicio, INTERVAL 10 DAY)
+                    END AS fecha_limite
                 FROM detalle_ticket
-                WHERE id_estado = 4
-                  AND id_ticket NOT IN (
+                WHERE detalle_ticket.id_estado = 4
+                  AND detalle_ticket.fecha_final IS NULL
+                  AND detalle_ticket.id_ticket NOT IN (
                       SELECT id_ticket
                       FROM detalle_ticket
                       WHERE id_estado = 5
                   )
-                  AND documento = ?";
+                  AND detalle_ticket.documento = ?
+                  AND CASE detalle_ticket.id_riesgo
+                          WHEN 1 THEN DATE_ADD(detalle_ticket.fecha_inicio, INTERVAL 4 DAY) < NOW()
+                          WHEN 2 THEN DATE_ADD(detalle_ticket.fecha_inicio, INTERVAL 7 DAY) < NOW()
+                          WHEN 3 THEN DATE_ADD(detalle_ticket.fecha_inicio, INTERVAL 10 DAY) < NOW()
+                      END
+                  AND detalle_ticket.documento = ?";
+                  
 $stmt_vencidos = $con->prepare($sql_vencidos);
-$stmt_vencidos->execute([$documento_empleado]);
-// Ejemplo de cómo contar el total de tickets devueltos por la consulta de tickets vencidos
+$stmt_vencidos->execute([$documento_empleado, $documento_empleado]);
 $total_tickets_vencidos = $stmt_vencidos->rowCount();
+
+
 ?>
 
 <!DOCTYPE html>

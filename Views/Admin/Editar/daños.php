@@ -160,14 +160,17 @@ $resultado_riesgos = $con->query($consulta_riesgos);
 
         // Validar precio
         document.getElementById('precio').addEventListener('input', function () {
-            var precioValue = this.value;
-            var precioRegex = /^[0-9]+([.,][0-9]+)?$/;
-            if (precioRegex.test(precioValue) && parseFloat(precioValue) > 0) {
-                this.setCustomValidity('');
-            } else {
-                this.setCustomValidity('El precio debe ser un número positivo.');
-            }
-        });
+    var precioValue = this.value;
+    // Expresión regular para números enteros positivos sin separadores de miles
+    var precioRegex = /^[1-9]\d*$/;
+
+    // Validamos el formato del valor ingresado
+    if (precioRegex.test(precioValue)) {
+        this.setCustomValidity('');
+    } else {
+        this.setCustomValidity('El precio debe ser un número entero positivo. y este no puede contener puntos');
+    }
+});
 
         // Validar tipo de archivo de la foto
         document.getElementById('foto').addEventListener('change', function () {

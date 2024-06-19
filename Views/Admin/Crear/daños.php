@@ -14,9 +14,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $precio = $_POST['precio'];
     $id_riesgos = $_POST['id_riesgos'];
     $foto = file_get_contents($_FILES['foto']['tmp_name']);
+    
+    // Estado por defecto al crear
+    $estado = 1;
 
     // Insertar los datos en la base de datos
-    $consulta = "INSERT INTO tipo_daño (nombredano, foto, precio, id_categoria, id_riesgos, nitc) VALUES (:nombredano, :foto, :precio, :id_categoria, :id_riesgos, :nitc)";
+    $consulta = "INSERT INTO tipo_daño (nombredano, foto, precio, id_categoria, id_riesgos, nitc, estado) 
+                 VALUES (:nombredano, :foto, :precio, :id_categoria, :id_riesgos, :nitc, :estado)";
     $stmt = $con->prepare($consulta);
     $stmt->bindParam(':nombredano', $nombredano);
     $stmt->bindParam(':foto', $foto, PDO::PARAM_LOB);
@@ -24,7 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->bindParam(':id_categoria', $id_categoria);
     $stmt->bindParam(':id_riesgos', $id_riesgos);
     $stmt->bindParam(':nitc', $nitc_usuario);
-    
+    $stmt->bindParam(':estado', $estado); // Bind estado
+
     if ($stmt->execute()) {
         echo "<script>alert('Daño creado exitosamente'); window.location.href='../Visualizar/daños.php';</script>";
     } else {
@@ -118,14 +123,19 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     document.getElementById('precio').addEventListener('input', function () {
-        var precioValue = this.value;
-        var precioRegex = /^[0-9]+([.,][0-9]+)?$/;
-        if (precioRegex.test(precioValue) && parseFloat(precioValue) > 0) {
-            this.setCustomValidity('');
-        } else {
-            this.setCustomValidity('El precio debe ser un número positivo.');
-        }
-    });
+    var precioValue = this.value;
+    // Expresión regular para números enteros positivos sin separadores de miles
+    var precioRegex = /^[1-9]\d*$/;
+
+    // Validamos el formato del valor ingresado
+    if (precioRegex.test(precioValue)) {
+        this.setCustomValidity('');
+    } else {
+        this.setCustomValidity('El precio debe ser un número entero positivo. y este no puede contener puntos');
+    }
+});
+
+
 
     document.getElementById('foto').addEventListener('change', function () {
         var foto = this.files[0];

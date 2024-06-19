@@ -78,11 +78,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 try {
     $db = new Database();
     $conn = $db->conectar();
-    $stmt = $conn->query("SELECT id_daño, nombredano, foto, precio FROM tipo_daño");
+    
+    // Obtener el nitc del usuario desde la sesión
+    $nitc_usuario = $_SESSION['usuario']['nitc'];
+
+    // Consulta modificada para obtener tipos de daño únicos con estado 1 y asociados al mismo nitc del usuario
+    $stmt = $conn->prepare("SELECT DISTINCT td.id_daño, td.nombredano, td.foto, td.precio 
+                            FROM tipo_daño td 
+                            INNER JOIN usuario u ON td.nitc = u.nitc 
+                            WHERE u.nitc = :nitc_usuario 
+                            AND td.estado = 1");
+    $stmt->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
+    $stmt->execute();
     $tipo_daño = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
 }
+
+
+
 ?>
 
 <ul class="nav nav-tabs nav-tabs-custom border-bottom-0 mt-3 nav-justfied" role="tablist">

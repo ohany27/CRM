@@ -14,6 +14,7 @@ $consulta = $con->prepare("
     INNER JOIN riesgos ON tipo_daño.id_riesgos = riesgos.id_riesgo
     WHERE tipo_daño.nitc = :nitc
 ");
+
 $consulta->bindParam(':nitc', $nitc_usuario, PDO::PARAM_STR);
 $consulta->execute();
 ?>
@@ -44,12 +45,11 @@ $consulta->execute();
                                 <th>Foto</th>
                                 <th>Precio</th>
                                 <th>Nivel De Riesgo</th>
-                                <th></th>
+                                <th>Acción</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            // Iterar sobre los resultados y mostrarlos en la tabla
                             while ($fila = $consulta->fetch(PDO::FETCH_ASSOC)) {
                                 echo '
                                 <tr>
@@ -58,12 +58,26 @@ $consulta->execute();
                                     <td><img src="data:image/jpeg;base64,' . base64_encode($fila["foto"]) . '" width="200" height="100" alt="Foto de daño"></td>
                                     <td>' . htmlspecialchars($fila["precio"]) . '</td>
                                     <td>' . htmlspecialchars($fila["tip_riesgo"]) . '</td>
-                                    <td class="project-actions text-center">
+                                    <td class="project-actions text-center">';
+                                    
+                                    // Lógica para el botón de activar o desactivar según el estado
+                                    if ($fila["estado"] == 2) {
+                                        // Estado 1: Botón para activar
+                                        echo '
+                                        <a href="../Eliminar/Adaños.php?id_daño=' . htmlspecialchars($fila["id_daño"]) . '" class="btn btn-success btn-sm">
+                                            <i class="fas fa-check"></i> Activar
+                                        </a>';
+                                    } elseif ($fila["estado"] == 1) {
+                                        // Estado 2: Botón para desactivar
+                                        echo '
+                                        <a href="../Eliminar/Ddaños.php?id_daño=' . htmlspecialchars($fila["id_daño"]) . '" class="btn btn-danger btn-sm">
+                                            <i class="fas fa-times"></i> Desactivar
+                                        </a>';
+                                    }
+
+                                    echo '
                                         <a href="../Editar/daños.php?id_daño=' . htmlspecialchars($fila["id_daño"]) . '" class="btn btn-info btn-sm">
                                             <i class="fas fa-pencil-alt"></i> Editar
-                                        </a>
-                                        <a href="../Eliminar/daños.php?id_daño=' . htmlspecialchars($fila["id_daño"]) . '" class="btn btn-danger btn-sm">
-                                            <i class="fas fa-trash"></i> Eliminar
                                         </a>
                                     </td>
                                 </tr>';

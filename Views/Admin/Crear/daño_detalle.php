@@ -1,6 +1,6 @@
 <?php include "../Template/header.php"; ?>
 <?php
-require_once ("../../../Config/conexion.php");
+require_once("../../../Config/conexion.php");
 $Conexion = new Database;
 $con = $Conexion->conectar();
 
@@ -68,14 +68,17 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                                                     <select id="daño" class="form-control" name="daño" placeholder="Daños:" required>
                                                         <option value="">Seleccione tipo de daño</option>
                                                         <?php
-                                                        $control = $con->prepare("SELECT * FROM tipo_daño WHERE nitc = :nitc_usuario");
-                                                        $control->bindParam(':nitc_usuario', $nitc_usuario);
-                                                        $control->execute();
-                                                        while ($fila = $control->fetch(PDO::FETCH_ASSOC)) {
-                                                            echo "<option value=" . $fila['id_daño'] . ">" . $fila['nombredano'] . "</option>";
+                                                        $consulta = "SELECT * FROM tipo_daño WHERE nitc = :nitc_usuario AND estado = 1";
+                                                        $stmt = $con->prepare($consulta);
+                                                        $stmt->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
+                                                        $stmt->execute();
+
+                                                        while ($fila = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                                                            echo "<option value=" . $fila['id_daño'] . ">" . htmlspecialchars($fila['nombredano']) . "</option>";
                                                         }
                                                         ?>
                                                     </select>
+
                                                 </label>
                                             </div>
                                         </div>
@@ -100,25 +103,25 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 </div>
 
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    var solucionInput = document.getElementById('solucion');
-    solucionInput.addEventListener('input', function () {
-        var solucionValue = solucionInput.value.replace(/\s/g, ''); // Remove all spaces
-        if (solucionValue.length < 10) {
-            solucionInput.setCustomValidity('La solución debe contener al menos 10 letras.');
-        } else {
-            solucionInput.setCustomValidity('');
-        }
-    });
+    document.addEventListener('DOMContentLoaded', function() {
+        var solucionInput = document.getElementById('solucion');
+        solucionInput.addEventListener('input', function() {
+            var solucionValue = solucionInput.value.replace(/\s/g, ''); // Remove all spaces
+            if (solucionValue.length < 10) {
+                solucionInput.setCustomValidity('La solución debe contener al menos 10 letras.');
+            } else {
+                solucionInput.setCustomValidity('');
+            }
+        });
 
-    document.getElementById('formularioDetalle').addEventListener('submit', function (event) {
-        var solucionValue = solucionInput.value.replace(/\s/g, ''); // Remove all spaces
-        if (solucionValue.length < 10) {
-            alert('La solución debe contener al menos 10 letras.');
-            event.preventDefault();
-        }
+        document.getElementById('formularioDetalle').addEventListener('submit', function(event) {
+            var solucionValue = solucionInput.value.replace(/\s/g, ''); // Remove all spaces
+            if (solucionValue.length < 10) {
+                alert('La solución debe contener al menos 10 letras.');
+                event.preventDefault();
+            }
+        });
     });
-});
 </script>
 
 <?php include "../Template/footer.php"; ?>

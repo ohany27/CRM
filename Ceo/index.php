@@ -448,7 +448,7 @@ if ($con) {
                   <p>Categorias </p>
                 </div>
                 <div class="icon">
-                  <i class="	fas fa-stream"></i>
+                  <i class="  fas fa-stream"></i>
                 </div>
 
               </div>

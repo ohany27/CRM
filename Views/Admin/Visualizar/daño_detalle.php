@@ -1,12 +1,12 @@
-<?php include "../Template/header.php"; ?>
 <?php
+include "../Template/header.php";
 require_once("../../../Config/conexion.php");
-
 
 $DataBase = new Database;
 $con = $DataBase->conectar();
 
 $nitc_usuario = $_SESSION['usuario']['nitc']; // Obtener el nitc del usuario logueado
+
 ?>
 <div class="content-wrapper">
     <div class="content-header">
@@ -30,7 +30,7 @@ $nitc_usuario = $_SESSION['usuario']['nitc']; // Obtener el nitc del usuario log
                         <thead>
                             <tr>
                                 <th>Nombre Daño</th>
-                                <th>Solucion</th>
+                                <th>Solución</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -39,7 +39,7 @@ $nitc_usuario = $_SESSION['usuario']['nitc']; // Obtener el nitc del usuario log
                             $consulta = "SELECT detalle_daño.id_detalle_daño, tipo_daño.nombredano, detalle_daño.pasos_solucion 
                                         FROM detalle_daño 
                                         INNER JOIN tipo_daño ON detalle_daño.id_daño = tipo_daño.id_daño
-                                        WHERE tipo_daño.nitc = :nitc_usuario"; // Añadida la condición WHERE
+                                        WHERE tipo_daño.nitc = :nitc_usuario AND tipo_daño.estado = 1"; // Añadida la condición WHERE
                             $stmt = $con->prepare($consulta);
                             $stmt->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR); // Vincular el parámetro
                             $stmt->execute();
