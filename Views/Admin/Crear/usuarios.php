@@ -176,9 +176,6 @@ function generarPinAleatorio($longitud = 4)
                         </div>
                 </form>
                 <br>
-                <a href="../Crear/cvg.php" class="form-group">
-                    <h2 class="title">Formato CSV (Clientes)</h2>
-                </a>
             </div>
 
         </div>
@@ -231,7 +228,7 @@ function generarPinAleatorio($longitud = 4)
     });
 </script>
 <script>
-    // main.js
+ // mayusculas y minusculas para input
     function minus(e) {
         e.value = e.value.toLowerCase();
     }

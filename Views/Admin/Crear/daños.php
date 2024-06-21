@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     // Insertar los datos en la base de datos
     $consulta = "INSERT INTO tipo_daño (nombredano, foto, precio, id_categoria, id_riesgos, nitc, estado) 
-                 VALUES (:nombredano, :foto, :precio, :id_categoria, :id_riesgos, :nitc, :estado)";
+                VALUES (:nombredano, :foto, :precio, :id_categoria, :id_riesgos, :nitc, :estado)";
     $stmt = $con->prepare($consulta);
     $stmt->bindParam(':nombredano', $nombredano);
     $stmt->bindParam(':foto', $foto, PDO::PARAM_LOB);

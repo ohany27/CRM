@@ -27,7 +27,7 @@ $statement_actualizar->execute(array('fecha_actual' => $fecha_actual));
 if ($statement_actualizar->rowCount() > 0) {
     echo "<script>alert('Se han actualizado las licencias vencidas correctamente.');</script>";
 } else {
-    
+    // Manejar caso de no actualizar ninguna licencia
 }
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -87,8 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-$database = new Database();
-$pdo = $database->conectar();
+// Obtener las licencias con la información necesaria (nombre de empresa y estado)
 $query_licencias = "SELECT l.licencia, e.nombre as nombre_empresa, es.tip_est as estado, l.fecha_inicial, l.fecha_final 
                     FROM licencia l
                     JOIN empresa e ON l.nitc = e.nitc
@@ -130,7 +129,6 @@ $licencias = $statement_licencias->fetchAll(PDO::FETCH_ASSOC);
                                         echo "<option value='" . $row['nitc'] . "'>" . $row['nombre'] . "</option>";
                                     }
                                     ?>
-
                                 </select><br><br>
                                 <label for="fecha_inicial" class="form-label">Fecha de Creación:</label><br>
                                 <input type="text" id="fecha_inicial" name="fecha_inicial" class="form-control" value="<?php echo $fecha_actual; ?>" readonly><br><br>
@@ -150,7 +148,7 @@ $licencias = $statement_licencias->fetchAll(PDO::FETCH_ASSOC);
                         <thead>
                             <tr>
                                 <th style="text-align: center;">Licencia</th>
-                                <th>NIT</th>
+                                <th>Nombre Empresa</th>
                                 <th>Estado</th>
                                 <th>Fecha Inicial</th>
                                 <th>Fecha Final</th>
@@ -160,7 +158,11 @@ $licencias = $statement_licencias->fetchAll(PDO::FETCH_ASSOC);
                             <?php foreach ($licencias as $licencia) : ?>
                                 <tr>
                                     <td style="text-align: center;">
-                                        <img src="../dist/img/codigo/<?= $licencia['licencia'] ?>.png" style="max-width: 400px;">
+                                        <!-- Incluir el atributo data con los datos necesarios -->
+                                        <img src="../dist/img/codigo/<?= $licencia['licencia'] ?>.png" 
+                                             style="max-width: 400px;"
+                                             data-nombre="<?php echo htmlspecialchars($licencia['nombre_empresa']); ?>"
+                                             data-estado="<?php echo htmlspecialchars($licencia['estado']); ?>">
                                     </td>
                                     <td><?php echo $licencia['nombre_empresa']; ?></td>
                                     <td><?php echo $licencia['estado']; ?></td>
@@ -170,11 +172,28 @@ $licencias = $statement_licencias->fetchAll(PDO::FETCH_ASSOC);
                             <?php endforeach; ?>
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>
     </section>
 </div>
+
+<!-- Script de JavaScript para manejar la alerta al leer el código de barras -->
+<script>
+    // Esperar a que se cargue el DOM
+    document.addEventListener('DOMContentLoaded', function () {
+        // Seleccionar todas las imágenes de códigos de barras
+        var imagenesCodigo = document.querySelectorAll('img');
+
+        // Agregar un evento clic a cada imagen de código de barras
+        imagenesCodigo.forEach(function (imagen) {
+            imagen.addEventListener('click', function () {
+                var nombreEmpresa = imagen.dataset.nombre;
+                var estado = imagen.dataset.estado;
+                alert('Nombre de la empresa: ' + nombreEmpresa + '\nEstado: ' + estado);
+            });
+        });
+    });
+</script>
 
 <?php include "../Template/footer.php"; ?>

@@ -413,7 +413,7 @@ foreach ($resultado as $row) {
                 <div class="icon">
                   <i class="ion ion-email-unread"></i>
                 </div>
-                <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+
               </div>
             </div>
             <!-- ./col -->
@@ -428,7 +428,7 @@ foreach ($resultado as $row) {
                 <div class="icon">
                   <i class="ion ion-android-call"></i>
                 </div>
-                <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+
               </div>
             </div>
             <!-- ./col -->
@@ -443,7 +443,7 @@ foreach ($resultado as $row) {
                 <div class="icon">
                   <i class="ion ion-android-star-half"></i>
                 </div>
-                <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+
               </div>
             </div>
             <!-- ./col -->
@@ -458,7 +458,7 @@ foreach ($resultado as $row) {
                 <div class="icon">
                   <i class="ion ion-android-star"></i>
                 </div>
-                <a href="#" class="small-box-footer">Busca <i class="fas fa-arrow-circle-right"></i></a>
+
               </div>
             </div>
             <!-- ./col -->

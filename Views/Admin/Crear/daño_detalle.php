@@ -1,6 +1,6 @@
 <?php include "../Template/header.php"; ?>
 <?php
-require_once("../../../Config/conexion.php");
+require_once ("../../../Config/conexion.php");
 $Conexion = new Database;
 $con = $Conexion->conectar();
 
@@ -55,7 +55,8 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                             <div class="col-sm-6">
                                 <div class="form-group">
                                     <label for="">ID de Detalle</label>
-                                    <input type="number" class="form-control" name="detalle" placeholder="Numero" readonly required>
+                                    <input type="number" class="form-control" name="detalle" placeholder="Numero"
+                                        readonly required>
                                 </div>
                             </div>
                             <div class="col-sm-6">
@@ -65,7 +66,8 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                                         <div class="input-group">
                                             <div class="custom-file">
                                                 <label for="daño">
-                                                    <select id="daño" class="form-control" name="daño" placeholder="Daños:" required>
+                                                    <select id="daño" class="form-control" name="daño"
+                                                        placeholder="Daños:" required>
                                                         <option value="">Seleccione tipo de daño</option>
                                                         <?php
                                                         $consulta = "SELECT * FROM tipo_daño WHERE nitc = :nitc_usuario AND estado = 1";
@@ -78,7 +80,6 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                                                         }
                                                         ?>
                                                     </select>
-
                                                 </label>
                                             </div>
                                         </div>
@@ -88,7 +89,8 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                             <div class="col-sm-12">
                                 <div class="form-group">
                                     <label for="">Solucion</label>
-                                    <input type="text" class="form-control" id="solucion" name="solucion" placeholder="Pasos De Solucion" required>
+                                    <input type="text" class="form-control" id="solucion" name="solucion"
+                                        placeholder="Pasos De Solucion" required>
                                 </div>
                             </div>
                         </div>
@@ -96,6 +98,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                             <button type="submit" name="inicio" class="btn btn-primary">Crear</button>
                         </div>
                         <input type="hidden" name="MM_insert" value="formreg">
+                    </div>
                 </form>
             </div>
         </div>
@@ -103,10 +106,10 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         var solucionInput = document.getElementById('solucion');
-        solucionInput.addEventListener('input', function() {
-            var solucionValue = solucionInput.value.replace(/\s/g, ''); // Remove all spaces
+        solucionInput.addEventListener('input', function () {
+            var solucionValue = solucionInput.value.replace(/\s/g, ''); 
             if (solucionValue.length < 10) {
                 solucionInput.setCustomValidity('La solución debe contener al menos 10 letras.');
             } else {
@@ -114,8 +117,8 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
             }
         });
 
-        document.getElementById('formularioDetalle').addEventListener('submit', function(event) {
-            var solucionValue = solucionInput.value.replace(/\s/g, ''); // Remove all spaces
+        document.getElementById('formularioDetalle').addEventListener('submit', function (event) {
+            var solucionValue = solucionInput.value.replace(/\s/g, ''); 
             if (solucionValue.length < 10) {
                 alert('La solución debe contener al menos 10 letras.');
                 event.preventDefault();

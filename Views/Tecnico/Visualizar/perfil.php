@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['usuario']['telefono'] = $telefono;
             $_SESSION['usuario']['direccion'] = $direccion;
             echo '<script>alert("Actualización exitosa.");</script>';
-            echo '<script>window.location="../Visualizar/usuarios.php"</script>';
+            echo '<script>window.location="../Visualizar/perfil.php"</script>';
             exit();
         } else {
             echo "Error al actualizar el usuario.";

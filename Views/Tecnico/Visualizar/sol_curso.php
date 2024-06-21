@@ -7,7 +7,7 @@ $con = $DataBase->conectar();
 
 // Verificar si la sesión está iniciada y obtener el documento del usuario
 if (!isset($_SESSION['usuario']['documento'])) {
-    header('Location: login.php');
+    header('Location: ../../../index.php');
     exit();
 }
 $nitc_usuario = $_SESSION['usuario']['documento'];

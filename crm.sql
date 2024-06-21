@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 20-06-2024 a las 01:40:04
+-- Tiempo de generación: 21-06-2024 a las 18:13:44
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -21,7 +21,9 @@ SET time_zone = "+00:00";
 -- Base de datos: `crm`
 --
 
--- --------------------------------------------------------
+CREATE DATABASE IF NOT EXISTS `crm` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE `crm`;
 
 --
 -- Estructura de tabla para la tabla `categoria`
@@ -83,6 +85,13 @@ CREATE TABLE `empresa` (
   `id_estado` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `empresa`
+--
+
+INSERT INTO `empresa` (`nitc`, `nombre`, `direccion`, `telefono`, `id_estado`) VALUES
+(1234567, 'GOOGLE', 'ee.uu', '3254789654', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -119,6 +128,13 @@ CREATE TABLE `licencia` (
   `fecha_inicial` date DEFAULT NULL,
   `fecha_final` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `licencia`
+--
+
+INSERT INTO `licencia` (`codigo`, `licencia`, `nitc`, `estado`, `fecha_inicial`, `fecha_final`) VALUES
+(927, 'k2xSwgJptQVj4Efezs3o', 1234567, 1, '2024-06-21', '2025-06-21');
 
 -- --------------------------------------------------------
 
@@ -326,7 +342,7 @@ ALTER TABLE `estado`
 -- AUTO_INCREMENT de la tabla `licencia`
 --
 ALTER TABLE `licencia`
-  MODIFY `codigo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=924;
+  MODIFY `codigo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=928;
 
 --
 -- AUTO_INCREMENT de la tabla `llamadas`

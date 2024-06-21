@@ -1,5 +1,5 @@
 <?php
-include("../../../Config/validarSesion.php");
+include ("../../../Config/validarSesion.php");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -36,28 +36,28 @@ include("../../../Config/validarSesion.php");
   <link rel="stylesheet" href="../plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   <!-- Favicon -->
   <link rel="apple-touch-icon" sizes="57x57" href="../../../Assets/favicon/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="../../../Assets/favicon/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="../../../Assets/favicon/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="../../../Assets/favicon/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="../../../Assets/favicon/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="../../../Assets/favicon/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="../../../Assets/favicon/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="../../../Assets/favicon/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="../../../Assets/favicon/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192" href="../../../Assets/favicon/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="../../../Assets/favicon/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="../../../Assets/favicon/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../../../Assets/favicon/favicon-16x16.png">
-    <link rel="manifest" href="../../../Assets/favicon/manifest.json">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../Assets/favicon/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../Assets/favicon/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../Assets/favicon/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../Assets/favicon/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../Assets/favicon/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../Assets/favicon/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../Assets/favicon/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../Assets/favicon/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="../../../Assets/favicon/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../Assets/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="../../../Assets/favicon/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../Assets/favicon/favicon-16x16.png">
+  <link rel="manifest" href="../../../Assets/favicon/manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
   <div class="wrapper">
 
-  
+
 
     <!-- Navbar -->
     <nav class="main-header navbar navbar-expand navbar-white navbar-light">
@@ -80,25 +80,25 @@ include("../../../Config/validarSesion.php");
         </li>
 
         <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="fas fa-cogs"></i>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">Opciones</span>
-          <div class="dropdown-divider"></div>
-          <a href="../Visualizar/perfil.php" class="dropdown-item">
-            <i class="fas fa-user mr-2"></i> Perfil
-            <span class="float-right text-muted text-sm">visitar</span>
+          <a class="nav-link" data-toggle="dropdown" href="#">
+            <i class="fas fa-cogs"></i>
           </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
+          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+            <span class="dropdown-item dropdown-header">Opciones</span>
+            <div class="dropdown-divider"></div>
+            <a href="../Visualizar/perfil.php" class="dropdown-item">
+              <i class="fas fa-user mr-2"></i> Perfil
+              <span class="float-right text-muted text-sm">visitar</span>
+            </a>
+            <div class="dropdown-divider"></div>
+            <a href="../../../Config/validarSesion.php?logout=true" class="dropdown-item">
             <i class="fas fa-sign-out-alt mr-2"></i> Salir
             <span class="float-right text-muted text-sm">accion</span>
           </a>
-        </div>
-      </li>
+          </div>
+        </li>
       </ul>
-      
+
     </nav>
     <!-- /.navbar -->
 
@@ -141,7 +141,7 @@ include("../../../Config/validarSesion.php");
               <a href="#" class="nav-link ">
                 <i class="nav-icon fas fa-users"></i>
                 <p>
-                Solicitudes Tecnico
+                  Solicitudes Tecnico
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>

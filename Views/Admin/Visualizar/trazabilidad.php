@@ -14,16 +14,20 @@ $fecha_fin = $_POST['fecha_fin'] ?? '';
 
 // Validar que la fecha de fin no sea menor que la fecha de inicio
 if (!empty($fecha_inicio) && !empty($fecha_fin) && $fecha_fin < $fecha_inicio) {
-    echo "<script>alert('La fecha de final no puede ser menor a la fecha de inicio.')</script>";
+    echo "<script>alert('La fecha de final no puede ser menor a la fecha de inicio.'); window.location='../Visualizar/trazabilidad.php';</script>";
+
 } else {
     // Consulta SQL ajustada para obtener detalles del ticket
-    $detalle_ticket_sql = "
-        SELECT dt.id_ticket, dt.id_estado, dt.documento, dt.id_riesgo, DATE(dt.fecha_inicio) AS fecha_inicio, DATE(dt.fecha_final) AS fecha_final, dt.descripcion_detalle
-        FROM detalle_ticket dt
-        INNER JOIN usuario u ON dt.documento = u.documento
-        WHERE u.nitc = :nitc_usuario
-        ORDER BY dt.id_ticket
-    ";
+    $detalle_ticket_sql = "SELECT dt.id_ticket, dt.id_estado, e.tip_est AS tipo_estado, dt.documento, dt.id_riesgo, 
+    r.tip_riesgo AS tipo_riesgo, DATE(dt.fecha_inicio) AS fecha_inicio, DATE(dt.fecha_final) AS fecha_final, 
+    dt.descripcion_detalle, u.nombre AS nombre_usuario
+    FROM detalle_ticket dt
+    INNER JOIN usuario u ON dt.documento = u.documento
+    LEFT JOIN estado e ON dt.id_estado = e.id_est
+    LEFT JOIN riesgos r ON dt.id_riesgo = r.id_riesgo
+    WHERE u.nitc = :nitc_usuario
+    ORDER BY dt.id_ticket";
+
 
     $stmt = $con->prepare($detalle_ticket_sql);
     $stmt->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
@@ -32,15 +36,25 @@ if (!empty($fecha_inicio) && !empty($fecha_fin) && $fecha_fin < $fecha_inicio) {
 
     // Si las fechas son válidas, ejecutar la consulta SQL con las fechas
     if (!empty($fecha_inicio) && !empty($fecha_fin)) {
-        $fecha_detalle_sql = "
-            SELECT dt.id_ticket, dt.id_estado, dt.documento, dt.id_riesgo, DATE(dt.fecha_inicio) AS fecha_inicio, DATE(dt.fecha_final) AS fecha_final, dt.descripcion_detalle
-            FROM detalle_ticket dt
-            INNER JOIN usuario u ON dt.documento = u.documento
-            WHERE u.nitc = :nitc_usuario
-            AND DATE(dt.fecha_inicio) >= :fecha_inicio
-            AND DATE(dt.fecha_inicio) <= :fecha_fin
-            ORDER BY dt.id_ticket
-        ";
+        $fecha_detalle_sql = "SELECT 
+            dt.id_ticket, 
+            e.tip_est AS id_estado,
+            dt.documento, 
+            r.tip_riesgo AS id_riesgo,
+            DATE(dt.fecha_inicio) AS fecha_inicio, 
+            DATE(dt.fecha_final) AS fecha_final, 
+            dt.descripcion_detalle,
+            u.nombre AS nombre_usuario 
+        FROM detalle_ticket dt
+        INNER JOIN usuario u ON dt.documento = u.documento
+        INNER JOIN estado e ON dt.id_estado = e.id_est
+        INNER JOIN riesgos r ON dt.id_riesgo = r.id_riesgo
+        WHERE u.nitc = :nitc_usuario
+        AND DATE(dt.fecha_inicio) >= :fecha_inicio
+        AND DATE(dt.fecha_inicio) <= :fecha_fin
+        ORDER BY dt.id_ticket";
+
+
 
         $fecha_stmt = $con->prepare($fecha_detalle_sql);
         $fecha_stmt->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
@@ -111,7 +125,7 @@ if (!empty($fecha_inicio) && !empty($fecha_fin) && $fecha_fin < $fecha_inicio) {
                                     <tr>
                                         <td><?php echo $ticket['id_ticket']; ?></td>
                                         <td><?php echo $ticket['id_estado']; ?></td>
-                                        <td><?php echo $ticket['documento']; ?></td>
+                                        <td><?php echo $ticket['documento'] . '-' . $ticket['nombre_usuario']; ?></td>
                                         <td><?php echo $ticket['id_riesgo']; ?></td>
                                         <td><?php echo $ticket['fecha_inicio']; ?></td>
                                         <td><?php echo $ticket['fecha_final']; ?></td>
@@ -139,7 +153,7 @@ if (!empty($fecha_inicio) && !empty($fecha_fin) && $fecha_fin < $fecha_inicio) {
                 }
 
                 // Parámetros de paginación
-                $items_per_page = 4; // Dos id_ticket por página
+                $items_per_page = 4;
                 $total_items = count($grouped_tickets); // Total de grupos
                 $total_pages = ceil($total_items / $items_per_page); // Total de páginas
                 
@@ -183,14 +197,15 @@ if (!empty($fecha_inicio) && !empty($fecha_fin) && $fecha_fin < $fecha_inicio) {
                                                     <tbody>
                                                         <?php foreach ($detalles as $detalle_ticket): ?>
                                                             <tr>
-                                                                <td><?php echo $detalle_ticket['id_estado']; ?></td>
-                                                                <td><?php echo $detalle_ticket['documento']; ?></td>
-                                                                <td><?php echo $detalle_ticket['id_riesgo']; ?></td>
+                                                                <td><?php echo $detalle_ticket['tipo_estado']; ?></td>
+                                                                <td><?php echo $detalle_ticket['documento'] . '-' . $detalle_ticket['nombre_usuario']; ?></td>
+                                                                <td><?php echo $detalle_ticket['tipo_riesgo']; ?></td>
                                                                 <td><?php echo $detalle_ticket['fecha_inicio']; ?></td>
                                                                 <td><?php echo $detalle_ticket['fecha_final']; ?></td>
                                                                 <td><?php echo $detalle_ticket['descripcion_detalle']; ?></td>
                                                             </tr>
                                                         <?php endforeach; ?>
+
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -223,12 +238,7 @@ if (!empty($fecha_inicio) && !empty($fecha_fin) && $fecha_fin < $fecha_inicio) {
                 <?php else: ?>
                     <p>No se encontraron tickets para mostrar.</p>
                 <?php endif; ?>
-
-
             </div>
-
-
-
         </div>
     </section>
 </div>

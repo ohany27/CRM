@@ -3,6 +3,7 @@ include "../../../Config/conexion.php";
 $DataBase = new Database;
 $con = $DataBase->conectar();
 
+date_default_timezone_set('America/Bogota');
 // Obtener la fecha actual del servidor
 $fecha_actual = date('Y-m-d H:i:s'); // Obtener la fecha y hora actuales en formato MySQL
 
