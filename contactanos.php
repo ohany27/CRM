@@ -112,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="container-fluid position-relative p-0">
         <nav class="navbar navbar-expand-lg navbar-dark px-5 py-3 py-lg-0">
             <a href="index.php" class="navbar-brand p-0">
-                <h1 class="m-0"><i class="fa fa-user-tie me-2"></i>CRM</h1>
+                <h1 class="m-0"><i class="fa fa-user-tie me-2"></i>Cloud Chasers</h1>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
                 <span class="fa fa-bars"></span>
@@ -131,7 +131,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="container-fluid bg-primary py-5 bg-header" style="margin-bottom: 90px;">
             <div class="row py-5">
                 <div class="col-12 pt-lg-5 mt-lg-5 text-center">
-                    <h1 class="display-4 text-white animated zoomIn">contactanos </h1>
+                    <h1 class="display-4 text-white animated zoomIn">Contactanos </h1>
                     <a href="index.php" class="h5 text-white">Inicio</a>
                     <i class="far fa-circle text-white px-2"></i>
                     <a href="contactanos.php" class="h5 text-white">Contactanos</a>

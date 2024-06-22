@@ -181,7 +181,7 @@ if ((isset($_POST["MM_insert"])) && ($_POST["MM_insert"] == "formreg")) {
                     <table class="table margin-bottom-none">
                         <thead>
                             <tr>
-                                <th class="text-center">Fecha</th>
+                                <th class="text-center">Fecha y hora</th>
                                 <th class="text-center">Tipo de Problema</th>
                                 <th class="text-center">Número de Teléfono</th>
                             </tr>
