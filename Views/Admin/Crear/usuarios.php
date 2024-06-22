@@ -176,6 +176,9 @@ function generarPinAleatorio($longitud = 4)
                         </div>
                 </form>
                 <br>
+                <a href="../Crear/cvg.php" class="form-group">
+                    <h2 class="title">Formato CSV (Clientes)</h2>
+                </a>
             </div>
 
         </div>

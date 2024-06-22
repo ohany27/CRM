@@ -8,136 +8,111 @@ $con = $DataBase->conectar();
 $nitc_usuario = $_SESSION['usuario']['nitc'];
 
 // Consulta para obtener la cantidad de llamadas donde el documento coincida con el NITC del usuario en sesión
-$query = "SELECT COUNT(l.id_est) AS cantidad_llamadas_est_3
-          FROM llamadas l
-          INNER JOIN usuario u ON l.documento = u.documento
-          WHERE u.nitc = :nitc_usuario
-          AND l.id_est = 3";
+$query_llamadas_est_3 = "SELECT COUNT(l.id_est) AS cantidad_llamadas_est_3
+                        FROM llamadas l
+                        INNER JOIN usuario u ON l.documento = u.documento
+                        WHERE u.nitc = :nitc_usuario
+                         AND l.id_est = 3";
 
-$statement = $con->prepare($query);
-$statement->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
-$statement->execute();
-$resultado = $statement->fetch(PDO::FETCH_ASSOC);
+$statement_llamadas_est_3 = $con->prepare($query_llamadas_est_3);
+$statement_llamadas_est_3->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
+$statement_llamadas_est_3->execute();
+$resultado_llamadas_est_3 = $statement_llamadas_est_3->fetch(PDO::FETCH_ASSOC);
 
-if ($resultado) {
-  $totalSolicitudes = $resultado['cantidad_llamadas_est_3'];
-} else {
-  // Manejo de errores si la consulta no devuelve resultados
-  $totalSolicitudes = "Error al ejecutar la consulta.";
-}
+$totalSolicitudes = $resultado_llamadas_est_3 ? $resultado_llamadas_est_3['cantidad_llamadas_est_3'] : "Error al ejecutar la consulta.";
 
 // Consulta para obtener la cantidad de llamadas donde el documento coincide con el NITC del usuario en sesión y el id_est es igual a 5
-$query = "SELECT COUNT(l.id_est) AS cantidad_llamadas_est_45
-          FROM llamadas l
-          INNER JOIN usuario u ON l.documento = u.documento
-          WHERE u.nitc = :nitc_usuario
-          AND (l.id_est = 5)";
+$query_llamadas_est_45 = "SELECT COUNT(l.id_est) AS cantidad_llamadas_est_45
+                          FROM llamadas l
+                          INNER JOIN usuario u ON l.documento = u.documento
+                          WHERE u.nitc = :nitc_usuario
+                          AND (l.id_est = 4 OR l.id_est = 5)";
 
-$statement = $con->prepare($query);
-$statement->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
-$statement->execute();
-$resultado = $statement->fetch(PDO::FETCH_ASSOC);
+$statement_llamadas_est_45 = $con->prepare($query_llamadas_est_45);
+$statement_llamadas_est_45->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
+$statement_llamadas_est_45->execute();
+$resultado_llamadas_est_45 = $statement_llamadas_est_45->fetch(PDO::FETCH_ASSOC);
 
-if ($resultado) {
-  $totalLlamadasFinalizadas = $resultado['cantidad_llamadas_est_45'];
-} else {
-  // Manejo de errores si la consulta no devuelve resultados
-  $totalLlamadasFinalizadas = "Error al ejecutar la consulta.";
-}
+$totalLlamadasFinalizadas = $resultado_llamadas_est_45 ? $resultado_llamadas_est_45['cantidad_llamadas_est_45'] : "Error al ejecutar la consulta.";
 
 // Consulta para obtener la cantidad de registros en la tabla detalle_ticket donde el documento coincide con el NITC del usuario en sesión y el id_estado sea igual a 4
-$query = "SELECT COUNT(t.id_estado) AS cantidad_tickets_proceso
-          FROM detalle_ticket t
-          INNER JOIN usuario u ON t.documento = u.documento
-          WHERE u.nitc = :nitc_usuario
-          AND t.id_estado = 4
-          AND NOT EXISTS (
-              SELECT 1 FROM detalle_ticket t2
-              WHERE t.id_ticket = t2.id_ticket
-              AND t2.id_estado = 5
-          )";
+$query_tickets_proceso = "SELECT COUNT(t.id_estado) AS cantidad_tickets_proceso
+                          FROM detalle_ticket t
+                          INNER JOIN usuario u ON t.documento = u.documento
+                          WHERE u.nitc = :nitc_usuario
+                          AND t.id_estado = 4
+                          AND NOT EXISTS (
+                              SELECT 1 FROM detalle_ticket t2
+                              WHERE t.id_ticket = t2.id_ticket
+                              AND t2.id_estado = 5
+                          )";
 
-$statement = $con->prepare($query);
-$statement->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
-$statement->execute();
-$resultado = $statement->fetch(PDO::FETCH_ASSOC);
+$statement_tickets_proceso = $con->prepare($query_tickets_proceso);
+$statement_tickets_proceso->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
+$statement_tickets_proceso->execute();
+$resultado_tickets_proceso = $statement_tickets_proceso->fetch(PDO::FETCH_ASSOC);
 
-if ($resultado) {
-  $totalTicketProceso = $resultado['cantidad_tickets_proceso'];
-} else {
-  // Manejo de errores si la consulta no devuelve resultados
-  $totalTicketProceso = "Error al ejecutar la consulta.";
+$totalTicketProceso = $resultado_tickets_proceso ? $resultado_tickets_proceso['cantidad_tickets_proceso'] : "Error al ejecutar la consulta.";
+
+$query_tickets_estado_5 = "SELECT COUNT(t.id_estado) AS cantidad_tickets_estado_5
+                           FROM detalle_ticket t
+                           INNER JOIN usuario u ON t.documento = u.documento
+                           WHERE u.nitc = :nitc_usuario
+                           AND t.id_estado = 5";
+
+$statement_tickets_estado_5 = $con->prepare($query_tickets_estado_5);
+$statement_tickets_estado_5->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
+$statement_tickets_estado_5->execute();
+$resultado_tickets_estado_5 = $statement_tickets_estado_5->fetch(PDO::FETCH_ASSOC);
+
+$totalTicketsEstado5 = $resultado_tickets_estado_5 ? $resultado_tickets_estado_5['cantidad_tickets_estado_5'] : "Error al ejecutar la consulta.";
+
+// Consulta para obtener la cantidad de registros en la tabla detalle_ticket donde el documento coincide con el NITC del usuario en sesión y el id_estado sea igual a 5
+$query_tickets_finalizados = "SELECT COUNT(t.id_estado) AS cantidad_tickets_finalizados, MONTH(t.fecha_final) AS mes
+                              FROM detalle_ticket t
+                              INNER JOIN usuario u ON t.documento = u.documento
+                              WHERE u.nitc = :nitc_usuario
+                              AND t.id_estado = 5
+                              GROUP BY MONTH(t.fecha_final)";
+
+$statement_tickets_finalizados = $con->prepare($query_tickets_finalizados);
+$statement_tickets_finalizados->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
+$statement_tickets_finalizados->execute();
+$resultado_tickets_finalizados = $statement_tickets_finalizados->fetchAll(PDO::FETCH_ASSOC);
+
+// Inicializar arreglos para almacenar datos por mes
+$tecnicosData = array_fill(0, 12, 0); // Arreglo para almacenar datos de técnicos por mes (inicializado con 12 ceros)
+$empleadosData = array_fill(0, 12, 0); // Arreglo para almacenar datos de empleados por mes (inicializado con 12 ceros)
+
+// Llenar arreglos con los datos obtenidos
+foreach ($resultado_tickets_finalizados as $row) {
+  $mes = (int) $row['mes'];
+  $cantidad = (int) $row['cantidad_tickets_finalizados'];
+
+  if ($mes >= 1 && $mes <= 12) { // Verificar que el mes esté dentro del rango válido (1-12)
+    $tecnicosData[$mes - 1] = $cantidad;
+  }
 }
 
-
-$query = "SELECT COUNT(t.id_estado) AS cantidad_tickets_finalizados
-          FROM detalle_ticket t
-          INNER JOIN usuario u ON t.documento = u.documento
-          WHERE u.nitc = :nitc_usuario
-          AND t.id_estado = 5";
-
-$statement = $con->prepare($query);
-$statement->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
-$statement->execute();
-$resultado = $statement->fetch(PDO::FETCH_ASSOC);
-
-if ($resultado) {
-  $totalTicketFinalizados = $resultado['cantidad_tickets_finalizados'];
-} else {
-  // Manejo de errores si la consulta no devuelve resultados
-  $totalTicketFinalizados = "Error al ejecutar la consulta.";
-}
-
-// Consulta para obtener el recuento de clientes
+// Consultas para obtener el recuento de clientes, empleados y técnicos
 $query_clientes = "SELECT COUNT(*) AS cantidad_clientes FROM usuario WHERE id_tip_usu = 2";
 $statement_clientes = $con->prepare($query_clientes);
 $statement_clientes->execute();
 $resultado_clientes = $statement_clientes->fetch(PDO::FETCH_ASSOC);
 $cantidad_clientes = $resultado_clientes['cantidad_clientes'];
 
-// Consulta para obtener el recuento de empleados
 $query_empleados = "SELECT COUNT(*) AS cantidad_empleados FROM usuario WHERE id_tip_usu = 3";
 $statement_empleados = $con->prepare($query_empleados);
 $statement_empleados->execute();
 $resultado_empleados = $statement_empleados->fetch(PDO::FETCH_ASSOC);
 $cantidad_empleados = $resultado_empleados['cantidad_empleados'];
 
-// Consulta para obtener el recuento de técnicos
 $query_tecnicos = "SELECT COUNT(*) AS cantidad_tecnicos FROM usuario WHERE id_tip_usu = 4";
 $statement_tecnicos = $con->prepare($query_tecnicos);
 $statement_tecnicos->execute();
 $resultado_tecnicos = $statement_tecnicos->fetch(PDO::FETCH_ASSOC);
 $cantidad_tecnicos = $resultado_tecnicos['cantidad_tecnicos'];
-
-// Consulta para obtener los id_ticket con id_estado 3, 4 y 5
-$query = "SELECT t.id_ticket, COUNT(DISTINCT t.id_estado) AS estados
-          FROM detalle_ticket t
-          INNER JOIN usuario u ON t.documento = u.documento
-          WHERE u.nitc = :nitc_usuario
-          AND t.id_estado IN (3, 4, 5)
-          GROUP BY t.id_ticket
-          HAVING estados IN (2, 3)
-          AND SUM(CASE WHEN t.id_estado = 5 THEN 1 ELSE 0 END) >= 1"; // Agregamos esta condición
-
-$statement = $con->prepare($query);
-$statement->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
-$statement->execute();
-$resultado = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-$empleados = 0;
-$tecnicos = 0;
-
-foreach ($resultado as $row) {
-    $estados = $row['estados'];
-    if ($estados == 2) {
-        $empleados++;
-    } elseif ($estados == 3) {
-        $tecnicos++;
-    }
-}
-
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -358,12 +333,12 @@ foreach ($resultado as $row) {
                   </a>
                 </li>
               </ul>
-              </li>
-              <li class="nav-item">
+            </li>
+            <li class="nav-item">
               <a href="#" class="nav-link">
                 <i class="nav-icon fas  fa-memory"></i>
                 <p>
-                Trazabilidad
+                  Trazabilidad
                   <i class="fas fa-angle-left right"></i>
                 </p>
               </a>
@@ -375,7 +350,7 @@ foreach ($resultado as $row) {
                   </a>
                 </li>
               </ul>
-              </li>
+            </li>
           </ul>
         </nav>
         <!-- /.sidebar-menu -->
@@ -451,7 +426,7 @@ foreach ($resultado as $row) {
               <!-- small box -->
               <div class="small-box bg-danger">
                 <div class="inner">
-                  <h3><?php echo $totalTicketFinalizados; ?></h3>
+                  <h3><?php echo $totalTicketsEstado5; ?></h3>
 
                   <p>Tickets Finalizados</p>
                 </div>
@@ -572,48 +547,42 @@ foreach ($resultado as $row) {
         options: donutOptions
       });
 
-      var empleados = <?php echo $empleados; ?>;
-      var tecnicos = <?php echo $tecnicos; ?>;
+      var tecnicosData = <?php echo json_encode($tecnicosData); ?>;
+      var empleadosData = <?php echo json_encode($empleadosData); ?>;
 
       var barChartCanvas = $('#barChart').get(0).getContext('2d');
-      var areaChartData = {
-        labels  : ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio'],
+      var barChartData = {
+        labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
         datasets: [
           {
-            label               : 'Tecnicos',
-            backgroundColor     : 'rgba(60,141,188,0.9)',
-            borderColor         : 'rgba(60,141,188,0.8)',
-            pointRadius         : false,
-            pointColor          : '#3b8bba',
-            pointStrokeColor    : 'rgba(60,141,188,1)',
-            pointHighlightFill  : '#fff',
+            label: 'Técnicos',
+            backgroundColor: 'rgba(60,141,188,0.9)',
+            borderColor: 'rgba(60,141,188,0.8)',
+            pointRadius: false,
+            pointColor: '#3b8bba',
+            pointStrokeColor: 'rgba(60,141,188,1)',
+            pointHighlightFill: '#fff',
             pointHighlightStroke: 'rgba(60,141,188,1)',
-            data                : [0, 0, 0, 0, 0, tecnicos, 0]
+            data: tecnicosData
           },
           {
-            label               : 'Empleados',
-            backgroundColor     : 'rgba(210, 214, 222, 1)',
-            borderColor         : 'rgba(210, 214, 222, 1)',
-            pointRadius         : false,
-            pointColor          : 'rgba(210, 214, 222, 1)',
-            pointStrokeColor    : '#c1c7d1',
-            pointHighlightFill  : '#fff',
+            label: 'Empleados',
+            backgroundColor: 'rgba(210, 214, 222, 1)',
+            borderColor: 'rgba(210, 214, 222, 1)',
+            pointRadius: false,
+            pointColor: 'rgba(210, 214, 222, 1)',
+            pointStrokeColor: '#c1c7d1',
+            pointHighlightFill: '#fff',
             pointHighlightStroke: 'rgba(220,220,220,1)',
-            data                : [0, 0, 0, 0, 0, empleados, 0]
+            data: empleadosData
           },
         ]
       };
 
-      var barChartData = $.extend(true, {}, areaChartData);
-      var temp0 = areaChartData.datasets[0];
-      var temp1 = areaChartData.datasets[1];
-      barChartData.datasets[0] = temp1;
-      barChartData.datasets[1] = temp0;
-
       var barChartOptions = {
-        responsive              : true,
-        maintainAspectRatio     : false,
-        datasetFill             : false
+        responsive: true,
+        maintainAspectRatio: false,
+        datasetFill: false
       };
 
       new Chart(barChartCanvas, {
@@ -622,7 +591,7 @@ foreach ($resultado as $row) {
         options: barChartOptions
       });
     });
-    </script>
+  </script>
 </body>
 
 </html>
