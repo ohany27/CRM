@@ -4,7 +4,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $correo = htmlspecialchars($_POST['correo']);
     $sujeto = htmlspecialchars($_POST['sujeto']);
     $mensaje = htmlspecialchars($_POST['mensaje']);
-    
+
     $para = "tecnelectrics@gmail.com";
     $asunto = $sujeto;
     $mensaje_correo = "usuario/a " . $nombre . ",\n\nmensaje:" . $mensaje . "\n\nCorreo del remitente: " . $correo;
@@ -209,28 +209,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
             <div class="row g-5">
-                <div class="row g-5">
-            <div class="col-lg-6 wow slideInUp" data-wow-delay="0.3s">
-                <form name="contactForm" onsubmit="return validateForm()" method="post" action="">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <input type="text" name="nombre" class="form-control border-0 bg-light px-4" placeholder="Nombre" style="height: 55px;" required>
+                <div class="col-lg-6 wow slideInUp" data-wow-delay="0.3s">
+                    <form method="post" action="" id="miFormulario">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <input type="text" id="nombre" name="nombre" class="form-control border-0 bg-light px-4"
+                                    placeholder="Nombre" style="height: 55px;" required>
+                            </div>
+                            <div class="col-md-6">
+                                <input type="email" id="correo" name="correo"
+                                    class="form-control border-0 bg-light px-4" placeholder="Correo"
+                                    style="height: 55px;" required>
+                            </div>
+                            <div class="col-12">
+                                <input type="text" id="sujeto" name="sujeto" class="form-control border-0 bg-light px-4"
+                                    placeholder="Sujeto" style="height: 55px;" required>
+                            </div>
+                            <div class="col-12">
+                                <textarea id="mensaje" name="mensaje" class="form-control border-0 bg-light px-4 py-3"
+                                    rows="4" placeholder="Mensaje" required></textarea>
+                            </div>
+                            <div class="col-12">
+                                <button class="btn btn-primary w-100 py-3" type="submit">Enviar Mensaje</button>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <input type="email" name="correo" class="form-control border-0 bg-light px-4" placeholder="Correo" style="height: 55px;" required>
-                        </div>
-                        <div class="col-12">
-                            <input type="text" name="sujeto" class="form-control border-0 bg-light px-4" placeholder="Sujeto" style="height: 55px;" required>
-                        </div>
-                        <div class="col-12">
-                            <textarea name="mensaje" class="form-control border-0 bg-light px-4 py-3" rows="4" placeholder="Mensaje" required></textarea>
-                        </div>
-                        <div class="col-12">
-                            <button class="btn btn-primary w-100 py-3" type="submit">Enviar Mensaje</button>
-                        </div>
-                    </div>
-                </form>
-            </div>
+                    </form>
+
+
+                </div>
                 <div class="col-lg-6 wow slideInUp" data-wow-delay="0.6s">
                     <iframe
                         src="https://www.google.com/maps/embed?pb=!4v1714765029210!6m8!1m7!1sj_jHZOh6pgvf1z4LmCk-Kw!2m2!1d4.402006760729066!2d-75.14967451070726!3f34.02593976875215!4f-7.054346149660589!5f0.7820865974627469"
@@ -354,11 +360,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <!-- Template Javascript -->
     <script src="Assets/js/main.js"></script>
-    <script src="Assets/js/formulario.js"></script>
-     
-</body>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Validación del campo nombre
+            document.getElementById('nombre').addEventListener('input', function () {
+                var nombreValue = this.value.trim();
+                var nombreRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{3,}$/; // Al menos 3 letras o espacios
+                if (nombreRegex.test(nombreValue)) {
+                    this.setCustomValidity('');
+                } else {
+                    this.setCustomValidity('El nombre debe tener al menos 3 letras y no puede contener caracteres especiales ni números.');
+                }
+            });
 
-</html>
+            // Validación del campo sujeto
+            document.getElementById('sujeto').addEventListener('input', function () {
+                var sujetoValue = this.value.trim();
+                var sujetoRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]{3,}$/; // Al menos 3 letras o espacios
+                if (sujetoRegex.test(sujetoValue)) {
+                    this.setCustomValidity('');
+                } else {
+                    this.setCustomValidity('El sujeto debe tener al menos 3 letras y no puede contener caracteres especiales ni números.');
+                }
+            });
+
+            // No es necesario validar el campo correo porque el tipo "email" ya realiza una validación básica
+
+            // Validación del campo mensaje
+            document.getElementById('mensaje').addEventListener('input', function () {
+                var mensajeValue = this.value.trim();
+                if (mensajeValue.length >= 6) {
+                    this.setCustomValidity('');
+                } else {
+                    this.setCustomValidity('El mensaje debe tener al menos 6 caracteres.');
+                }
+            });
+        });
+    </script>
+
+
 </body>
 
 </html>
