@@ -209,32 +209,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
             <div class="row g-5">
-                <div class="col-lg-6 wow slideInUp" data-wow-delay="0.3s">
-                    <form method="post" action="">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <input type="text" name="nombre" class="form-control border-0 bg-light px-4"
-                                    placeholder="Nombre" style="height: 55px;" required>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="email" name="correo" class="form-control border-0 bg-light px-4"
-                                    placeholder="Correo" style="height: 55px;" required>
-                            </div>
-                            <div class="col-12">
-                                <input type="text" name="sujeto" class="form-control border-0 bg-light px-4"
-                                    placeholder="Sujeto" style="height: 55px;" required>
-                            </div>
-                            <div class="col-12">
-                                <textarea name="mensaje" class="form-control border-0 bg-light px-4 py-3" rows="4"
-                                    placeholder="Mensaje" required></textarea>
-                            </div>
-                            <div class="col-12">
-                                <button class="btn btn-primary w-100 py-3" type="submit">Enviar Mensaje</button>
-                            </div>
+                <div class="row g-5">
+            <div class="col-lg-6 wow slideInUp" data-wow-delay="0.3s">
+                <form name="contactForm" onsubmit="return validateForm()" method="post" action="">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <input type="text" name="nombre" class="form-control border-0 bg-light px-4" placeholder="Nombre" style="height: 55px;" required>
                         </div>
-                    </form>
-
-                </div>
+                        <div class="col-md-6">
+                            <input type="email" name="correo" class="form-control border-0 bg-light px-4" placeholder="Correo" style="height: 55px;" required>
+                        </div>
+                        <div class="col-12">
+                            <input type="text" name="sujeto" class="form-control border-0 bg-light px-4" placeholder="Sujeto" style="height: 55px;" required>
+                        </div>
+                        <div class="col-12">
+                            <textarea name="mensaje" class="form-control border-0 bg-light px-4 py-3" rows="4" placeholder="Mensaje" required></textarea>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary w-100 py-3" type="submit">Enviar Mensaje</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
                 <div class="col-lg-6 wow slideInUp" data-wow-delay="0.6s">
                     <iframe
                         src="https://www.google.com/maps/embed?pb=!4v1714765029210!6m8!1m7!1sj_jHZOh6pgvf1z4LmCk-Kw!2m2!1d4.402006760729066!2d-75.14967451070726!3f34.02593976875215!4f-7.054346149660589!5f0.7820865974627469"
@@ -358,6 +354,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     <!-- Template Javascript -->
     <script src="Assets/js/main.js"></script>
+    <script src="Assets/js/formulario.js"></script>
+     
+</body>
+
+</html>
 </body>
 
 </html>
