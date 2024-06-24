@@ -55,10 +55,10 @@ $resultado_tickets_proceso = $statement_tickets_proceso->fetch(PDO::FETCH_ASSOC)
 $totalTicketProceso = $resultado_tickets_proceso ? $resultado_tickets_proceso['cantidad_tickets_proceso'] : "Error al ejecutar la consulta.";
 
 $query_tickets_estado_5 = "SELECT COUNT(t.id_estado) AS cantidad_tickets_estado_5
-                           FROM detalle_ticket t
-                           INNER JOIN usuario u ON t.documento = u.documento
-                           WHERE u.nitc = :nitc_usuario
-                           AND t.id_estado = 5";
+                          FROM detalle_ticket t
+                          INNER JOIN usuario u ON t.documento = u.documento
+                          WHERE u.nitc = :nitc_usuario
+                          AND t.id_estado = 5";
 
 $statement_tickets_estado_5 = $con->prepare($query_tickets_estado_5);
 $statement_tickets_estado_5->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
@@ -68,12 +68,13 @@ $resultado_tickets_estado_5 = $statement_tickets_estado_5->fetch(PDO::FETCH_ASSO
 $totalTicketsEstado5 = $resultado_tickets_estado_5 ? $resultado_tickets_estado_5['cantidad_tickets_estado_5'] : "Error al ejecutar la consulta.";
 
 // Consulta para obtener la cantidad de registros en la tabla detalle_ticket donde el documento coincide con el NITC del usuario en sesión y el id_estado sea igual a 5
-$query_tickets_finalizados = "SELECT COUNT(t.id_estado) AS cantidad_tickets_finalizados, MONTH(t.fecha_final) AS mes
+
+$query_tickets_finalizados = "SELECT COUNT(t.id_estado) AS cantidad_tickets_finalizados, MONTH(t.fecha_final) AS mes, u.id_tip_usu
                               FROM detalle_ticket t
                               INNER JOIN usuario u ON t.documento = u.documento
                               WHERE u.nitc = :nitc_usuario
                               AND t.id_estado = 5
-                              GROUP BY MONTH(t.fecha_final)";
+                              GROUP BY MONTH(t.fecha_final), u.id_tip_usu";
 
 $statement_tickets_finalizados = $con->prepare($query_tickets_finalizados);
 $statement_tickets_finalizados->bindParam(':nitc_usuario', $nitc_usuario, PDO::PARAM_STR);
@@ -86,11 +87,16 @@ $empleadosData = array_fill(0, 12, 0); // Arreglo para almacenar datos de emplea
 
 // Llenar arreglos con los datos obtenidos
 foreach ($resultado_tickets_finalizados as $row) {
-  $mes = (int) $row['mes'];
+  $mes = (int) $row['mes'] - 1; // Ajustamos el mes para que sea un índice válido (0-11)
   $cantidad = (int) $row['cantidad_tickets_finalizados'];
+  $id_tip_usu = (int) $row['id_tip_usu'];
 
-  if ($mes >= 1 && $mes <= 12) { // Verificar que el mes esté dentro del rango válido (1-12)
-    $tecnicosData[$mes - 1] = $cantidad;
+  if ($mes >= 0 && $mes < 12) { // Verificar que el mes esté dentro del rango válido (0-11)
+    if ($id_tip_usu == 4) { // Técnico
+      $tecnicosData[$mes] += $cantidad;
+    } elseif ($id_tip_usu == 3) { // Empleado
+      $empleadosData[$mes] += $cantidad;
+    }
   }
 }
 
