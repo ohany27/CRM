@@ -4,17 +4,19 @@ require_once("Config/conexion.php");
 
 $database = new Database();
 $pdo = $database->conectar();
+
 if(isset($_GET['accion']) && $_GET['accion'] == 'registro') {
-    // Consultar si hay una licencia activa
+    // Consultar si hay al menos una licencia activa
     $query = "SELECT * FROM licencia WHERE estado = 1";
     $resultado = $pdo->query($query);
 
-    // Si no hay una licencia activa, redirigir al usuario al index.php
-    if($resultado->rowCount() != 1) {
+    // Si no hay ninguna licencia activa, redirigir al usuario al index.php
+    if($resultado->rowCount() < 1) {
         echo "<script>alert('No hay una licencia activa'); window.location='./index.php';</script>";
-            exit();
+        exit();
     }
 }
+
 // Manejar el formulario de inicio de sesión
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login_form"])) {
     $correo = $_POST["correo"];

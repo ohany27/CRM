@@ -1,8 +1,8 @@
-<?php include "../Template/header.php"; ?>
-<?php
-require_once ("../../../Config/conexion.php");
-$DataBase = new Database;
-$con = $DataBase->conectar();
+<?php 
+include "../Template/header.php";
+require_once("../../../Config/conexion.php");
+$conexion = new Database();
+$con = $conexion->conectar();
 
 // Número de registros por página
 $registros_por_pagina = 4;

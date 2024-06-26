@@ -1,9 +1,8 @@
-<?php include "../Template/header.php"; ?>
-<?php
-require_once ("../../../Config/conexion.php");
-
-$DataBase = new Database;
-$con = $DataBase->conectar();
+<?php 
+include "../Template/header.php";
+require_once("../../../Config/conexion.php");
+$conexion = new Database();
+$con = $conexion->conectar();
 
 // Obtener el NITC del usuario en sesión
 $nitc_usuario = $_SESSION['usuario']['nitc'];

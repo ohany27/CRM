@@ -1,5 +1,5 @@
 <?php 
-session_start();
+include("../../../Config/validarSesion.php");
 require_once ("../../../Config/conexion.php");
 $DataBase = new Database;
 $con = $DataBase->conectar();

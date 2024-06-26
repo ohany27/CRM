@@ -1,9 +1,8 @@
-<?php
+<?php 
 include "../Template/header.php";
-
-require_once ("../../../Config/conexion.php");
-$DataBase = new Database;
-$con = $DataBase->conectar();
+require_once("../../../Config/conexion.php");
+$conexion = new Database();
+$con = $conexion->conectar();
 
 
 $nitc_usuario = $_SESSION['usuario']['nitc'];

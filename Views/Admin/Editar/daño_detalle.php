@@ -1,8 +1,8 @@
-<?php include "../Template/header.php"; ?>
-<?php
+<?php 
+include "../Template/header.php";
 require_once("../../../Config/conexion.php");
-$Conexion = new Database;
-$con = $Conexion->conectar();
+$conexion = new Database();
+$con = $conexion->conectar();
 
 
 $sql = $con->prepare("SELECT detalle_daño.*, tipo_daño.nombredano 

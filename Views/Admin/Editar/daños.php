@@ -1,8 +1,8 @@
-<?php
+<?php 
 include "../Template/header.php";
-require_once ("../../../Config/conexion.php");
-$Conexion = new Database;
-$con = $Conexion->conectar();
+require_once("../../../Config/conexion.php");
+$conexion = new Database();
+$con = $conexion->conectar();
 
 // Verificar si se ha enviado el formulario de actualización
 if (isset($_POST["update"])) {

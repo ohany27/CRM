@@ -1,18 +1,23 @@
-<?php include "../Template/header.php"; ?>
 <?php
-include ('../../Config/conexion.php');
-$database = new Database();
-$pdo = $database->conectar();
+// Incluir el encabezado
+include "../Template/header.php";
 
+// Incluir el archivo de configuración de la conexión a la base de datos
+require_once("../../Config/conexion.php");
 
+// Verificar si la cookie de acceso está presente y tiene el valor esperado
+if (!isset($_COOKIE['acceso_permitido']) || $_COOKIE['acceso_permitido'] !== 'true') {
+    // Redirigir a la página de inicio si la cookie no está presente o no tiene el valor correcto
+    echo "<script>alert('Ingresa primero en el panel CEO.');window.location='../index.php';</script>";
+    exit();
+}
 
-// Fetch and display data
-$selectQuery = $pdo->prepare("SELECT * FROM empresa");
-$selectQuery->execute();
-$empresas = $selectQuery->fetchAll(PDO::FETCH_ASSOC);
+// Inicializar el mensaje de alerta
+$alert_message = '';
 
-
+// Procesar el formulario cuando se envía
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Recoger los datos del formulario
     $nitc = $_POST['nitc'];
     $nombre = $_POST['nombre'];
     $direccion = $_POST['direccion'];
@@ -20,10 +25,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Verificar si todos los campos están llenos
     if (empty($nitc) || empty($nombre) || empty($direccion) || empty($telefono)) {
-        echo "<script>alert('Todos los campos son obligatorios.')</script>";
+        $alert_message = "<script>alert('Todos los campos son obligatorios.')</script>";
     } elseif (!is_numeric($nitc) || !is_numeric($telefono)) {
-        echo "<script>alert('El NITC y el teléfono deben contener solo números.')</script>";
+        $alert_message = "<script>alert('El NITC y el teléfono deben contener solo números.')</script>";
     } else {
+        // Establecer conexión a la base de datos
         $database = new Database();
         $pdo = $database->conectar();
 
@@ -42,14 +48,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt->execute([':telefono' => $telefono]);
         $existingTelefono = $stmt->fetch();
 
+        // Comprobar las condiciones para mostrar alertas
         if ($existingNitc) {
-            echo "<script>alert('Ya existe una empresa con este NITC.')</script>";
+            $alert_message = "<script>alert('Ya existe una empresa con este NITC.')</script>";
         } elseif ($existingNombre) {
-            echo "<script>alert('Ya existe una empresa con este nombre.')</script>";
+            $alert_message = "<script>alert('Ya existe una empresa con este nombre.')</script>";
         } elseif ($existingTelefono) {
-            echo "<script>alert('Ya existe una empresa con este teléfono.')</script>";
+            $alert_message = "<script>alert('Ya existe una empresa con este teléfono.')</script>";
         } else {
-            // Insertar datos en la base de datos
+            // Insertar datos en la base de datos si no hay duplicados
             $sql = "INSERT INTO empresa (nitc, nombre, direccion, telefono, id_estado) VALUES (:nitc, :nombre, :direccion, :telefono, 1)";
             $stmt = $pdo->prepare($sql);
 
@@ -60,25 +67,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 ':telefono' => $telefono
             );
 
+            // Ejecutar la consulta de inserción
             if ($stmt->execute($params)) {
-                echo "<script>alert('Empresa creada correctamente.')</script>";
-                echo "<script>window.location.href = 'empresa.php';</script>";
+                $alert_message = "<script>alert('Empresa creada correctamente.'); window.location.href = 'empresa.php';</script>";
             } else {
-                echo "<script>alert('Error al crear la empresa.')</script>";
+                $alert_message = "<script>alert('Error al crear la empresa.')</script>";
             }
         }
 
+        // Cerrar la conexión y liberar recursos
         unset($stmt);
         unset($pdo);
     }
 }
+
+// Obtener datos de empresas desde la base de datos
+try {
+    // Establecer conexión a la base de datos
+    $database = new Database();
+    $pdo = $database->conectar();
+
+    // Consulta para obtener todas las empresas
+    $stmt = $pdo->query("SELECT * FROM empresa");
+    $empresas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Liberar recursos
+    unset($stmt);
+    unset($pdo);
+} catch (PDOException $e) {
+    // Manejo de errores de base de datos
+    echo "Error: " . $e->getMessage();
+}
+
 ?>
+
 <div class="content-wrapper">
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0">Empresas </h1>
+                    <h1 class="m-0">Empresas</h1>
                 </div>
             </div>
         </div>
@@ -91,6 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <h3 class="card-title"></h3>
                 </div>
                 <div class="card-body">
+                    <?php echo $alert_message; ?> <!-- Mostrar la alerta aquí -->
                     <form action="" method="post">
                         <div class="row">
                             <div class="col-md-3">
@@ -103,7 +132,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                             <div class="col-md-3">
                                 <div class="mb-3">
                                     <label for="nombre" class="form-label">Nombre:</label>
-                                    <input type="text" class="form-control" id="nombre" name="nombre" oninput="mayus(this)" required>
+                                    <input type="text" class="form-control" id="nombre" name="nombre" oninput="mayus(this)"
+                                        required>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -173,6 +203,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </section>
 </div>
+
 <script>
     document.getElementById('nitc').addEventListener('input', function () {
         var nitValue = this.value;
@@ -183,7 +214,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             this.setCustomValidity('');
         } else {
             this.value = nitValue.slice(0, 10);
-            this.setCustomValidity('El NIT debe tener entre 7 y 10 dígitos, no se permite signos de puntuacion.');
+            this.setCustomValidity('El NIT debe tener entre 7 y 10 dígitos, no se permite signos de puntuación.');
         }
     });
     document.getElementById('nombre').addEventListener('input', function () {
@@ -193,7 +224,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (/^[A-Za-zñÑ\s]{3,}$/.test(nombreValue) && !/[.]/.test(nombreValue)) {
             this.setCustomValidity('');
         } else {
-            this.setCustomValidity('El nombre debe contener minimo 3 letras, no se permite signos de puntuacion.');
+            this.setCustomValidity('El nombre debe contener mínimo 3 letras, no se permite signos de puntuación.');
         }
     });
     document.getElementById('telefono').addEventListener('input', function () {
@@ -214,7 +245,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         e.value = e.value.toLowerCase();
     }
     function mayus(e) {
-    e.value = e.value.toUpperCase();
-}
+        e.value = e.value.toUpperCase();
+    }
 </script>
+
 <?php include "../Template/footer.php"; ?>

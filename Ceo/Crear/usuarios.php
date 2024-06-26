@@ -1,9 +1,16 @@
 <?php
 include "../Template/header.php";
 require_once("../../Config/conexion.php");
+$DataBase = new Database;
+$con = $DataBase->conectar();
 
-$Conexion = new Database;
-$con = $Conexion->conectar();
+// Verificar si la cookie de acceso está presente y tiene el valor esperado
+if (!isset($_COOKIE['acceso_permitido']) || $_COOKIE['acceso_permitido'] !== 'true') {
+  // Redirigir a la página de inicio si la cookie no está presente o no tiene el valor correcto
+  echo "<script>alert('Ingresa primero en el panel Ceo.');window.location='../index.php';</script>";
+  exit();
+}
+
 $pdo = $con;
 
 $id_tip_usu = 1; // Valor predeterminado para id_tip_usu
